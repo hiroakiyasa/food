@@ -1,0 +1,2230 @@
+[
+  {
+    "categoryId": "1_LifeStage",
+    "subCategoryName": "妊娠中",
+    "description": "妊娠期における胎児の正常な発育と母体の健康維持のための栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "folicAcid",
+        "nutrientName": "葉酸",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 640,
+          "targetMax": null,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "胎児の神経管閉鎖障害リスク低減。通常の食品からの葉酸480μg/日＋サプリメント等から400μg/日が推奨。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 9.0,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "妊娠初期は付加量+2.5mg、中期・後期は付加量+9.5mg。貧血予防と胎児への鉄供給のため。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 650,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "胎児の骨格形成に必要。付加量は設定されていないが推奨量(650mg)の確保が重要。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 9.0,
+          "targetMax": null,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "カルシウム吸収促進と胎児の骨格発育に重要。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "DHA_EPA",
+        "nutrientName": "DHA・EPA (n-3系脂肪酸)",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1.7,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "胎児の脳・網膜の発達に寄与。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminA",
+        "nutrientName": "ビタミンA (レチノール)",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 2700,
+          "unit": "μgRAE",
+          "per": "day"
+        },
+        "reason": "過剰摂取は催奇形性リスクあり。特にレチノール(動物性)の過剰に注意。後期のみ付加+80μgRAE。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "alcohol",
+        "nutrientName": "アルコール",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "胎児性アルコール症候群(FAS)のリスク。妊娠中の飲酒は禁忌。",
+        "evidenceBase": "WHO ガイドライン",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "caffeine",
+        "nutrientName": "カフェイン",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 200,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "過剰摂取は流産・低出生体重児のリスク増加と関連。",
+        "evidenceBase": "WHO ガイドライン / ACOG",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "1_LifeStage",
+    "subCategoryName": "授乳中",
+    "description": "母乳の質と量を確保し、母体の回復を支える栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "energy",
+        "nutrientName": "エネルギー",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 350,
+          "targetMax": null,
+          "unit": "kcal",
+          "per": "day (付加量)"
+        },
+        "reason": "母乳産生に追加エネルギーが必要。通常の推定エネルギー必要量に+350kcal。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 70,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "推奨量50g＋付加量20g。母乳中のたんぱく質合成のため。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminA",
+        "nutrientName": "ビタミンA",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1150,
+          "targetMax": 2700,
+          "unit": "μgRAE",
+          "per": "day"
+        },
+        "reason": "母乳への分泌量を考慮し、付加量+450μgRAE。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 9.0,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "付加量+2.5mg。授乳による鉄損失の補填。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 650,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "母乳へのカルシウム移行を補うため推奨量の確保が重要。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "1_LifeStage",
+    "subCategoryName": "乳児期 (0〜11ヶ月)",
+    "description": "急速な成長・発達期における適切な栄養確保",
+    "focusNutrients": [
+      {
+        "nutrientKey": "energy",
+        "nutrientName": "エネルギー",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 500,
+          "targetMax": 700,
+          "unit": "kcal",
+          "per": "day"
+        },
+        "reason": "0-5ヶ月:500-550kcal(母乳・ミルク)、6-11ヶ月:600-700kcal(離乳食含む)。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 10,
+          "targetMax": 25,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "0-5ヶ月:10g目安量、6-8ヶ月:15g、9-11ヶ月:25g。母乳・離乳食から摂取。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 5.0,
+          "targetMax": 25,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "くる病予防。母乳のみでは不足しやすいため、日光浴や補給が重要。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 5.0,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "生後6ヶ月以降は体内貯蔵鉄が枯渇し始めるため離乳食からの鉄補給が重要。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版) / 日本小児栄養消化器肝臓学会",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "honey",
+        "nutrientName": "蜂蜜",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "乳児ボツリヌス症予防のため1歳未満は蜂蜜禁忌。",
+        "evidenceBase": "厚生労働省",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "1_LifeStage",
+    "subCategoryName": "幼児期 (1〜5歳)",
+    "description": "成長期の骨・脳・免疫系の発達を支える栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 20,
+          "targetMax": 25,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "1-2歳:推奨量20g、3-5歳:25g。成長に伴う筋肉・組織形成に必要。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 400,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "1-2歳:推奨量400mg、3-5歳:600mg。骨・歯の形成に不可欠。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 4.5,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "1-2歳男児:推奨量4.5mg。貧血予防のため十分な摂取が重要。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 3.5,
+          "targetMax": 30,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "くる病予防とカルシウム吸収促進。1-2歳:3.5μg、3-5歳:4.5μg目安量。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "saltEquivalent",
+        "nutrientName": "食塩相当量",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 3.5,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "1-2歳:3.0g未満、3-5歳:3.5g未満が目標量。味覚形成期であり薄味を習慣付ける。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "1_LifeStage",
+    "subCategoryName": "学童期 (6〜11歳)",
+    "description": "骨量蓄積のピーク期に向けた栄養管理と成長サポート",
+    "focusNutrients": [
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 600,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "6-7歳:600mg、8-9歳:650mg、10-11歳:700mg(男)。骨量蓄積の重要な時期。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 30,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "6-7歳:30g、8-9歳:40g、10-11歳:45-50g推奨量。成長スパートに備える。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 6.5,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "10-11歳男:推奨量8.5mg。成長期の鉄需要増大に対応。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 9,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "6-7歳:9-10g以上、8-9歳:11g以上。腸内環境の健全な発達に重要。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "1_LifeStage",
+    "subCategoryName": "思春期 (12〜17歳)",
+    "description": "第二次性徴・成長スパート期の高い栄養需要への対応",
+    "focusNutrients": [
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 800,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "12-14歳男:推奨量1000mg、女:800mg。骨量の最大蓄積期。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 8.5,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "女性は月経開始に伴い鉄需要が増大(月経あり:推奨量12mg)。男性も成長に伴い需要増(推奨量10mg)。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 55,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "12-14歳男:60g、女:55g推奨量。筋肉・骨格の急速な成長を支える。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 9.0,
+          "targetMax": 90,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "骨の成長に必要。12歳以上:目安量9.0μg/日。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "1_LifeStage",
+    "subCategoryName": "成人期 (18〜49歳)",
+    "description": "生活習慣病予防と健康維持を目的とした栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "saltEquivalent",
+        "nutrientName": "食塩相当量",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 7.5,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "男性7.5g/日未満、女性6.5g/日未満が目標量。高血圧・循環器疾患予防。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 18,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "男性21g以上、女性18g以上。大腸がん・2型糖尿病・循環器疾患リスク低減。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "saturatedFat",
+        "nutrientName": "飽和脂肪酸",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 7,
+          "unit": "%E",
+          "per": "day"
+        },
+        "reason": "7%エネルギー以下が目標。LDLコレステロール低下・動脈硬化予防。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "potassium",
+        "nutrientName": "カリウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 2600,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "男性3000mg以上、女性2600mg以上。ナトリウム排泄促進・血圧低下作用。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "1_LifeStage",
+    "subCategoryName": "更年期 (45〜55歳頃)",
+    "description": "エストロゲン減少に伴う骨量低下・脂質異常・自律神経失調への栄養対策",
+    "focusNutrients": [
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 650,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "エストロゲン低下により骨吸収が亢進。推奨量650mg/日の確保が必須。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版) / 骨粗鬆症の予防と治療ガイドライン2015",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 9.0,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "カルシウム吸収促進・骨折予防。骨粗鬆症予防には10-20μg/日が望ましい。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "isoflavone",
+        "nutrientName": "大豆イソフラボン",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 40,
+          "targetMax": 75,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "植物性エストロゲンとして更年期症状の緩和・骨密度維持に寄与。",
+        "evidenceBase": "内閣府食品安全委員会",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminK",
+        "nutrientName": "ビタミンK",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 150,
+          "targetMax": null,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "骨へのカルシウム沈着を促進。納豆や緑黄色野菜から摂取推奨。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1.9,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "エストロゲン低下に伴う脂質代謝異常の予防。抗炎症作用。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "1_LifeStage",
+    "subCategoryName": "高齢期 (65〜74歳)",
+    "description": "フレイル・サルコペニア予防と生活習慣病管理の両立",
+    "focusNutrients": [
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 50,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "男性推奨量60g、女性50g。目標量15-20%E。フレイル・サルコペニア予防のため十分な摂取が重要。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 9.0,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "骨折予防・筋力維持・転倒予防。日照時間の減少も考慮し積極的摂取。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 700,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "男性推奨量750mg、女性650mg。骨粗鬆症・骨折予防。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminB12",
+        "nutrientName": "ビタミンB12",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 2.4,
+          "targetMax": null,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "加齢に伴う胃酸分泌低下によりB12吸収率が低下。認知機能維持にも関与。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "saltEquivalent",
+        "nutrientName": "食塩相当量",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 7.5,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "男性7.5g未満、女性6.5g未満。高血圧・心血管疾患予防。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "1_LifeStage",
+    "subCategoryName": "後期高齢期 (75歳以上)",
+    "description": "低栄養・フレイル予防を最優先とした栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 50,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "男性推奨量60g、女性50g。目標量15-20%E。低栄養・サルコペニア予防の最重要栄養素。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "energy",
+        "nutrientName": "エネルギー",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1450,
+          "targetMax": null,
+          "unit": "kcal",
+          "per": "day"
+        },
+        "reason": "男性:1850-2250kcal、女性:1450-1750kcal。BMI21.5-24.9を維持。低栄養予防が優先。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 9.0,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "転倒・骨折・サルコペニア予防。外出減少による日照不足を補う必要あり。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "water",
+        "nutrientName": "水分",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1500,
+          "targetMax": null,
+          "unit": "mL",
+          "per": "day"
+        },
+        "reason": "加齢に伴う口渇感低下により脱水リスクが増大。意識的な水分補給が重要。",
+        "evidenceBase": "日本老年医学会",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "2_BodyGoal",
+    "subCategoryName": "減量・ダイエット",
+    "description": "体脂肪減少を目的とした適切なカロリー制限と栄養バランスの維持",
+    "focusNutrients": [
+      {
+        "nutrientKey": "energy",
+        "nutrientName": "エネルギー",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "kcal",
+          "per": "day"
+        },
+        "reason": "推定エネルギー必要量から250-500kcal/日の減少が目安。月1kg程度の減量ペースが推奨。",
+        "evidenceBase": "日本肥満学会 肥満症診療ガイドライン2022",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1.0,
+          "targetMax": 1.5,
+          "unit": "g/kg体重",
+          "per": "day"
+        },
+        "reason": "カロリー制限下での筋肉量維持・代謝維持のため、通常より高めのたんぱく質摂取が必要。",
+        "evidenceBase": "ISSN Position Stand: Diets and Body Composition (2017)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 20,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "満腹感の持続・血糖値の急上昇抑制・腸内環境改善に寄与。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "addedSugar",
+        "nutrientName": "添加糖類",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 25,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "WHO推奨:遊離糖類をエネルギー摂取の10%未満(できれば5%未満=約25g)に制限。",
+        "evidenceBase": "WHO Guideline: Sugars intake for adults and children (2015)",
+        "evidenceUrl": "https://www.who.int/publications/i/item/9789241549028"
+      }
+    ]
+  },
+  {
+    "categoryId": "2_BodyGoal",
+    "subCategoryName": "増量・バルクアップ",
+    "description": "筋肉量と体重の増加を目的としたカロリーサープラスと高たんぱく質摂取",
+    "focusNutrients": [
+      {
+        "nutrientKey": "energy",
+        "nutrientName": "エネルギー",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 300,
+          "targetMax": 500,
+          "unit": "kcal (surplus)",
+          "per": "day"
+        },
+        "reason": "推定エネルギー必要量に300-500kcal/日を上乗せ。脂肪蓄積を最小限に抑えた増量。",
+        "evidenceBase": "ISSN Position Stand: Diets and Body Composition (2017)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1.6,
+          "targetMax": 2.2,
+          "unit": "g/kg体重",
+          "per": "day"
+        },
+        "reason": "筋たんぱく合成を最大化するための最適範囲。",
+        "evidenceBase": "ISSN Position Stand: Protein and Exercise (2017)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "carbohydrate",
+        "nutrientName": "炭水化物",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 4,
+          "targetMax": 7,
+          "unit": "g/kg体重",
+          "per": "day"
+        },
+        "reason": "トレーニングのエネルギー源確保・グリコーゲン回復・インスリン分泌促進。",
+        "evidenceBase": "ACSM Position Stand: Nutrition and Athletic Performance (2016)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "2_BodyGoal",
+    "subCategoryName": "筋力トレーニング・筋肥大",
+    "description": "レジスタンストレーニングと併せた筋肥大のための栄養戦略",
+    "focusNutrients": [
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1.6,
+          "targetMax": 2.2,
+          "unit": "g/kg体重",
+          "per": "day"
+        },
+        "reason": "メタアナリシスにより1.6g/kg/日以上で筋肥大効果が最大化。20-40g/回を3-4回に分けて摂取。",
+        "evidenceBase": "Morton RW et al. Br J Sports Med. 2018;52:376-384",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "leucine",
+        "nutrientName": "ロイシン",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 2.0,
+          "targetMax": 3.0,
+          "unit": "g",
+          "per": "meal"
+        },
+        "reason": "mTOR経路を活性化し筋たんぱく質合成を促進する閾値が約2-3g/回。",
+        "evidenceBase": "ISSN Position Stand: Protein and Exercise (2017)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "creatine",
+        "nutrientName": "クレアチン",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 3,
+          "targetMax": 5,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "筋力・パワー・筋肥大を促進する最もエビデンスのあるサプリメント。",
+        "evidenceBase": "ISSN Position Stand: Safety and Efficacy of Creatine (2017)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 9.0,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "筋機能維持・テストステロン合成に関与。不足は筋力低下のリスク。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "2_BodyGoal",
+    "subCategoryName": "美容・肌改善",
+    "description": "肌のターンオーバー促進・コラーゲン合成・抗酸化のための栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "vitaminC",
+        "nutrientName": "ビタミンC",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 100,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "コラーゲン合成の必須補因子。抗酸化作用・メラニン生成抑制。推奨量100mg/日。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminA",
+        "nutrientName": "ビタミンA",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 650,
+          "targetMax": 2700,
+          "unit": "μgRAE",
+          "per": "day"
+        },
+        "reason": "皮膚・粘膜の正常な分化・維持に不可欠。角化異常の予防。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "zinc",
+        "nutrientName": "亜鉛",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 8,
+          "targetMax": 35,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "細胞分裂・たんぱく質合成に関与。皮膚のターンオーバーに必要。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "biotin",
+        "nutrientName": "ビオチン",
+        "action": "increase",
+        "priority": "Low",
+        "quantitativeCriteria": {
+          "targetMin": 50,
+          "targetMax": null,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "皮膚・毛髪・爪の健康維持に関与。目安量50μg/日。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸(EPA/DHA)",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1.7,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "抗炎症作用により肌の炎症を軽減。皮膚バリア機能の維持に寄与。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "2_BodyGoal",
+    "subCategoryName": "アンチエイジング",
+    "description": "酸化ストレス・糖化・炎症を抑制し、細胞老化を遅延させる栄養戦略",
+    "focusNutrients": [
+      {
+        "nutrientKey": "vitaminC",
+        "nutrientName": "ビタミンC",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 100,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "強力な抗酸化作用。コラーゲン合成促進。推奨量100mg/日。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminE",
+        "nutrientName": "ビタミンE",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 6.0,
+          "targetMax": 750,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "脂質過酸化を抑制する抗酸化ビタミン。目安量:男6.5mg、女6.0mg。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "polyphenols",
+        "nutrientName": "ポリフェノール",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "レスベラトロール・カテキン・アントシアニン等が抗酸化・抗炎症作用を持つ。定量基準は未設定。",
+        "evidenceBase": "各種疫学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 2.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "慢性炎症を抑制。テロメア長の維持に関連する可能性が示唆されている。",
+        "evidenceBase": "Farzaneh-Far R, et al. JAMA 2010;303:250-257",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "addedSugar",
+        "nutrientName": "添加糖類",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 25,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "糖化(AGEs生成)を促進し、コラーゲンの劣化・肌老化を加速。",
+        "evidenceBase": "WHO Guideline: Sugars intake for adults and children (2015)",
+        "evidenceUrl": "https://www.who.int/publications/i/item/9789241549028"
+      }
+    ]
+  },
+  {
+    "categoryId": "2_BodyGoal",
+    "subCategoryName": "持久力・スタミナ向上",
+    "description": "有酸素運動パフォーマンス向上のための栄養戦略",
+    "focusNutrients": [
+      {
+        "nutrientKey": "carbohydrate",
+        "nutrientName": "炭水化物",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 5,
+          "targetMax": 10,
+          "unit": "g/kg体重",
+          "per": "day"
+        },
+        "reason": "持久系トレーニングのグリコーゲン回復に必要。高強度・長時間では7-10g/kg/日。",
+        "evidenceBase": "ACSM/AND/DC Position Stand: Nutrition and Athletic Performance (2016)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 7.5,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "酸素運搬能力の維持に必須。スポーツ貧血(ランナー貧血)予防。推奨量以上を目指す。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminB1",
+        "nutrientName": "ビタミンB1",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1.4,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "糖質代謝の補酵素。エネルギー消費量増大に伴い需要増加。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "sodium",
+        "nutrientName": "ナトリウム(発汗時)",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 300,
+          "targetMax": 700,
+          "unit": "mg/L(飲料)",
+          "per": "hour (運動中)"
+        },
+        "reason": "発汗による電解質喪失の補填。運動中の低ナトリウム血症予防。",
+        "evidenceBase": "ACSM Position Stand: Exercise and Fluid Replacement (2007)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "2_BodyGoal",
+    "subCategoryName": "骨密度向上",
+    "description": "骨量の維持・増加を目的とした栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 800,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "骨粗鬆症予防のため800mg/日以上を推奨。食品からの摂取を基本とする。",
+        "evidenceBase": "骨粗鬆症の予防と治療ガイドライン2015 / 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 10,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "カルシウム吸収を促進。骨折予防には10-20μg/日が推奨。日光浴も併用。",
+        "evidenceBase": "骨粗鬆症の予防と治療ガイドライン2015",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminK",
+        "nutrientName": "ビタミンK",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 250,
+          "targetMax": null,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "オステオカルシンの活性化を介し骨へのカルシウム沈着を促進。250-300μg/日推奨。",
+        "evidenceBase": "骨粗鬆症の予防と治療ガイドライン2015",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "magnesium",
+        "nutrientName": "マグネシウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 290,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "骨構造の維持に関与。日本人は不足しがち。男性推奨量370mg、女性290mg。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "phosphorus",
+        "nutrientName": "リン(過剰)",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 3000,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "過剰なリン摂取はカルシウム吸収を阻害。加工食品のリン酸塩添加物に注意。",
+        "evidenceBase": "厚生労働省 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "4_ChronicDisease",
+    "subCategoryName": "高血圧",
+    "description": "血圧を下げるための食事療法（DASH食を含む）",
+    "focusNutrients": [
+      {
+        "nutrientKey": "saltEquivalent",
+        "nutrientName": "食塩相当量",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 6.0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "日本高血圧学会は1日6g未満を推奨。WHO基準は5g未満。",
+        "evidenceBase": "日本高血圧学会 高血圧治療ガイドライン2019/2024",
+        "evidenceUrl": "https://www.jpnsh.jp/general_salt_02.html"
+      },
+      {
+        "nutrientKey": "potassium",
+        "nutrientName": "カリウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 3500,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "ナトリウム排泄促進による降圧効果。DASH食では3500mg以上を推奨。",
+        "evidenceBase": "DASH Diet / 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 650,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "カルシウム摂取不足は血圧上昇と関連。DASH食の構成要素。",
+        "evidenceBase": "DASH Diet研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "magnesium",
+        "nutrientName": "マグネシウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 290,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "血管平滑筋の弛緩を促進し降圧に寄与。",
+        "evidenceBase": "DASH Diet研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "alcohol",
+        "nutrientName": "アルコール",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 20,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "エタノール換算で男性20-30mL/日以下(日本酒1合弱)。過剰飲酒は血圧上昇の原因。",
+        "evidenceBase": "日本高血圧学会 高血圧治療ガイドライン2019",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "4_ChronicDisease",
+    "subCategoryName": "2型糖尿病",
+    "description": "血糖コントロールと合併症予防のための食事療法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "energy",
+        "nutrientName": "エネルギー",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 25,
+          "targetMax": 35,
+          "unit": "kcal/kg標準体重",
+          "per": "day"
+        },
+        "reason": "軽労作:25-30kcal/kg、普通労作:30-35kcal/kg。適正体重の維持が最優先。",
+        "evidenceBase": "日本糖尿病学会 糖尿病診療ガイドライン2024",
+        "evidenceUrl": "https://www.jds.or.jp/uploads/files/publications/gl2024/03_1.pdf"
+      },
+      {
+        "nutrientKey": "carbohydrate",
+        "nutrientName": "炭水化物",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 40,
+          "targetMax": 60,
+          "unit": "%E",
+          "per": "day"
+        },
+        "reason": "総エネルギーの40-60%。緩やかな糖質制限は血糖管理に有用な可能性。",
+        "evidenceBase": "日本糖尿病学会 糖尿病診療ガイドライン2024",
+        "evidenceUrl": "https://www.jds.or.jp/uploads/files/publications/gl2024/03_1.pdf"
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 20,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "食後血糖値の上昇抑制。20g/日以上が推奨。未精製穀類・野菜から摂取。",
+        "evidenceBase": "日本糖尿病学会 糖尿病診療ガイドライン2024 / 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "saltEquivalent",
+        "nutrientName": "食塩相当量",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 6.0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "合併症(高血圧・腎症)予防のため6g/日未満を推奨。",
+        "evidenceBase": "日本糖尿病学会 糖尿病診療ガイドライン2024",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "saturatedFat",
+        "nutrientName": "飽和脂肪酸",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 7,
+          "unit": "%E",
+          "per": "day"
+        },
+        "reason": "動脈硬化性疾患リスク低減。不飽和脂肪酸への置換推奨。",
+        "evidenceBase": "日本糖尿病学会 / 動脈硬化性疾患予防ガイドライン2022",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "4_ChronicDisease",
+    "subCategoryName": "慢性腎臓病 (CKD) ステージG3-5",
+    "description": "腎機能保護と合併症予防のための栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 0.6,
+          "targetMax": 1.0,
+          "unit": "g/kg標準体重",
+          "per": "day"
+        },
+        "reason": "G3a:0.8-1.0g/kg/日、G3b以降:0.6-0.8g/kg/日。腎機能保護のため制限。",
+        "evidenceBase": "日本腎臓学会 CKD食事療法基準2014 / CKD診療ガイドライン2024",
+        "evidenceUrl": "https://cdn.jsn.or.jp/guideline/pdf/CKD-Dietaryrecommendations2014.pdf"
+      },
+      {
+        "nutrientKey": "saltEquivalent",
+        "nutrientName": "食塩相当量",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 3.0,
+          "targetMax": 6.0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "3g/日以上6g/日未満。過度の制限(3g未満)は推奨されない。",
+        "evidenceBase": "日本腎臓学会 CKD食事療法基準2014",
+        "evidenceUrl": "https://cdn.jsn.or.jp/guideline/pdf/CKD-Dietaryrecommendations2014.pdf"
+      },
+      {
+        "nutrientKey": "potassium",
+        "nutrientName": "カリウム",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 2000,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "ステージG3b以降で制限。G5:≤1500mg/日。高カリウム血症による心停止リスク予防。",
+        "evidenceBase": "日本腎臓学会 CKD食事療法基準2014",
+        "evidenceUrl": "https://cdn.jsn.or.jp/guideline/pdf/CKD-Dietaryrecommendations2014.pdf"
+      },
+      {
+        "nutrientKey": "phosphorus",
+        "nutrientName": "リン",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "たんぱく質(g)×15mg以下が目安。高リン血症→血管石灰化予防。",
+        "evidenceBase": "日本腎臓学会 CKD食事療法基準2014",
+        "evidenceUrl": "https://cdn.jsn.or.jp/guideline/pdf/CKD-Dietaryrecommendations2014.pdf"
+      },
+      {
+        "nutrientKey": "energy",
+        "nutrientName": "エネルギー",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 25,
+          "targetMax": 35,
+          "unit": "kcal/kg標準体重",
+          "per": "day"
+        },
+        "reason": "たんぱく質制限下でのエネルギー不足・異化亢進を防ぐため十分なカロリー確保。",
+        "evidenceBase": "日本腎臓学会 CKD食事療法基準2014",
+        "evidenceUrl": "https://cdn.jsn.or.jp/guideline/pdf/CKD-Dietaryrecommendations2014.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "4_ChronicDisease",
+    "subCategoryName": "脂質異常症 (高LDLコレステロール血症)",
+    "description": "LDLコレステロール低下と動脈硬化予防のための食事療法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "saturatedFat",
+        "nutrientName": "飽和脂肪酸",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 7,
+          "unit": "%E",
+          "per": "day"
+        },
+        "reason": "飽和脂肪酸をエネルギー比7%未満に制限。LDLコレステロール低下効果。",
+        "evidenceBase": "日本動脈硬化学会 動脈硬化性疾患予防ガイドライン2022",
+        "evidenceUrl": "https://www.jhf.or.jp/pro/a&s_info/guideline/post_2.html"
+      },
+      {
+        "nutrientKey": "cholesterol",
+        "nutrientName": "コレステロール",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 200,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "高LDLコレステロール血症では200mg/日未満に制限。卵黄・内臓肉を控える。",
+        "evidenceBase": "日本動脈硬化学会 動脈硬化性疾患予防ガイドライン2022",
+        "evidenceUrl": "https://www.jhf.or.jp/pro/a&s_info/guideline/post_2.html"
+      },
+      {
+        "nutrientKey": "transFat",
+        "nutrientName": "トランス脂肪酸",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 1,
+          "unit": "%E",
+          "per": "day"
+        },
+        "reason": "LDL上昇・HDL低下を引き起こす。WHO推奨:1%E未満。",
+        "evidenceBase": "WHO / 動脈硬化性疾患予防ガイドライン2022",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 25,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "水溶性食物繊維がコレステロール吸収を抑制。未精製穀類・大豆・海藻から。",
+        "evidenceBase": "動脈硬化性疾患予防ガイドライン2022",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系多価不飽和脂肪酸",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 2.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "EPA/DHAが中性脂肪低下・抗炎症作用。青魚の積極的摂取を推奨。",
+        "evidenceBase": "動脈硬化性疾患予防ガイドライン2022",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "4_ChronicDisease",
+    "subCategoryName": "高尿酸血症・痛風",
+    "description": "血清尿酸値低下と痛風発作予防のための食事療法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "purine",
+        "nutrientName": "プリン体",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 400,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "高プリン食を極力控え1日400mg以下。レバー・内臓肉・干物を避ける。",
+        "evidenceBase": "日本痛風・尿酸核酸学会 高尿酸血症・痛風の治療ガイドライン第3版(2022追補版)",
+        "evidenceUrl": "https://minds.jcqhc.or.jp/common/summary/pdf/c00476_supplementary.pdf"
+      },
+      {
+        "nutrientKey": "alcohol",
+        "nutrientName": "アルコール",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 20,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "アルコールは尿酸排泄を抑制し産生を亢進。ビールは特にプリン体含有量が多い。原則禁酒推奨。",
+        "evidenceBase": "高尿酸血症・痛風の治療ガイドライン第3版",
+        "evidenceUrl": "https://minds.jcqhc.or.jp/common/summary/pdf/c00476_supplementary.pdf"
+      },
+      {
+        "nutrientKey": "fructose",
+        "nutrientName": "果糖(フルクトース)",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "果糖は尿酸産生を亢進。清涼飲料水(HFCS含有)の過剰摂取を避ける。定量基準は未設定。",
+        "evidenceBase": "高尿酸血症・痛風の治療ガイドライン第3版",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "water",
+        "nutrientName": "水分",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 2000,
+          "targetMax": null,
+          "unit": "mL",
+          "per": "day"
+        },
+        "reason": "尿量2L/日以上を目標に十分な水分摂取。尿酸の尿中排泄促進。",
+        "evidenceBase": "高尿酸血症・痛風の治療ガイドライン第3版",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminC",
+        "nutrientName": "ビタミンC",
+        "action": "increase",
+        "priority": "Low",
+        "quantitativeCriteria": {
+          "targetMin": 500,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "ビタミンCの摂取は尿酸値低下と関連。500mg/日以上で効果が示唆。",
+        "evidenceBase": "Juraschek SP, et al. Arthritis Care Res. 2011;63:1295-1306",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "4_ChronicDisease",
+    "subCategoryName": "骨粗鬆症",
+    "description": "骨折リスク低減のための栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 800,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "骨粗鬆症患者は800mg/日以上を推奨。食品からの摂取を基本。",
+        "evidenceBase": "骨粗鬆症の予防と治療ガイドライン2015 / 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 10,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "骨折予防には10-20μg/日を推奨。日本人の大多数がビタミンD不足。",
+        "evidenceBase": "骨粗鬆症の予防と治療ガイドライン2015 / 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminK",
+        "nutrientName": "ビタミンK",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 250,
+          "targetMax": null,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "250-300μg/日。オステオカルシンの活性化により骨形成を促進。",
+        "evidenceBase": "骨粗鬆症の予防と治療ガイドライン2015",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1.0,
+          "targetMax": null,
+          "unit": "g/kg体重",
+          "per": "day"
+        },
+        "reason": "骨基質(コラーゲン)の構成要素。不足は骨折リスク増大。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "4_ChronicDisease",
+    "subCategoryName": "COPD (慢性閉塞性肺疾患)",
+    "description": "低栄養・筋萎縮予防と呼吸筋維持のための栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "energy",
+        "nutrientName": "エネルギー",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "kcal",
+          "per": "day"
+        },
+        "reason": "安静時エネルギー消費量の約1.5倍が必要。体重60kgで約2200-2400kcal。",
+        "evidenceBase": "日本呼吸器学会 COPDガイドライン / 各種栄養管理指針",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1.2,
+          "targetMax": 1.5,
+          "unit": "g/kg体重",
+          "per": "day"
+        },
+        "reason": "呼吸筋・骨格筋の維持に必須。サルコペニア予防のため高たんぱく食を推奨。",
+        "evidenceBase": "日本呼吸器学会 / ESPEN guidelines on nutrition in COPD",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "fat",
+        "nutrientName": "脂質",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 30,
+          "targetMax": 45,
+          "unit": "%E",
+          "per": "day"
+        },
+        "reason": "脂質は呼吸商が0.7と低く(炭水化物は1.0)、CO2産生が少ないため呼吸負荷軽減。",
+        "evidenceBase": "日本呼吸器学会 COPDガイドライン",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "carbohydrate",
+        "nutrientName": "炭水化物(過剰)",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 50,
+          "unit": "%E",
+          "per": "day"
+        },
+        "reason": "過剰な糖質摂取はCO2産生増加により呼吸負荷を増大させる。",
+        "evidenceBase": "日本呼吸器学会 COPDガイドライン",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "saltEquivalent",
+        "nutrientName": "食塩相当量",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 6.0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "心不全合併リスクの軽減。浮腫・体液貯留予防。",
+        "evidenceBase": "一般的な心血管疾患予防ガイドライン",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "4_ChronicDisease",
+    "subCategoryName": "心不全",
+    "description": "心臓への負担軽減と体液管理のための食事療法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "saltEquivalent",
+        "nutrientName": "食塩相当量",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 6.0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "体液貯留・うっ血予防のため6g/日未満。重症例では更に厳格な制限も。",
+        "evidenceBase": "日本循環器学会 急性・慢性心不全診療ガイドライン2021",
+        "evidenceUrl": "https://www.jacr.jp/faq/q175/"
+      },
+      {
+        "nutrientKey": "water",
+        "nutrientName": "水分",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 1500,
+          "unit": "mL",
+          "per": "day"
+        },
+        "reason": "重症心不全・体液貯留時は1000-1500mL/日に制限。軽症例は過度の制限不要。",
+        "evidenceBase": "日本循環器学会 心不全診療ガイドライン",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "potassium",
+        "nutrientName": "カリウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "利尿剤使用時は低カリウム血症に注意。ただしACE阻害薬/ARB使用時は高カリウム血症のリスクあり。個別管理が必要。",
+        "evidenceBase": "日本循環器学会 心不全診療ガイドライン",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸(EPA/DHA)",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "GISSI-HF試験でn-3系脂肪酸1g/日が心不全患者の死亡・入院リスクを軽減。",
+        "evidenceBase": "GISSI-HF trial, Lancet 2008",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "4_ChronicDisease",
+    "subCategoryName": "動脈硬化性疾患 (脳卒中・冠動脈疾患予防)",
+    "description": "動脈硬化進展予防のための包括的食事管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "saturatedFat",
+        "nutrientName": "飽和脂肪酸",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 7,
+          "unit": "%E",
+          "per": "day"
+        },
+        "reason": "LDLコレステロール低下・動脈硬化予防の基本。",
+        "evidenceBase": "動脈硬化性疾患予防ガイドライン2022",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "saltEquivalent",
+        "nutrientName": "食塩相当量",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 6.0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "高血圧管理を通じた脳卒中・心筋梗塞予防。",
+        "evidenceBase": "日本高血圧学会 / 動脈硬化性疾患予防ガイドライン2022",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系多価不飽和脂肪酸",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 2.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "EPA/DHAが抗炎症・抗血栓作用。魚食パターンと冠動脈疾患リスク低減の関連。",
+        "evidenceBase": "動脈硬化性疾患予防ガイドライン2022",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 25,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "コレステロール吸収抑制・血糖コントロール改善。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      }
+    ]
+  },
+  {
+    "categoryId": "4_ChronicDisease",
+    "subCategoryName": "NAFLD/NASH (非アルコール性脂肪性肝疾患)",
+    "description": "肝脂肪の減少と肝線維化の進展予防のための食事療法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "energy",
+        "nutrientName": "エネルギー",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "kcal",
+          "per": "day"
+        },
+        "reason": "BMI25以上の場合、現体重の7-10%減量が推奨。段階的カロリー制限。",
+        "evidenceBase": "日本肝臓学会 NAFLD/NASH診療ガイドライン2020",
+        "evidenceUrl": "https://www.jsge.or.jp/committees/guideline/guideline/pdf/nafldnash2020_2_re.pdf"
+      },
+      {
+        "nutrientKey": "addedSugar",
+        "nutrientName": "添加糖類・果糖",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "果糖・ショ糖の過剰摂取は肝臓での脂肪合成を促進(de novo lipogenesis)。清涼飲料水を避ける。",
+        "evidenceBase": "NAFLD/NASH診療ガイドライン2020",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系多価不飽和脂肪酸",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 2.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "青魚に含まれるEPA/DHAが肝脂肪を低減。地中海食の構成要素。",
+        "evidenceBase": "NAFLD/NASH診療ガイドライン2020 / EASL-EASD-EASO GL",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminE",
+        "nutrientName": "ビタミンE",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 750,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "NASH患者に対する抗酸化療法として有効性が示唆。ガイドラインでは薬物療法として記載。",
+        "evidenceBase": "AASLD Practice Guidance / NAFLD/NASH診療ガイドライン2020",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 25,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "インスリン感受性改善と腸肝軸を介した肝保護効果。緑黄色野菜を積極摂取。",
+        "evidenceBase": "NAFLD/NASH診療ガイドライン2020",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "4_ChronicDisease",
+    "subCategoryName": "肝硬変 (代償期・非代償期)",
+    "description": "肝予備能維持と合併症管理のための栄養療法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1.0,
+          "targetMax": 1.5,
+          "unit": "g/kg体重",
+          "per": "day"
+        },
+        "reason": "サルコペニア予防。肝性脳症時は一時的に0.5-0.6g/kgに制限後、BCAA主体で回復。",
+        "evidenceBase": "日本消化器病学会 肝硬変診療ガイドライン / ESPEN GL",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "BCAA",
+        "nutrientName": "分岐鎖アミノ酸(BCAA)",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "BCAA製剤の経口投与が肝性脳症の予防・低アルブミン血症の改善に有効。",
+        "evidenceBase": "日本消化器病学会 肝硬変診療ガイドライン",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "saltEquivalent",
+        "nutrientName": "食塩相当量",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 5.0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "腹水・浮腫管理のため5-7g/日以下に制限。非代償期は更に厳格に。",
+        "evidenceBase": "日本消化器病学会 肝硬変診療ガイドライン",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "lateEveningSnack",
+        "nutrientName": "就寝前補食(LES)",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 200,
+          "targetMax": null,
+          "unit": "kcal",
+          "per": "day"
+        },
+        "reason": "肝硬変の飢餓状態(夜間のグリコーゲン枯渇)予防のため200kcal程度の就寝前補食が推奨。",
+        "evidenceBase": "日本消化器病学会 肝硬変診療ガイドライン",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "zinc",
+        "nutrientName": "亜鉛",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 8,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "肝硬変患者は亜鉛欠乏が高頻度。味覚障害・肝性脳症の一因。",
+        "evidenceBase": "日本消化器病学会 肝硬変診療ガイドライン",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "4_ChronicDisease",
+    "subCategoryName": "甲状腺機能低下症",
+    "description": "甲状腺ホルモン合成に必要な微量栄養素の確保と過剰ヨウ素回避",
+    "focusNutrients": [
+      {
+        "nutrientKey": "iodine",
+        "nutrientName": "ヨウ素",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 130,
+          "targetMax": 3000,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "橋本病による甲状腺機能低下症では過剰ヨウ素が機能低下を悪化(持続性Wolff-Chaikoff効果)。昆布の大量摂取を避ける。耐容上限量3000μg。",
+        "evidenceBase": "日本甲状腺学会 / 日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "selenium",
+        "nutrientName": "セレン",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 25,
+          "targetMax": 350,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "甲状腺ホルモンの活性化(T4→T3変換)に必要なヨードチロニン脱ヨウ素酵素の構成成分。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版) / 各種内分泌学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "zinc",
+        "nutrientName": "亜鉛",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 8,
+          "targetMax": 35,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "甲状腺ホルモン受容体の機能に必要。亜鉛欠乏はT3産生低下と関連。",
+        "evidenceBase": "各種内分泌学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 6.5,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "鉄欠乏は甲状腺ペルオキシダーゼ活性を低下させ、甲状腺ホルモン合成を阻害。",
+        "evidenceBase": "各種内分泌学研究",
+        "evidenceUrl": null
+      }
+    ]
+  }
+]
