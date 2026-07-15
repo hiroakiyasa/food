@@ -1,164 +1,355 @@
-import { useState, useRef } from 'react';
-import { View, Text, Pressable, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useRouter } from 'expo-router';
+import { useRef, useState } from 'react';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import * as ImagePicker from 'expo-image-picker';
+import { CameraView, useCameraPermissions, type CameraType } from 'expo-camera';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { MEAL_TYPES, type MealType } from '@/src/lib/constants';
+import { palette, pressed, radius, shadow, spacing, typography } from '@/src/lib/theme';
 import { useMealStore } from '@/src/stores/mealStore';
 
 export default function CameraModal() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const { mealType } = useLocalSearchParams<{ mealType?: string }>();
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
   const [isCapturing, setIsCapturing] = useState(false);
-  const { setPendingMeal } = useMealStore();
+  const [torchEnabled, setTorchEnabled] = useState(false);
+  const [facing, setFacing] = useState<CameraType>('back');
+  const setPendingMeal = useMealStore((state) => state.setPendingMeal);
+  const selectedMealType = MEAL_TYPES.includes(mealType as MealType)
+    ? mealType as MealType
+    : undefined;
+
+  const openAnalysis = (imageUri: string, imageBase64: string) => {
+    setPendingMeal({
+      imageUri,
+      imageBase64,
+      analysis: null,
+      isAnalyzing: true,
+      error: null,
+      mealType: selectedMealType,
+    });
+    router.replace('/(modals)/meal-detail');
+  };
+
+  const handleCapture = async () => {
+    if (!cameraRef.current || isCapturing) return;
+    setIsCapturing(true);
+    try {
+      const photo = await cameraRef.current.takePictureAsync({ base64: true, quality: 0.72 });
+      if (!photo?.uri || !photo.base64) throw new Error('撮影画像を取得できませんでした');
+      openAnalysis(photo.uri, photo.base64);
+    } catch (error) {
+      Alert.alert('撮影できませんでした', (error as Error).message, [
+        { text: 'もう一度試す' },
+        { text: 'キャンセル', style: 'cancel', onPress: () => router.back() },
+      ]);
+    } finally {
+      setIsCapturing(false);
+    }
+  };
+
+  const handleLibrary = async () => {
+    const libraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!libraryPermission.granted) {
+      Alert.alert('写真へのアクセスが必要です', '設定から写真へのアクセスを許可してください。');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.72,
+      base64: true,
+    });
+    const asset = result.assets?.[0];
+    if (!result.canceled && asset?.uri && asset.base64) {
+      openAnalysis(asset.uri, asset.base64);
+    }
+  };
 
   if (!permission) {
-    return <View style={styles.container} />;
+    return <View style={styles.loading}><ActivityIndicator color={palette.primary} /></View>;
   }
 
   if (!permission.granted) {
     return (
       <View style={styles.permissionContainer}>
+        <View style={styles.permissionIcon}>
+          <FontAwesome name="camera" size={32} color={palette.primary} />
+        </View>
+        <Text style={styles.permissionTitle}>食事を写真で記録</Text>
         <Text style={styles.permissionText}>
-          カメラへのアクセスを許可してください
+          料理を撮影して、AIが食品と栄養を解析します。撮影した写真は食事記録にだけ使用します。
         </Text>
-        <Pressable onPress={requestPermission} style={styles.permissionButton}>
-          <Text style={styles.permissionButtonText}>許可する</Text>
+        <Pressable
+          onPress={requestPermission}
+          style={({ pressed: isPressed }) => [styles.permissionButton, pressed(isPressed)]}
+          accessibilityRole="button"
+          accessibilityLabel="カメラへのアクセスを許可"
+        >
+          <Text style={styles.permissionButtonText}>カメラを許可する</Text>
         </Pressable>
-        <Pressable onPress={() => router.back()} style={styles.cancelButton}>
+        <Pressable
+          onPress={handleLibrary}
+          style={({ pressed: isPressed }) => [styles.libraryPermissionButton, pressed(isPressed)]}
+          accessibilityRole="button"
+        >
+          <Text style={styles.libraryPermissionText}>写真から選ぶ</Text>
+        </Pressable>
+        <Pressable onPress={() => router.back()} style={styles.cancelButton} accessibilityRole="button">
           <Text style={styles.cancelButtonText}>キャンセル</Text>
         </Pressable>
       </View>
     );
   }
 
-  const handleCapture = async () => {
-    if (!cameraRef.current || isCapturing) return;
-
-    setIsCapturing(true);
-    try {
-      const photo = await cameraRef.current.takePictureAsync({
-        base64: true,
-        quality: 0.7,
-      });
-
-      if (photo?.uri && photo?.base64) {
-        setPendingMeal({
-          imageUri: photo.uri,
-          imageBase64: photo.base64,
-          analysis: null,
-          isAnalyzing: true,
-          error: null,
-        });
-        router.replace('/(modals)/meal-detail');
-      }
-    } catch (error) {
-      Alert.alert('エラー', '撮影に失敗しました');
-    } finally {
-      setIsCapturing(false);
-    }
-  };
-
   return (
     <View style={styles.container}>
-      <CameraView ref={cameraRef} style={styles.camera} facing="back">
-        {/* Top bar */}
-        <View style={styles.topBar}>
-          <Pressable onPress={() => router.back()} style={styles.closeButton}>
-            <Text style={styles.closeText}>✕</Text>
-          </Pressable>
-        </View>
+      <CameraView
+        ref={cameraRef}
+        style={StyleSheet.absoluteFill}
+        facing={facing}
+        enableTorch={torchEnabled}
+      />
+      <View style={styles.scrim} pointerEvents="none" />
 
-        {/* Guide text */}
-        <View style={styles.guideContainer}>
-          <Text style={styles.guideText}>食事を撮影してください</Text>
+      <View style={[styles.topBar, { paddingTop: insets.top + spacing.sm }]}>
+        <Pressable
+          onPress={() => router.back()}
+          style={({ pressed: isPressed }) => [styles.roundButton, pressed(isPressed)]}
+          accessibilityRole="button"
+          accessibilityLabel="閉じる"
+        >
+          <FontAwesome name="close" size={20} color="#FFFFFF" />
+        </Pressable>
+        <View style={styles.topCopy} pointerEvents="none">
+          <Text style={styles.cameraTitle}>食事を撮影</Text>
+          <Text style={styles.cameraSubtitle}>お皿全体が枠に入るように</Text>
         </View>
+        <Pressable
+          onPress={() => setTorchEnabled((value) => !value)}
+          style={({ pressed: isPressed }) => [
+            styles.roundButton,
+            torchEnabled && styles.roundButtonActive,
+            pressed(isPressed),
+          ]}
+          accessibilityRole="switch"
+          accessibilityState={{ checked: torchEnabled }}
+          accessibilityLabel="フラッシュ"
+        >
+          <FontAwesome name="bolt" size={20} color={torchEnabled ? palette.ink : '#FFFFFF'} />
+        </Pressable>
+      </View>
 
-        {/* Bottom controls */}
-        <View style={styles.bottomBar}>
-          <Pressable
-            onPress={handleCapture}
-            disabled={isCapturing}
-            style={styles.captureButton}
-          >
-            {isCapturing ? (
-              <ActivityIndicator color="#000" />
-            ) : (
-              <View style={styles.captureInner} />
-            )}
-          </Pressable>
+      <View style={styles.guideWrap} pointerEvents="none">
+        <View style={styles.guideFrame}>
+          <View style={[styles.corner, styles.cornerTL]} />
+          <View style={[styles.corner, styles.cornerTR]} />
+          <View style={[styles.corner, styles.cornerBL]} />
+          <View style={[styles.corner, styles.cornerBR]} />
+          <View style={styles.guidePill}>
+            <FontAwesome name="leaf" size={13} color={palette.primaryDark} />
+            <Text style={styles.guideText}>明るい場所で真上から撮ると正確です</Text>
+          </View>
         </View>
-      </CameraView>
+      </View>
+
+      <View style={[styles.bottomPanel, { paddingBottom: Math.max(insets.bottom, 18) }]}>
+        <Pressable
+          onPress={handleLibrary}
+          style={({ pressed: isPressed }) => [styles.secondaryControl, pressed(isPressed)]}
+          accessibilityRole="button"
+          accessibilityLabel="写真ライブラリから選ぶ"
+        >
+          <FontAwesome name="image" size={21} color="#FFFFFF" />
+          <Text style={styles.controlLabel}>写真</Text>
+        </Pressable>
+
+        <Pressable
+          onPress={handleCapture}
+          disabled={isCapturing}
+          style={({ pressed: isPressed }) => [styles.captureButton, pressed(isPressed)]}
+          accessibilityRole="button"
+          accessibilityLabel="食事を撮影"
+          accessibilityState={{ disabled: isCapturing }}
+        >
+          <View style={styles.captureInner}>
+            {isCapturing && <ActivityIndicator color={palette.primary} />}
+          </View>
+        </Pressable>
+
+        <Pressable
+          onPress={() => setFacing((value) => value === 'back' ? 'front' : 'back')}
+          style={({ pressed: isPressed }) => [styles.secondaryControl, pressed(isPressed)]}
+          accessibilityRole="button"
+          accessibilityLabel="カメラを切り替える"
+        >
+          <FontAwesome name="refresh" size={21} color="#FFFFFF" />
+          <Text style={styles.controlLabel}>切替</Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => router.push(`/(modals)/barcode${selectedMealType ? `?mealType=${selectedMealType}` : ''}` as never)}
+          style={({ pressed: isPressed }) => [styles.barcodePill, pressed(isPressed)]}
+          accessibilityRole="button"
+          accessibilityLabel="バーコードで記録"
+        >
+          <FontAwesome name="barcode" size={18} color={palette.ink} />
+          <Text style={styles.barcodeText}>バーコードで記録</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
-  camera: { flex: 1 },
+  container: { flex: 1, backgroundColor: '#07120E' },
+  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: palette.cream },
+  scrim: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(5,20,15,0.18)' },
   permissionContainer: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: palette.cream,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 32,
+    padding: spacing['3xl'],
   },
-  permissionText: { color: '#fff', fontSize: 18, textAlign: 'center', marginBottom: 24 },
+  permissionIcon: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    backgroundColor: palette.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.xl,
+  },
+  permissionTitle: { ...typography.title1, color: palette.ink, textAlign: 'center' },
+  permissionText: {
+    ...typography.body,
+    color: '#66766F',
+    textAlign: 'center',
+    marginTop: spacing.md,
+    marginBottom: spacing.xl,
+  },
   permissionButton: {
-    backgroundColor: '#22c55e',
-    paddingHorizontal: 32,
-    paddingVertical: 14,
-    borderRadius: 12,
-    marginBottom: 12,
+    minHeight: 52,
+    alignSelf: 'stretch',
+    borderRadius: radius.md,
+    backgroundColor: palette.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...shadow.colored(palette.primary),
   },
-  permissionButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  cancelButton: { padding: 12 },
-  cancelButtonText: { color: '#aaa', fontSize: 16 },
+  permissionButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
+  libraryPermissionButton: { minHeight: 48, justifyContent: 'center', paddingHorizontal: spacing.xl },
+  libraryPermissionText: { color: palette.primaryDark, fontWeight: '700' },
+  cancelButton: { minHeight: 44, justifyContent: 'center', paddingHorizontal: spacing.xl },
+  cancelButtonText: { color: '#66766F', fontWeight: '600' },
   topBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    paddingTop: 60,
-    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.lg,
   },
-  closeButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+  topCopy: { alignItems: 'center' },
+  cameraTitle: { color: '#FFFFFF', fontSize: 21, fontWeight: '800' },
+  cameraSubtitle: { color: 'rgba(255,255,255,0.82)', fontSize: 12, marginTop: 2 },
+  roundButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(7,18,14,0.58)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  closeText: { color: '#fff', fontSize: 20 },
-  guideContainer: {
+  roundButtonActive: { backgroundColor: palette.lemon },
+  guideWrap: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: spacing.xl,
+    paddingTop: 80,
+    paddingBottom: 170,
   },
-  guideText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '500',
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  bottomBar: {
+  guideFrame: {
+    width: '100%',
+    aspectRatio: 1,
     alignItems: 'center',
-    paddingBottom: 50,
+    justifyContent: 'flex-end',
+    paddingBottom: spacing.lg,
   },
+  corner: { position: 'absolute', width: 48, height: 48, borderColor: '#FFFFFF' },
+  cornerTL: { top: 0, left: 0, borderTopWidth: 4, borderLeftWidth: 4, borderTopLeftRadius: radius.lg },
+  cornerTR: { top: 0, right: 0, borderTopWidth: 4, borderRightWidth: 4, borderTopRightRadius: radius.lg },
+  cornerBL: { bottom: 0, left: 0, borderBottomWidth: 4, borderLeftWidth: 4, borderBottomLeftRadius: radius.lg },
+  cornerBR: { bottom: 0, right: 0, borderBottomWidth: 4, borderRightWidth: 4, borderBottomRightRadius: radius.lg },
+  guidePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.full,
+  },
+  guideText: { color: palette.primaryDark, fontSize: 11, fontWeight: '700' },
+  bottomPanel: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    minHeight: 160,
+    backgroundColor: 'rgba(7,18,14,0.78)',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
+    paddingTop: spacing.lg,
+    paddingHorizontal: spacing.xl,
+  },
+  secondaryControl: { width: 58, minHeight: 68, alignItems: 'center', justifyContent: 'center', gap: 5 },
+  controlLabel: { color: '#FFFFFF', fontSize: 11, fontWeight: '600' },
   captureButton: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 4,
-    borderColor: 'rgba(255,255,255,0.5)',
+    width: 78,
+    height: 78,
+    borderRadius: 39,
+    backgroundColor: '#FFFFFF',
+    padding: 5,
+    ...shadow.lg,
   },
   captureInner: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#fff',
+    flex: 1,
+    borderRadius: 34,
+    borderWidth: 3,
+    borderColor: palette.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  barcodePill: {
+    position: 'absolute',
+    bottom: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    backgroundColor: palette.lemon,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.full,
+  },
+  barcodeText: { color: palette.ink, fontSize: 12, fontWeight: '800' },
 });

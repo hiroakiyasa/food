@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { ScrollView, StyleSheet, View, Text, Pressable } from 'react-native';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useProfile } from '@/src/hooks/useProfile';
 import { useMealsByDate } from '@/src/hooks/useMeals';
@@ -40,6 +42,7 @@ export default function HomeScreen() {
   const { focusNutrients } = useActiveConditions();
   const focusValueMap = useFocusNutrientValues(focusNutrients, today);
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const totalCalories = meals.reduce((sum, m) => sum + (m.total_energy_kcal ?? 0), 0);
   const totalProtein = meals.reduce((sum, m) => sum + (m.total_protein_g ?? 0), 0);
@@ -78,29 +81,24 @@ export default function HomeScreen() {
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: c.bg }]}
-      contentContainerStyle={commonStyles.scrollContent}
+      contentContainerStyle={[
+        commonStyles.scrollContent,
+        { paddingTop: insets.top + spacing.md },
+      ]}
       showsVerticalScrollIndicator={false}
     >
       <OfflineIndicator />
-
-      {/* Weekly Calendar Strip */}
-      <WeeklyCalendarStrip
-        selectedDate={today}
-        onSelectDate={() => {}}
-        mealCountByDate={mealCountByDate}
-        isDark={isDark}
-      />
 
       {/* Greeting + Streak */}
       <View style={styles.greetingRow}>
         <View style={{ flex: 1 }}>
           {profile?.display_name ? (
             <>
-              <Text style={[styles.greetingName, { color: c.text }]} numberOfLines={1}>
-                {profile.display_name}さん
-              </Text>
-              <Text style={[styles.greetingSub, { color: c.textSecondary }]} numberOfLines={1}>
+              <Text style={[styles.greetingSub, { color: palette.primary }]} numberOfLines={1}>
                 {greeting}
+              </Text>
+              <Text style={[styles.greetingName, { color: c.text }]} numberOfLines={1}>
+                {profile.display_name}さん！
               </Text>
             </>
           ) : (
@@ -109,8 +107,23 @@ export default function HomeScreen() {
             </Text>
           )}
         </View>
-        <StreakBadge isDark={isDark} />
+        <View style={styles.sunBadge} accessibilityElementsHidden>
+          <FontAwesome name="sun-o" size={34} color="#E9AE18" />
+        </View>
       </View>
+
+      <View style={styles.streakRow}>
+        <StreakBadge isDark={isDark} />
+        <Text style={[styles.streakMessage, { color: c.textSecondary }]}>今日も小さな一歩を続けよう</Text>
+      </View>
+
+      {/* Weekly Calendar Strip */}
+      <WeeklyCalendarStrip
+        selectedDate={today}
+        onSelectDate={() => {}}
+        mealCountByDate={mealCountByDate}
+        isDark={isDark}
+      />
 
       {/* Hero Calorie Card */}
       <HeroCalorieCard
@@ -252,11 +265,27 @@ const styles = StyleSheet.create({
   greetingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
     gap: spacing.sm,
   },
-  greetingName: { ...typography.title1 },
-  greetingSub: { ...typography.body, marginTop: 1 },
+  greetingName: { ...typography.largeTitle, fontSize: 31 },
+  greetingSub: { ...typography.bodyBold, marginBottom: 2 },
+  sunBadge: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: '#FFF0A9',
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...shadow.sm,
+  },
+  streakRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  streakMessage: { ...typography.caption1 },
 
   // Section
   sectionLabel: {

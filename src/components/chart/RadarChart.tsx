@@ -43,8 +43,8 @@ function getPolygonPoint(
 function RadarChartComponent({
   data,
   size = 200,
-  fillColor = '#10B98140',
-  strokeColor = '#10B981',
+  fillColor = '#28A86B40',
+  strokeColor = '#28A86B',
   animated = true,
   isDark,
   showLabels = true,
@@ -53,8 +53,8 @@ function RadarChartComponent({
   const cy = size / 2;
   const chartRadius = size / 2 - (showLabels ? 30 : 10);
   const gridLevels = [0.25, 0.5, 0.75, 1.0];
-  const gridColor = isDark ? '#334155' : '#E2E8F0';
-  const labelColor = isDark ? '#94A3B8' : '#64748B';
+  const gridColor = isDark ? '#334155' : '#E9E5D8';
+  const labelColor = isDark ? '#8D9993' : '#66766F';
   const n = data.length;
 
   const ratios = data.map((d) => Math.min(d.value / d.maxValue, 1.5));

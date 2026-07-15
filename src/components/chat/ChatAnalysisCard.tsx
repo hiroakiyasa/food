@@ -42,7 +42,7 @@ function PFCBar({ label, value, total, color }: { label: string; value: number; 
 const pfcStyles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   label: { width: 14, fontSize: 12, fontWeight: '700' },
-  barBg: { flex: 1, height: 6, borderRadius: 3, backgroundColor: '#E2E8F020', overflow: 'hidden' },
+  barBg: { flex: 1, height: 6, borderRadius: 3, backgroundColor: '#E9E5D820', overflow: 'hidden' },
   barFill: { height: '100%', borderRadius: 3 },
   value: { width: 52, fontSize: 11, fontWeight: '600', textAlign: 'right' },
 });
@@ -73,7 +73,7 @@ export function ChatAnalysisCard({
     <View style={[styles.container, shadow.lg]}>
       {/* Gradient header */}
       <LinearGradient
-        colors={isDark ? ['#059669', '#10B981'] : ['#10B981', '#34D399']}
+        colors={isDark ? ['#145C43', '#28A86B'] : ['#28A86B', '#34D399']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}

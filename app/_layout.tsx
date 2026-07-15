@@ -11,11 +11,11 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { useAuth } from '@/src/hooks/useAuth';
-import { useCurrentLocationSetup } from '@/src/hooks/useCurrentLocation';
 import { useProfile } from '@/src/hooks/useProfile';
 import { useNotificationSetup } from '@/src/hooks/useNotifications';
 import { usePurchaseSetup } from '@/src/hooks/usePurchases';
 import { isGuestModeEnabled } from '@/src/lib/guestMode';
+import { palette } from '@/src/lib/theme';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -48,7 +48,6 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
   useNotificationSetup();
   usePurchaseSetup();
-  useCurrentLocationSetup();
 
   useEffect(() => {
     let mounted = true;
@@ -118,11 +117,36 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const navigationTheme = isDark
+    ? DarkTheme
+    : {
+        ...DefaultTheme,
+        colors: {
+          ...DefaultTheme.colors,
+          primary: palette.primary,
+          background: palette.cream,
+          card: palette.cream,
+          text: palette.ink,
+          border: '#E9E5D8',
+          notification: palette.apricot,
+        },
+      };
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={navigationTheme}>
       <AuthGate>
-        <Stack>
+        <Stack
+          screenOptions={{
+            headerStyle: { backgroundColor: isDark ? '#0F172A' : palette.cream },
+            headerTintColor: isDark ? '#F1F5F9' : palette.ink,
+            headerTitleStyle: { fontSize: 19, fontWeight: '800' },
+            headerTitleAlign: 'center',
+            headerShadowVisible: false,
+            headerBackButtonDisplayMode: 'minimal',
+            contentStyle: { backgroundColor: isDark ? '#0F172A' : palette.cream },
+          }}
+        >
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="auth" options={{ headerShown: false }} />
           <Stack.Screen
@@ -188,6 +212,18 @@ function RootLayoutNav() {
           <Stack.Screen
             name="(modals)/condition-select"
             options={{ presentation: 'modal', title: '栄養管理条件' }}
+          />
+          <Stack.Screen
+            name="(modals)/meal-plan"
+            options={{ presentation: 'modal', title: '週間食事プラン' }}
+          />
+          <Stack.Screen
+            name="(modals)/fasting-setup"
+            options={{ presentation: 'modal', title: '食事時間の設定' }}
+          />
+          <Stack.Screen
+            name="(modals)/cycle-setup"
+            options={{ presentation: 'modal', title: '月経周期と栄養' }}
           />
         </Stack>
       </AuthGate>

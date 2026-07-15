@@ -64,9 +64,9 @@ interface MealTypeRowProps {
 function MealTypeRow({ mealType, mealsForType, isDark, isLast }: MealTypeRowProps) {
   const router = useRouter();
   const textColor = isDark ? '#F1F5F9' : '#0F172A';
-  const textMuted = isDark ? '#64748B' : '#94A3B8';
+  const textMuted = isDark ? '#66766F' : '#8D9993';
   const surface = isDark ? '#1E293B' : '#FFFFFF';
-  const lineColor = isDark ? '#334155' : '#E2E8F0';
+  const lineColor = isDark ? '#334155' : '#E9E5D8';
   const emoji = MEAL_EMOJIS[mealType];
   const hasData = mealsForType.length > 0;
 
@@ -178,7 +178,7 @@ function MealTypeRow({ mealType, mealsForType, isDark, isLast }: MealTypeRowProp
             style={({ pressed: p }) => [
               styles.placeholderRow,
               {
-                borderColor: isDark ? '#334155' : '#E2E8F0',
+                borderColor: isDark ? '#334155' : '#E9E5D8',
               },
               pressed(p),
             ]}
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 10,
-    backgroundColor: '#D1FAE5',
+    backgroundColor: '#DDF3E6',
     alignItems: 'center',
     justifyContent: 'center',
   },

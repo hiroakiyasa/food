@@ -4,7 +4,7 @@ import {
   TextInput, ScrollView, ActivityIndicator, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { supabase } from '@/src/lib/supabase';
 import { useCreateMeal } from '@/src/hooks/useMeals';
 import {
@@ -63,6 +63,7 @@ function NutritionRow({ label, value, unit }: { label: string; value: number | n
 
 export default function BarcodeModal() {
   const router = useRouter();
+  const { mealType: requestedMealType } = useLocalSearchParams<{ mealType?: string }>();
   const isDark = useColorScheme() === 'dark';
   const c = useThemeColors(isDark);
   const [permission, requestPermission] = useCameraPermissions();
@@ -72,7 +73,11 @@ export default function BarcodeModal() {
   const [loading, setLoading] = useState(false);
   const [portionGrams, setPortionGrams] = useState(100);
   const [customPortion, setCustomPortion] = useState('');
-  const [mealType, setMealType] = useState<MealType>('lunch');
+  const [mealType, setMealType] = useState<MealType>(() =>
+    MEAL_TYPES.some((item) => item.value === requestedMealType)
+      ? requestedMealType as MealType
+      : 'lunch',
+  );
   const createMeal = useCreateMeal();
 
   if (!permission?.granted) {
@@ -475,9 +480,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 6,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#E2E8F0',
+    borderTopColor: '#E9E5D8',
   },
-  nutritionLabel: { ...typography.body, color: '#64748B' },
+  nutritionLabel: { ...typography.body, color: '#66766F' },
   nutritionValue: { ...typography.body, fontWeight: '600', color: '#0F172A' },
 
   // Portion

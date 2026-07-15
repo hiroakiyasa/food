@@ -59,7 +59,9 @@
         {
           "locationWhenInUsePermission": "現在地に合わせて地域情報を設定するために位置情報を使用します"
         }
-      ]
+      ],
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

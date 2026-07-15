@@ -209,17 +209,17 @@ function ElementFountainCard({
       />
 
       <View style={styles.fountainHead}>
-        <Text style={[styles.fountainLabel, { color: isDark ? '#E2E8F0' : '#0F172A' }]}>
+        <Text style={[styles.fountainLabel, { color: isDark ? '#E9E5D8' : '#0F172A' }]}>
           {element.icon} {element.labelJa}
         </Text>
-        <Text style={[styles.fountainPct, { color: isDark ? '#E2E8F0' : '#0F172A' }]}>
+        <Text style={[styles.fountainPct, { color: isDark ? '#E9E5D8' : '#0F172A' }]}>
           {Math.round(element.clampedRatio * 100)}%
         </Text>
       </View>
 
       <View style={styles.bowlShell}>
         <Animated.View style={[styles.bowlGlow, { backgroundColor: element.color }, glowStyle]} />
-        <View style={[styles.bowlBase, { backgroundColor: isDark ? '#0F172A' : '#E2E8F0' }]}>
+        <View style={[styles.bowlBase, { backgroundColor: isDark ? '#0F172A' : '#E9E5D8' }]}>
           <Animated.View style={[styles.bowlLiquid, { backgroundColor: element.color }, liquidStyle]} />
         </View>
       </View>
@@ -227,7 +227,7 @@ function ElementFountainCard({
       <Text style={[styles.fountainStateText, { color: isDark ? '#CBD5E1' : '#334155' }]}>
         {stateText}
       </Text>
-      <Text style={[styles.fountainNutrients, { color: isDark ? '#94A3B8' : '#475569' }]} numberOfLines={2}>
+      <Text style={[styles.fountainNutrients, { color: isDark ? '#8D9993' : '#475569' }]} numberOfLines={2}>
         {nutrientsText}
       </Text>
     </View>
@@ -267,7 +267,7 @@ export default function NutritionBalanceModal() {
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFillObject}
       />
-      <View style={[styles.bgOrb, styles.bgOrbTop, { backgroundColor: isDark ? '#10B98122' : '#22C55E30' }]} />
+      <View style={[styles.bgOrb, styles.bgOrbTop, { backgroundColor: isDark ? '#28A86B22' : '#22C55E30' }]} />
       <View style={[styles.bgOrb, styles.bgOrbBottom, { backgroundColor: isDark ? '#0EA5E922' : '#38BDF830' }]} />
 
       <ScrollView
@@ -378,7 +378,7 @@ export default function NutritionBalanceModal() {
                           backgroundColor: reached
                             ? isDark
                               ? '#14532D'
-                              : '#D1FAE5'
+                              : '#DDF3E6'
                             : isDark
                               ? '#1E293B'
                               : '#F1F5F9',

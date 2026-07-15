@@ -17,8 +17,8 @@ function FastingTimerCardComponent({ isDark }: FastingTimerCardProps) {
 
   const surface = isDark ? '#1E293B' : '#FFFFFF';
   const textColor = isDark ? '#F1F5F9' : '#0F172A';
-  const textMuted = isDark ? '#64748B' : '#94A3B8';
-  const borderColor = isDark ? '#334155' : '#E2E8F0';
+  const textMuted = isDark ? '#66766F' : '#8D9993';
+  const borderColor = isDark ? '#334155' : '#E9E5D8';
 
   // 断食機能が無効で、かつアクティブセッションもない場合は非表示
   if (!isEnabled && !isActive) return null;

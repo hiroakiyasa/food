@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { AIFoodAnalysis } from '@/src/types/nutrition';
+import type { MealType } from '@/src/lib/constants';
 
 interface PendingMeal {
   imageUri: string;
@@ -7,6 +8,7 @@ interface PendingMeal {
   analysis: AIFoodAnalysis | null;
   isAnalyzing: boolean;
   error: string | null;
+  mealType?: MealType;
 }
 
 interface MealState {

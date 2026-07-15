@@ -247,7 +247,9 @@ export default function MealDetailModal() {
   const user = useAuthStore((s) => s.user);
   const { pendingMeal, setAnalysis, setError, clearPending } = useMealStore();
   const createMeal = useCreateMeal();
-  const [selectedMealType, setSelectedMealType] = useState<MealType>('lunch');
+  const [selectedMealType, setSelectedMealType] = useState<MealType>(
+    () => pendingMeal?.mealType ?? 'lunch',
+  );
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -263,7 +265,7 @@ export default function MealDetailModal() {
       });
       if (error) throw error;
       setAnalysis(data);
-      if (data.meal_type_guess) {
+      if (!pendingMeal?.mealType && data.meal_type_guess) {
         const guess = data.meal_type_guess as MealType;
         if (MEAL_TYPES.includes(guess)) {
           setSelectedMealType(guess);

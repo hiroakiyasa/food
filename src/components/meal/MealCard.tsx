@@ -25,7 +25,7 @@ export function MealCard({ meal, onPress, isDark = false }: MealCardProps) {
   const trafficColor = TRAFFIC_COLORS[meal.traffic_light_overall ?? ''] ?? null;
   const surfaceBg = isDark ? '#1E293B' : '#FFFFFF';
   const textColor = isDark ? '#F1F5F9' : '#0F172A';
-  const mutedColor = isDark ? '#94A3B8' : '#64748B';
+  const mutedColor = isDark ? '#8D9993' : '#66766F';
 
   // Fallback: if no meal image, fetch from Unsplash using first item name
   const firstItemName = meal.meal_items?.[0]?.ai_detected_name ?? null;
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   imagePlaceholder: {
     width: 80,
     height: 80,
-    backgroundColor: '#D1FAE5',
+    backgroundColor: '#DDF3E6',
     alignItems: 'center',
     justifyContent: 'center',
   },

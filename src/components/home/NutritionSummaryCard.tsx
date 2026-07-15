@@ -39,7 +39,7 @@ function NutritionSummaryCardComponent({
 }: NutritionSummaryCardProps) {
   const router = useRouter();
   const surface = isDark ? '#1E293B' : '#FFFFFF';
-  const textSecondary = isDark ? '#94A3B8' : '#64748B';
+  const textSecondary = isDark ? '#8D9993' : '#66766F';
 
   const proteinRatio = proteinTarget > 0 ? protein / proteinTarget : 0;
   const fatRatio = fatTarget > 0 ? fat / fatTarget : 0;

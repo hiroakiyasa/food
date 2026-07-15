@@ -191,7 +191,7 @@ export default function FastingSetupModal() {
             スケジュールプレビュー
           </Text>
           <View style={styles.previewRow}>
-            <View style={[styles.previewDot, { backgroundColor: '#64748B' }]} />
+            <View style={[styles.previewDot, { backgroundColor: '#66766F' }]} />
             <Text style={[typography.body, { color: c.text }]}>
               断食開始{' '}
               <Text style={{ fontWeight: '700' }}>

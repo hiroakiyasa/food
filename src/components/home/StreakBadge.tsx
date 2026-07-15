@@ -25,7 +25,7 @@ function StreakBadgeComponent({ isDark, onPress }: StreakBadgeProps) {
         onPress={onPress}
         style={({ pressed: p }) => [
           styles.badge,
-          { backgroundColor: isDark ? '#1E293B' : '#F0FDF4', borderColor: isDark ? '#334155' : '#D1FAE5', borderWidth: 1 },
+          { backgroundColor: isDark ? '#1E293B' : '#F0FDF4', borderColor: isDark ? '#334155' : '#DDF3E6', borderWidth: 1 },
           pressed(p),
         ]}
         accessibilityRole="button"

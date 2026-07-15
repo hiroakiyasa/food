@@ -39,9 +39,9 @@ function NutrientBarComponent({
   isDark,
   isEstimated,
 }: NutrientBarProps) {
-  const barBg = isDark ? '#334155' : '#E2E8F0';
+  const barBg = isDark ? '#334155' : '#E9E5D8';
   const textColor = isDark ? '#F1F5F9' : '#0F172A';
-  const textMuted = isDark ? '#64748B' : '#94A3B8';
+  const textMuted = isDark ? '#66766F' : '#8D9993';
   const adequateZoneBg = isDark ? '#22C55E10' : '#22C55E15';
   const sc = STATUS_CONFIG[status];
 
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: 1.5,
-    backgroundColor: '#64748B40',
+    backgroundColor: '#66766F40',
     zIndex: 1,
   },
   barFill: {

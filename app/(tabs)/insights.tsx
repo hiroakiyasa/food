@@ -12,6 +12,7 @@ import { AchievementShowcase } from '@/src/components/insights/AchievementShowca
 import { SleepInsightCard } from '@/src/components/insights/SleepInsightCard';
 import { CarbonFootprintCard } from '@/src/components/insights/CarbonFootprintCard';
 import { LineChart, BarChart } from 'react-native-gifted-charts';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { formatDate } from '@/src/utils/formatters';
 import {
   palette, typography, spacing, radius,
@@ -68,7 +69,7 @@ export default function InsightsScreen() {
 
   const hasData = summaries.length > 0;
   const chartLabelStyle = { fontSize: 9, color: c.textMuted };
-  const rulesColor = isDark ? '#334155' : '#E2E8F0';
+  const rulesColor = isDark ? '#334155' : '#E9E5D8';
 
   const proteinTarget = nutritionTargets?.protein_g ?? 60;
   const fatTarget = nutritionTargets?.fat_g ?? 55;
@@ -109,9 +110,14 @@ export default function InsightsScreen() {
 
       {!hasData ? (
         <View style={[commonStyles.card, styles.emptyCard, { backgroundColor: c.surface }]}>
-          <Text style={[styles.emptyIcon, { color: c.textMuted }]}>~</Text>
+          <View style={styles.emptyIcon}>
+            <FontAwesome name="bar-chart" size={28} color={palette.sky} />
+          </View>
+          <Text style={[typography.title2, { color: c.text, textAlign: 'center' }]}>
+            あなたの変化を育てよう
+          </Text>
           <Text style={[typography.body, { color: c.textSecondary, textAlign: 'center' }]}>
-            食事を記録するとグラフが表示されます
+            食事を記録すると、栄養バランスやスコアの変化を楽しく振り返れます
           </Text>
         </View>
       ) : (
@@ -292,7 +298,14 @@ const styles = StyleSheet.create({
     paddingVertical: spacing['4xl'],
     gap: spacing.md,
   },
-  emptyIcon: { fontSize: 36, fontWeight: '300' },
+  emptyIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: palette.accentLight,
+  },
   chartTitle: { ...commonStyles.sectionHeader },
   legend: {
     flexDirection: 'row',

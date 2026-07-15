@@ -46,11 +46,11 @@ export function ScoreBreakdownSheet({
   foodName,
   isDark,
 }: ScoreBreakdownSheetProps) {
-  const bg = isDark ? '#0F172A' : '#F8FAFC';
+  const bg = isDark ? '#0F172A' : '#FFF9EC';
   const surface = isDark ? '#1E293B' : '#FFFFFF';
   const textColor = isDark ? '#F1F5F9' : '#0F172A';
-  const mutedColor = isDark ? '#64748B' : '#94A3B8';
-  const borderColor = isDark ? '#334155' : '#E2E8F0';
+  const mutedColor = isDark ? '#66766F' : '#8D9993';
+  const borderColor = isDark ? '#334155' : '#E9E5D8';
 
   const gradeColor = GRADE_COLORS[score.grade];
   const gradeBg = GRADE_BG_COLORS[score.grade];

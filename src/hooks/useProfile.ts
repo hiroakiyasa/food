@@ -6,9 +6,6 @@ import type { Database } from '@/src/types/database';
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type ProfileUpdate = Database['public']['Tables']['profiles']['Update'];
 
-// TODO: Remove before production release
-const FORCE_PREMIUM_FOR_TESTING = true;
-
 export function useProfile() {
   const user = useAuthStore((s) => s.user);
 
@@ -22,9 +19,6 @@ export function useProfile() {
         .eq('user_id', user.id)
         .single();
       if (error && error.code !== 'PGRST116') throw error;
-      if (data && FORCE_PREMIUM_FOR_TESTING) {
-        return { ...data, is_premium: true } as Profile;
-      }
       return data as Profile | null;
     },
     enabled: !!user,

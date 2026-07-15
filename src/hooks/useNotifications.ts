@@ -2,10 +2,8 @@ import { useEffect, useRef } from 'react';
 import * as Notifications from 'expo-notifications';
 import type { EventSubscription } from 'expo-modules-core';
 import { useRouter } from 'expo-router';
-import { useAuthStore } from '@/src/stores/authStore';
 import { useNotificationStore } from '@/src/stores/notificationStore';
 import {
-  registerForPushNotifications,
   scheduleMealReminder,
   cancelMealReminder,
 } from '@/src/services/notifications/notificationService';
@@ -16,15 +14,10 @@ function parseTime(time: string): { hour: number; minute: number } {
 }
 
 export function useNotificationSetup() {
-  const user = useAuthStore((s) => s.user);
   const router = useRouter();
   const responseListener = useRef<EventSubscription | null>(null);
 
   useEffect(() => {
-    if (!user) return;
-
-    registerForPushNotifications(user.id).catch(() => {});
-
     responseListener.current = Notifications.addNotificationResponseReceivedListener(() => {
       router.push('/(tabs)');
     });
@@ -32,7 +25,7 @@ export function useNotificationSetup() {
     return () => {
       responseListener.current?.remove();
     };
-  }, [user, router]);
+  }, [router]);
 }
 
 export function useNotificationPreferences() {

@@ -48,14 +48,14 @@ const TOTAL_STEPS = 7;
 // Design tokens
 const colors = {
   bg: '#FFFFFF',
-  surface: '#F8FAFC',
-  border: '#E2E8F0',
+  surface: '#FFF9EC',
+  border: '#E9E5D8',
   primary: '#1E293B',
   accent: '#3B82F6',
   accentLight: '#EFF6FF',
   textPrimary: '#0F172A',
-  textSecondary: '#64748B',
-  textTertiary: '#94A3B8',
+  textSecondary: '#66766F',
+  textTertiary: '#8D9993',
   danger: '#EF4444',
 };
 

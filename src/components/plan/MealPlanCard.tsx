@@ -20,7 +20,7 @@ const MEAL_LABELS: Record<string, string> = {
 
 const MEAL_COLORS: Record<string, string> = {
   breakfast: '#F59E0B',
-  lunch: '#10B981',
+  lunch: '#28A86B',
   dinner: '#6366F1',
   snack: '#F97316',
 };

@@ -1,44 +1,44 @@
-import React, { useMemo } from 'react';
-import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
+import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useRouter } from 'expo-router';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+
 import { MEAL_TYPE_LABELS, type MealType } from '@/src/lib/constants';
-import {
-  palette, typography, spacing, radius, shadow,
-  commonStyles, pressed,
-} from '@/src/lib/theme';
 import { useMealItemThumb } from '@/src/hooks/useMealItemImage';
-import { FoodScoreChip } from '@/src/components/meal/FoodScoreChip';
-import { calculateMealScore, type FoodScoreInput } from '@/src/services/nutrition/foodScoreCalculator';
+import { palette, pressed, radius, shadow, spacing, typography } from '@/src/lib/theme';
 import type { Database } from '@/src/types/database';
 
 type Meal = Database['public']['Tables']['meals']['Row'];
 type MealItem = Database['public']['Tables']['meal_items']['Row'];
 type MealWithItems = Meal & { meal_items: MealItem[] };
-
 type FAIcon = React.ComponentProps<typeof FontAwesome>['name'];
-const MEAL_TYPE_ICONS: Record<string, FAIcon> = {
-  breakfast: 'sun-o',
-  lunch: 'sun-o',
-  dinner: 'moon-o',
-  snack: 'star-o',
+
+const MEAL_META: Record<MealType, { icon: FAIcon; color: string; soft: string }> = {
+  breakfast: { icon: 'sun-o', color: '#E9AE18', soft: '#FFF4B8' },
+  lunch: { icon: 'sun-o', color: palette.apricot, soft: '#FFE1D2' },
+  dinner: { icon: 'moon-o', color: '#5F76D7', soft: '#E3E8FF' },
+  snack: { icon: 'coffee', color: palette.berry, soft: '#FCE2EC' },
 };
 
-function MealRowThumb({ name }: { name: string }) {
-  const { data: url } = useMealItemThumb(name);
+function MealPhoto({ meal }: { meal: MealWithItems }) {
+  const firstName = meal.meal_items?.[0]?.ai_detected_name ?? meal.meal_type;
+  const { data: thumbnail } = useMealItemThumb(firstName);
+  const uri = meal.image_url ?? thumbnail;
 
-  if (!url) {
+  if (!uri) {
     return (
-      <View style={styles.rowThumbPlaceholder}>
-        <FontAwesome name="cutlery" size={10} color={palette.primaryDark} />
+      <View style={styles.photoPlaceholder}>
+        <FontAwesome name="cutlery" size={24} color={palette.primaryDark} />
       </View>
     );
   }
 
   return (
     <Image
-      source={{ uri: url }}
-      style={styles.rowThumb}
+      source={{ uri }}
+      style={styles.photo}
+      resizeMode="cover"
+      accessibilityLabel={`${firstName}の食事写真`}
       accessibilityIgnoresInvertColors
     />
   );
@@ -53,120 +53,90 @@ interface MealSectionCardProps {
 
 function MealSectionCardComponent({ mealType, meals, onAdd, isDark }: MealSectionCardProps) {
   const router = useRouter();
+  const meta = MEAL_META[mealType];
   const surface = isDark ? '#1E293B' : '#FFFFFF';
-  const textColor = isDark ? '#F1F5F9' : '#0F172A';
-  const textMuted = isDark ? '#64748B' : '#94A3B8';
-  const dividerColor = isDark ? '#334155' : '#E2E8F0';
-
-  const totalKcal = meals.reduce((sum, m) => sum + (m.total_energy_kcal ?? 0), 0);
-  const icon = MEAL_TYPE_ICONS[mealType] ?? 'cutlery';
-
-  // 全食事の平均スコアを計算
-  const sectionScore = useMemo(() => {
-    const allItems = meals.flatMap((m) => m.meal_items ?? []);
-    if (allItems.length === 0) return null;
-    const inputs: FoodScoreInput[] = allItems.map((item) => ({
-      energy_kcal: item.energy_kcal,
-      protein_g: item.protein_g,
-      fat_g: item.fat_g,
-      carbohydrate_g: item.carbohydrate_g,
-      fiber_g: item.fiber_g,
-      sodium_mg: item.sodium_mg,
-      portion_grams: item.portion_grams,
-    }));
-    return calculateMealScore(inputs);
-  }, [meals]);
+  const text = isDark ? '#F1F5F9' : palette.ink;
+  const muted = isDark ? '#8D9993' : '#66766F';
+  const totalKcal = meals.reduce((sum, meal) => sum + (meal.total_energy_kcal ?? 0), 0);
 
   return (
-    <View style={[styles.card, { backgroundColor: surface }, shadow.sm]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <View style={[styles.iconWrap, { backgroundColor: palette.primaryMuted }]}>
-            <FontAwesome name={icon} size={18} color={palette.primary} />
-          </View>
-          <Text style={[typography.title3, { color: textColor }]}>
-            {MEAL_TYPE_LABELS[mealType]}
-          </Text>
-          {meals.length > 0 && (
-            <View style={styles.kcalRow}>
-              {sectionScore && (
-                <FoodScoreChip grade={sectionScore.grade} compact size="sm" />
-              )}
-              <Text style={[typography.title3, { color: palette.primary }]}>
-                {Math.round(totalKcal)} kcal
-              </Text>
-            </View>
-          )}
+    <View style={styles.section}>
+      <View style={styles.timelineColumn}>
+        <View style={[styles.iconCircle, { backgroundColor: meta.soft }]}>
+          <FontAwesome name={meta.icon} size={24} color={meta.color} />
         </View>
-        <Pressable
-          onPress={onAdd}
-          style={({ pressed: p }) => [styles.addButton, pressed(p)]}
-          accessibilityRole="button"
-          accessibilityLabel={`${MEAL_TYPE_LABELS[mealType]}を追加`}
-        >
-          <Text style={styles.addButtonText}>+ 追加</Text>
-        </Pressable>
+        <Text style={[styles.mealLabel, { color: text }]}>{MEAL_TYPE_LABELS[mealType]}</Text>
+        {mealType !== 'dinner' && <View style={styles.timeline} />}
       </View>
 
-      {/* Items */}
-      {meals.length === 0 ? (
-        <Pressable
-          onPress={onAdd}
-          style={({ pressed: p }) => [
-            styles.emptyRow,
-            { borderColor: isDark ? '#334155' : '#E2E8F0' },
-            pressed(p),
-          ]}
-          accessibilityRole="button"
-          accessibilityLabel={`${MEAL_TYPE_LABELS[mealType]}を記録する`}
-        >
-          <Text style={[typography.caption1, { color: palette.primary, fontWeight: '600' }]}>
-            📷 写真で記録
-          </Text>
-          <Text style={[typography.caption1, { color: textMuted }]}>|</Text>
-          <Text style={[typography.caption1, { color: palette.primary, fontWeight: '600' }]}>
-            🔍 食品を検索
-          </Text>
-        </Pressable>
-      ) : (
-        meals.map((meal) => (
+      <View style={styles.cardsColumn}>
+        {meals.length === 0 ? (
           <Pressable
-            key={meal.id}
-            style={({ pressed: p }) => [
-              styles.mealRow,
-              { borderTopColor: dividerColor },
-              pressed(p),
+            onPress={onAdd}
+            style={({ pressed: isPressed }) => [
+              styles.emptyCard,
+              { backgroundColor: surface, borderColor: isDark ? '#475569' : palette.accent },
+              pressed(isPressed),
             ]}
-            onPress={() => router.push(`/(modals)/meal-detail?id=${meal.id}`)}
             accessibilityRole="button"
+            accessibilityLabel={`${MEAL_TYPE_LABELS[mealType]}を記録する`}
           >
-            <MealRowThumb
-              name={meal.meal_items?.[0]?.ai_detected_name ?? meal.meal_type}
-            />
-            <View style={styles.mealInfo}>
-              <Text style={[typography.body, { color: textColor }]} numberOfLines={1}>
-                {meal.meal_items?.map((i) => i.ai_detected_name).join(', ') || '食事'}
-              </Text>
-              <View style={styles.pfcRow}>
-                <Text style={[styles.pfcText, { color: palette.protein }]}>
-                  P{(meal.total_protein_g ?? 0).toFixed(0)}g
-                </Text>
-                <Text style={[styles.pfcText, { color: palette.fat }]}>
-                  F{(meal.total_fat_g ?? 0).toFixed(0)}g
-                </Text>
-                <Text style={[styles.pfcText, { color: palette.carbs }]}>
-                  C{(meal.total_carbohydrate_g ?? 0).toFixed(0)}g
-                </Text>
-              </View>
+            <View style={[styles.emptyIllustration, { backgroundColor: meta.soft }]}>
+              <FontAwesome name={meta.icon} size={26} color={meta.color} />
             </View>
-            <Text style={[typography.bodyBold, { color: textColor }]}>
-              {Math.round(meal.total_energy_kcal ?? 0)}
-              <Text style={[typography.caption2, { color: textMuted }]}> kcal</Text>
-            </Text>
+            <View style={styles.emptyCopy}>
+              <Text style={[styles.emptyTitle, { color: text }]}>まだ記録がありません</Text>
+              <Text style={[styles.emptyHint, { color: muted }]}>タップして追加しましょう</Text>
+            </View>
+            <View style={styles.arrowCircle}>
+              <FontAwesome name="chevron-right" size={14} color="#278DC8" />
+            </View>
           </Pressable>
-        ))
-      )}
+        ) : (
+          meals.map((meal) => (
+            <Pressable
+              key={meal.id}
+              onPress={() => router.push(`/(modals)/meal-detail?id=${meal.id}`)}
+              style={({ pressed: isPressed }) => [
+                styles.mealCard,
+                { backgroundColor: surface },
+                pressed(isPressed),
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel={`${MEAL_TYPE_LABELS[mealType]} ${Math.round(meal.total_energy_kcal ?? 0)}キロカロリー、詳細を見る`}
+            >
+              <MealPhoto meal={meal} />
+              <View style={styles.mealContent}>
+                <Text style={[styles.mealNames, { color: text }]} numberOfLines={2}>
+                  {meal.meal_items?.map((item) => item.ai_detected_name).filter(Boolean).join('、') || '食事'}
+                </Text>
+                <View style={styles.kcalRow}>
+                  <Text style={[styles.kcalNumber, { color: palette.primaryDark }]}>
+                    {Math.round(meal.total_energy_kcal ?? 0)}
+                  </Text>
+                  <Text style={[styles.kcalUnit, { color: text }]}>kcal</Text>
+                </View>
+              </View>
+              <View style={styles.completeCircle}>
+                <FontAwesome name="check" size={20} color="#FFFFFF" />
+              </View>
+            </Pressable>
+          ))
+        )}
+
+        {meals.length > 0 && (
+          <Pressable
+            onPress={onAdd}
+            style={({ pressed: isPressed }) => [styles.addAnother, pressed(isPressed)]}
+            accessibilityRole="button"
+            accessibilityLabel={`${MEAL_TYPE_LABELS[mealType]}を追加`}
+          >
+            <FontAwesome name="plus-circle" size={16} color={palette.primary} />
+            <Text style={styles.addAnotherText}>もう1件追加</Text>
+            <Text style={[styles.totalText, { color: muted }]}>合計 {Math.round(totalKcal)} kcal</Text>
+          </Pressable>
+        )}
+      </View>
     </View>
   );
 }
@@ -174,85 +144,138 @@ function MealSectionCardComponent({ mealType, meals, onAdd, isDark }: MealSectio
 export const MealSectionCard = React.memo(MealSectionCardComponent);
 
 const styles = StyleSheet.create({
-  card: {
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    marginBottom: spacing.md,
-  },
-  header: {
+  section: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'stretch',
     marginBottom: spacing.sm,
   },
-  headerLeft: {
-    flexDirection: 'row',
+  timelineColumn: {
+    width: 68,
     alignItems: 'center',
+  },
+  iconCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mealLabel: {
+    marginTop: 5,
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  timeline: {
+    flex: 1,
+    minHeight: 18,
+    marginTop: 6,
+    borderLeftWidth: 3,
+    borderStyle: 'dotted',
+    borderColor: '#DDD7C9',
+  },
+  cardsColumn: {
+    flex: 1,
     gap: spacing.sm,
+    paddingBottom: spacing.md,
   },
-  iconWrap: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addButton: {
-    backgroundColor: palette.primary,
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: radius.full,
-    minHeight: 34,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addButtonText: { color: palette.white, ...typography.caption1 },
-  mealRow: {
+  mealCard: {
+    minHeight: 118,
+    borderRadius: radius.lg,
+    padding: spacing.sm,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: spacing.md,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    gap: spacing.sm,
-  },
-  emptyRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     gap: spacing.md,
-    paddingVertical: spacing.md,
+    ...shadow.md,
+  },
+  photo: {
+    width: 112,
+    height: 94,
     borderRadius: radius.md,
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    marginTop: spacing.xs,
   },
-  rowThumb: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-  },
-  rowThumbPlaceholder: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: '#D1FAE5',
+  photoPlaceholder: {
+    width: 112,
+    height: 94,
+    borderRadius: radius.md,
+    backgroundColor: palette.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  mealContent: {
+    flex: 1,
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    gap: spacing.xs,
+  },
+  mealNames: {
+    ...typography.caption1,
+    lineHeight: 18,
   },
   kcalRow: {
     flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 4,
+  },
+  kcalNumber: {
+    fontSize: 34,
+    lineHeight: 38,
+    fontWeight: '800',
+    fontVariant: ['tabular-nums'],
+  },
+  kcalUnit: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  completeCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#63C956',
     alignItems: 'center',
-    gap: 6,
+    justifyContent: 'center',
   },
-  mealInfo: {
-    flex: 1,
-    gap: 3,
-  },
-  pfcRow: {
+  emptyCard: {
+    minHeight: 104,
+    borderRadius: radius.lg,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    padding: spacing.md,
     flexDirection: 'row',
+    alignItems: 'center',
     gap: spacing.md,
   },
-  pfcText: {
-    ...typography.caption2,
-    fontWeight: '600',
+  emptyIllustration: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyCopy: { flex: 1, gap: 3 },
+  emptyTitle: { ...typography.bodyBold },
+  emptyHint: { ...typography.caption1 },
+  arrowCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: palette.accentLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addAnother: {
+    minHeight: 36,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: spacing.sm,
+  },
+  addAnotherText: {
+    color: palette.primary,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  totalText: {
+    marginLeft: 'auto',
+    fontSize: 11,
+    fontWeight: '500',
   },
 });

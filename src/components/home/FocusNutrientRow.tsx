@@ -23,8 +23,8 @@ function FocusNutrientRowComponent({ nutrient, valueData, isDark, onPress }: Foc
   const isIncrease = nutrient.action === 'increase';
   const actionColor = isIncrease ? palette.success : palette.warning;
   const textColor = isDark ? '#F1F5F9' : '#0F172A';
-  const textMuted = isDark ? '#64748B' : '#94A3B8';
-  const barBg = isDark ? '#334155' : '#E2E8F0';
+  const textMuted = isDark ? '#66766F' : '#8D9993';
+  const barBg = isDark ? '#334155' : '#E9E5D8';
   const priorityColor = PRIORITY_COLOR[nutrient.priority] ?? PRIORITY_COLOR.Low;
 
   // Short name (first word before space/paren)

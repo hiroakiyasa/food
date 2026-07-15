@@ -27,7 +27,7 @@ function CameraFAB() {
       accessibilityRole="button"
       accessibilityLabel="写真で食事を記録"
     >
-      <FontAwesome name="camera" size={22} color={palette.white} />
+      <FontAwesome name="camera" size={24} color={palette.white} />
     </Pressable>
   );
 }
@@ -40,11 +40,13 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: palette.primary,
-        tabBarInactiveTintColor: isDark ? '#64748B' : '#94A3B8',
+        tabBarInactiveTintColor: isDark ? '#8D9993' : '#486259',
         headerShown: true,
         headerStyle: { backgroundColor: c.bg },
         headerTintColor: c.text,
         headerShadowVisible: false,
+        headerTitleAlign: 'center',
+        headerTitleStyle: styles.headerTitle,
         tabBarStyle: [styles.tabBar, {
           backgroundColor: c.tabBar,
           borderTopColor: c.tabBarBorder,
@@ -56,6 +58,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'ホーム',
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
@@ -63,7 +66,8 @@ export default function TabLayout() {
         name="record"
         options={{
           title: '記録',
-          tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
+          headerTitle: '食事記録',
+          tabBarIcon: ({ color }) => <TabBarIcon name="pencil" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -83,14 +87,16 @@ export default function TabLayout() {
         name="insights"
         options={{
           title: '分析',
+          headerTitle: 'からだの分析',
           tabBarIcon: ({ color }) => <TabBarIcon name="bar-chart" color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: '設定',
-          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
+          title: 'マイページ',
+          headerTitle: 'マイページ',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user-o" color={color} />,
         }}
       />
     </Tabs>
@@ -99,24 +105,33 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: 88,
-    paddingBottom: 30,
-    paddingTop: 8,
+    height: 92,
+    paddingBottom: 28,
+    paddingTop: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
+    ...shadow.lg,
   },
   tabBarLabel: {
     fontSize: 11,
-    fontWeight: '500',
+    fontWeight: '700',
+  },
+  headerTitle: {
+    color: palette.ink,
+    fontSize: 23,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   fab: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 18,
-    backgroundColor: palette.primary,
-    ...shadow.colored(palette.primary),
+    backgroundColor: palette.apricot,
+    borderWidth: 4,
+    borderColor: '#FFF3E8',
+    ...shadow.colored(palette.apricot),
   },
   fabPressed: {
     opacity: 0.85,

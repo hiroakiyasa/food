@@ -66,7 +66,7 @@ const CATEGORY_BG: Record<string, string> = {
   '豆類': '#ECFCCB',
   'いも及びでん粉類': '#FEF3C7',
   'きのこ類': '#F5F3FF',
-  '藻類': '#D1FAE5',
+  '藻類': '#DDF3E6',
   '種実類': '#FEF3C7',
   '菓子類': '#FCE7F3',
   '油脂類': '#ECFDF5',
@@ -162,7 +162,7 @@ function CategoryGrid({
     <View style={styles.categoryGrid}>
       {categories.map((cat) => {
         const emoji = CATEGORY_EMOJI[cat.name] ?? '🍽️';
-        const bg = CATEGORY_BG[cat.name] ?? (isDark ? c.surfaceAlt : '#F8FAFC');
+        const bg = CATEGORY_BG[cat.name] ?? (isDark ? c.surfaceAlt : '#FFF9EC');
         return (
           <Pressable
             key={cat.name}
@@ -983,14 +983,14 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     borderRadius: radius.full,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    backgroundColor: '#F8FAFC',
+    borderColor: '#E9E5D8',
+    backgroundColor: '#FFF9EC',
   },
   presetChipActive: {
     backgroundColor: palette.primaryLight,
     borderColor: palette.primary,
   },
-  presetText: { fontSize: 13, color: '#64748B', fontWeight: '500' },
+  presetText: { fontSize: 13, color: '#66766F', fontWeight: '500' },
   presetTextActive: { color: palette.primaryDark, fontWeight: '600' },
   detailLoadingRow: {
     flexDirection: 'row',

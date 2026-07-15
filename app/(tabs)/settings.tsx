@@ -1,5 +1,6 @@
 import { ScrollView, StyleSheet, View, Text, Pressable, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useProfile } from '@/src/hooks/useProfile';
 import { signOut } from '@/src/lib/auth';
@@ -20,9 +21,13 @@ interface SettingsItemProps {
   isDark: boolean;
   isPremium?: boolean;
   isLast?: boolean;
+  icon: keyof typeof FontAwesome.glyphMap;
+  iconColor?: string;
 }
 
-function SettingsItem({ label, value, onPress, isDark, isPremium, isLast }: SettingsItemProps) {
+function SettingsItem({
+  label, value, onPress, isDark, isPremium, isLast, icon, iconColor = palette.primary,
+}: SettingsItemProps) {
   const c = useThemeColors(isDark);
   return (
     <Pressable
@@ -37,12 +42,17 @@ function SettingsItem({ label, value, onPress, isDark, isPremium, isLast }: Sett
       disabled={!onPress}
     >
       <View style={styles.settingsItemLeft}>
-        <Text style={[typography.body, { color: c.text }]}>{label}</Text>
-        {isPremium && (
-          <View style={styles.premiumBadge}>
-            <Text style={styles.premiumBadgeText}>PRO</Text>
-          </View>
-        )}
+        <View style={[styles.itemIcon, { backgroundColor: `${iconColor}1A` }]}>
+          <FontAwesome name={icon} size={17} color={iconColor} />
+        </View>
+        <View style={styles.settingsLabelRow}>
+          <Text style={[typography.bodyBold, { color: c.text }]}>{label}</Text>
+          {isPremium && (
+            <View style={styles.premiumBadge}>
+              <Text style={styles.premiumBadgeText}>PRO</Text>
+            </View>
+          )}
+        </View>
       </View>
       <View style={styles.settingsItemRight}>
         {value && (
@@ -125,6 +135,7 @@ export default function SettingsScreen() {
             )}
           </View>
         </View>
+        <FontAwesome name="pencil" size={16} color={palette.primary} />
       </View>
 
       {/* Profile */}
@@ -132,12 +143,15 @@ export default function SettingsScreen() {
       <View style={[commonStyles.card, { backgroundColor: c.surface, marginBottom: spacing.xl }]}>
         <SettingsItem
           label="表示名"
+          icon="user"
           value={profile?.display_name ?? '未設定'}
           isDark={isDark}
           onPress={() => router.push('/(modals)/edit-profile' as never)}
         />
         <SettingsItem
           label="身長・体重"
+          icon="heartbeat"
+          iconColor={palette.berry}
           value={
             profile?.height_cm && profile?.weight_kg
               ? `${profile.height_cm}cm / ${profile.weight_kg}kg`
@@ -148,6 +162,8 @@ export default function SettingsScreen() {
         />
         <SettingsItem
           label="活動レベル"
+          icon="line-chart"
+          iconColor={palette.apricot}
           value={profile?.activity_level ?? '未設定'}
           isDark={isDark}
           onPress={() => router.push('/(modals)/edit-profile' as never)}
@@ -160,28 +176,37 @@ export default function SettingsScreen() {
       <View style={[commonStyles.card, { backgroundColor: c.surface, marginBottom: spacing.xl }]}>
         <SettingsItem
           label="疾患プロファイル"
+          icon="medkit"
+          iconColor={palette.berry}
           isDark={isDark}
           onPress={() => router.push('/(modals)/edit-diseases' as never)}
         />
         <SettingsItem
           label="栄養管理条件"
+          icon="sliders"
           value={activeConditions.length > 0 ? conditionPreview : '未設定'}
           isDark={isDark}
           onPress={() => router.push('/(modals)/condition-select' as never)}
         />
         <SettingsItem
           label="味覚嗜好"
+          icon="cutlery"
+          iconColor={palette.apricot}
           isDark={isDark}
           onPress={() => router.push('/(modals)/edit-taste' as never)}
         />
         <SettingsItem
           label="栄養目標"
+          icon="bullseye"
+          iconColor={palette.sky}
           value={nutritionTargets ? `${nutritionTargets.energy_kcal}kcal` : '未設定'}
           isDark={isDark}
           onPress={() => router.push('/(modals)/edit-nutrition-targets' as never)}
         />
         <SettingsItem
           label="健診結果"
+          icon="file-text-o"
+          iconColor={palette.berry}
           isDark={isDark}
           isPremium
           onPress={() => {
@@ -194,22 +219,30 @@ export default function SettingsScreen() {
         />
         <SettingsItem
           label="HealthKit連携"
+          icon="heart"
+          iconColor={palette.berry}
           isDark={isDark}
           onPress={() => router.push('/(modals)/healthkit-settings' as never)}
         />
         <SettingsItem
           label="通知設定"
+          icon="bell"
+          iconColor={palette.lemon}
           isDark={isDark}
           onPress={() => router.push('/(modals)/notification-settings' as never)}
         />
         <SettingsItem
           label="時間制限食 (TRE)"
+          icon="clock-o"
+          iconColor={palette.apricot}
           value={fastingEnabled ? fastingProtocol : 'オフ'}
           isDark={isDark}
           onPress={() => router.push('/(modals)/fasting-setup' as never)}
         />
         <SettingsItem
           label="月経周期"
+          icon="calendar"
+          iconColor={palette.berry}
           value={cycleEnabled ? 'オン' : 'オフ'}
           isDark={isDark}
           onPress={() => router.push('/(modals)/cycle-setup' as never)}
@@ -222,6 +255,8 @@ export default function SettingsScreen() {
       <View style={[commonStyles.card, { backgroundColor: c.surface, marginBottom: spacing.xl }]}>
         <SettingsItem
           label="AI週間食事プラン"
+          icon="magic"
+          iconColor={palette.sky}
           isDark={isDark}
           onPress={() => router.push('/(modals)/meal-plan' as never)}
           isLast
@@ -233,18 +268,24 @@ export default function SettingsScreen() {
       <View style={[commonStyles.card, { backgroundColor: c.surface, marginBottom: spacing.xl }]}>
         <SettingsItem
           label="現在のプラン"
+          icon="star"
+          iconColor={palette.lemon}
           value={profile?.is_premium ? 'Premium' : 'Free'}
           isDark={isDark}
         />
         {!profile?.is_premium && (
           <SettingsItem
             label="Premium にアップグレード"
+            icon="diamond"
+            iconColor={palette.apricot}
             isDark={isDark}
             onPress={() => router.push('/(modals)/premium' as never)}
           />
         )}
         <SettingsItem
           label="データエクスポート"
+          icon="download"
+          iconColor={palette.sky}
           isDark={isDark}
           isPremium
           onPress={handleExport}
@@ -314,11 +355,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 14,
-    minHeight: 48,
+    paddingVertical: 12,
+    minHeight: 60,
   },
   settingsItemLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, flex: 1 },
+  settingsLabelRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, flex: 1 },
   settingsItemRight: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  itemIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   premiumBadge: {
     backgroundColor: palette.warning,
     paddingHorizontal: 6,

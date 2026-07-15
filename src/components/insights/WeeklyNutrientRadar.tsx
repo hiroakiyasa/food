@@ -25,7 +25,7 @@ function WeeklyNutrientRadarComponent({
   isDark,
 }: WeeklyNutrientRadarProps) {
   const textColor = isDark ? '#F1F5F9' : '#0F172A';
-  const textMuted = isDark ? '#64748B' : '#94A3B8';
+  const textMuted = isDark ? '#66766F' : '#8D9993';
 
   const averages = useMemo(() => {
     if (summaries.length === 0) {

@@ -26,7 +26,7 @@ export function PFCBar({
   const cPct = (carbs / total) * 100;
 
   const textColor = isDark ? '#F1F5F9' : '#0F172A';
-  const mutedColor = isDark ? '#64748B' : '#94A3B8';
+  const mutedColor = isDark ? '#66766F' : '#8D9993';
 
   return (
     <View
@@ -34,7 +34,7 @@ export function PFCBar({
       accessible
       accessibilityLabel={`P ${protein.toFixed(0)}g, F ${fat.toFixed(0)}g, C ${carbs.toFixed(0)}g`}
     >
-      <View style={[styles.bar, { backgroundColor: isDark ? '#334155' : '#E2E8F0' }]}>
+      <View style={[styles.bar, { backgroundColor: isDark ? '#334155' : '#E9E5D8' }]}>
         {pPct > 0 && <View style={[styles.segment, styles.segmentFirst, { flex: pPct, backgroundColor: palette.protein }]} />}
         {fPct > 0 && <View style={[styles.segment, { flex: fPct, backgroundColor: palette.fat }]} />}
         {cPct > 0 && <View style={[styles.segment, styles.segmentLast, { flex: cPct, backgroundColor: palette.carbs }]} />}

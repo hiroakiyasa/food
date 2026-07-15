@@ -20,7 +20,7 @@ const CONFIG: Record<TokuhoCategory, { label: string; color: string; bg: string;
   functional_claim: {
     label: '機能性',
     color: '#047857',  // emerald-700
-    bg: '#D1FAE5',     // emerald-100
+    bg: '#DDF3E6',     // emerald-100
     border: '#6EE7B7', // emerald-300
   },
 };

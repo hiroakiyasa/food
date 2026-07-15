@@ -1,32 +1,36 @@
 import { StyleSheet } from 'react-native';
 
-// ─── Color Palette (Healthcare / Wellness) ───
+// ─── Joyful Wellness palette ───
 export const palette = {
-  // Primary: emerald green - fresh, healthy, motivating
-  primary: '#10B981',
-  primaryLight: '#D1FAE5',
-  primaryDark: '#059669',
-  primaryMuted: '#10B98133',
+  primary: '#28A86B',
+  primaryLight: '#DDF3E6',
+  primaryDark: '#145C43',
+  primaryMuted: '#28A86B24',
 
-  // Accent: blue for secondary actions
-  accent: '#3B82F6',
-  accentLight: '#DBEAFE',
+  accent: '#68BCEB',
+  accentLight: '#E3F4FD',
+  apricot: '#FF9D6C',
+  lemon: '#FFD85A',
+  sky: '#68BCEB',
+  berry: '#E8759C',
+  ink: '#16362C',
+  cream: '#FFF9EC',
 
   // PFC colors
-  protein: '#6366F1', // indigo - distinct, premium feel
-  fat: '#F59E0B',     // amber
-  carbs: '#10B981',   // emerald (same as primary)
-  fiber: '#8B5CF6',   // violet
+  protein: '#E8759C',
+  fat: '#F4A340',
+  carbs: '#68BCEB',
+  fiber: '#28A86B',
 
   // Semantic
-  success: '#22C55E',
-  warning: '#F59E0B',
-  error: '#EF4444',
+  success: '#28A86B',
+  warning: '#F4A340',
+  error: '#D85D5D',
 
   // Traffic light
-  green: '#22C55E',
-  amber: '#F59E0B',
-  red: '#EF4444',
+  green: '#28A86B',
+  amber: '#F4A340',
+  red: '#D85D5D',
 
   // Nutrient category colors
   calcium: '#06B6D4',
@@ -54,19 +58,19 @@ export const palette = {
 // ─── Theme Colors ───
 export const colors = {
   light: {
-    bg: '#F8FAFC',
+    bg: '#FFF9EC',
     surface: '#FFFFFF',
-    surfaceAlt: '#F1F5F9',
-    text: '#0F172A',
-    textSecondary: '#64748B',
-    textMuted: '#94A3B8',
-    border: '#E2E8F0',
-    borderLight: '#F1F5F9',
-    divider: '#E2E8F0',
+    surfaceAlt: '#F7F1E5',
+    text: '#16362C',
+    textSecondary: '#66766F',
+    textMuted: '#8D9993',
+    border: '#E9E5D8',
+    borderLight: '#F4F0E7',
+    divider: '#E9E5D8',
     tabBar: '#FFFFFF',
-    tabBarBorder: '#E2E8F0',
-    skeleton: '#E2E8F0',
-    overlay: 'rgba(0, 0, 0, 0.04)',
+    tabBarBorder: '#E9E5D8',
+    skeleton: '#ECE7DC',
+    overlay: 'rgba(22, 54, 44, 0.04)',
   },
   dark: {
     bg: '#0F172A',
@@ -107,9 +111,9 @@ export function useThemeColors(isDark: boolean): ThemeColors {
 
 // ─── Typography ───
 export const typography = {
-  largeTitle: { fontSize: 28, fontWeight: '700' as const, letterSpacing: -0.5 },
-  title1: { fontSize: 22, fontWeight: '700' as const, letterSpacing: -0.3 },
-  title2: { fontSize: 18, fontWeight: '600' as const },
+  largeTitle: { fontSize: 32, fontWeight: '700' as const, letterSpacing: -0.6, lineHeight: 40 },
+  title1: { fontSize: 26, fontWeight: '700' as const, letterSpacing: -0.4, lineHeight: 34 },
+  title2: { fontSize: 20, fontWeight: '700' as const, lineHeight: 28 },
   title3: { fontSize: 16, fontWeight: '600' as const },
   body: { fontSize: 15, fontWeight: '400' as const, lineHeight: 22 },
   bodyBold: { fontSize: 15, fontWeight: '600' as const, lineHeight: 22 },
@@ -137,10 +141,10 @@ export const spacing = {
 
 // ─── Border Radius ───
 export const radius = {
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
+  sm: 12,
+  md: 18,
+  lg: 24,
+  xl: 32,
   full: 999,
 } as const;
 
@@ -148,7 +152,7 @@ export const radius = {
 export const gradients = {
   // Hero card — deep forest green
   heroPrimary: ['#064E3B', '#065F46'] as const,
-  heroPrimaryDark: ['#022C22', '#064E3B'] as const,
+  heroPrimaryDark: ['#145C43', '#1C7A52'] as const,
   // Calorie over
   heroOver: ['#7C2D12', '#B45309'] as const,
   heroOverDark: ['#451A03', '#7C2D12'] as const,
@@ -162,24 +166,24 @@ export const gradients = {
 // ─── Shadows ───
 export const shadow = {
   sm: {
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 2,
+    shadowColor: '#6B5A37',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
     elevation: 1,
   },
   md: {
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
+    shadowColor: '#6B5A37',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
     elevation: 2,
   },
   lg: {
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
+    shadowColor: '#6B5A37',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
     elevation: 4,
   },
   xl: {
@@ -311,16 +315,16 @@ export const commonStyles = StyleSheet.create({
 
   // Scroll content
   scrollContent: {
-    padding: spacing.xl,
-    paddingBottom: 40,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    paddingBottom: 48,
   },
 
   // Section title
   sectionHeader: {
-    fontSize: 13,
-    fontWeight: '600' as const,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase' as const,
+    fontSize: 18,
+    fontWeight: '700' as const,
+    letterSpacing: 0,
     marginBottom: spacing.md,
   },
 });

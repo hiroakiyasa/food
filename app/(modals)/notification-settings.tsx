@@ -7,6 +7,9 @@ import { useRouter } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useNotificationStore } from '@/src/stores/notificationStore';
 import { useNotificationPreferences } from '@/src/hooks/useNotifications';
+import { useAuthStore } from '@/src/stores/authStore';
+import { registerForPushNotifications } from '@/src/services/notifications/notificationService';
+import * as Notifications from 'expo-notifications';
 import {
   palette, typography, spacing, radius,
   commonStyles, pressed, useThemeColors,
@@ -194,6 +197,7 @@ export default function NotificationSettingsModal() {
   const isDark = useColorScheme() === 'dark';
   const c = useThemeColors(isDark);
   const store = useNotificationStore();
+  const user = useAuthStore((state) => state.user);
 
   const [pickerVisible, setPickerVisible] = useState(false);
   const [pickerTarget, setPickerTarget] = useState<TimeSetter>('breakfast');
@@ -218,6 +222,43 @@ export default function NotificationSettingsModal() {
     else store.setDinnerTime(time);
   };
 
+  const enableNotifications = async (onEnabled: () => void) => {
+    const permission = await Notifications.requestPermissionsAsync();
+    if (permission.status !== 'granted') {
+      Alert.alert(
+        '通知はオフのままです',
+        '通知を使う場合は、端末の設定からこのアプリの通知を許可してください。',
+      );
+      return;
+    }
+    onEnabled();
+    if (user) void registerForPushNotifications(user.id);
+  };
+
+  const handleMealReminders = (enabled: boolean) => {
+    if (!enabled) {
+      store.setMealReminders(false);
+      return;
+    }
+    void enableNotifications(() => store.setMealReminders(true));
+  };
+
+  const handleStreakReminders = (enabled: boolean) => {
+    if (!enabled) {
+      store.setStreakReminders(false);
+      return;
+    }
+    void enableNotifications(() => store.setStreakReminders(true));
+  };
+
+  const handleBadgeNotifications = (enabled: boolean) => {
+    if (!enabled) {
+      store.setBadgeNotifications(false);
+      return;
+    }
+    void enableNotifications(() => store.setBadgeNotifications(true));
+  };
+
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: c.bg }]}
@@ -230,7 +271,7 @@ export default function NotificationSettingsModal() {
         <SettingRow
           label="食事リマインダー"
           value={store.mealReminders}
-          onValueChange={store.setMealReminders}
+          onValueChange={handleMealReminders}
           isDark={isDark}
         />
         {store.mealReminders && (
@@ -265,13 +306,13 @@ export default function NotificationSettingsModal() {
         <SettingRow
           label="ストリーク維持リマインダー"
           value={store.streakReminders}
-          onValueChange={store.setStreakReminders}
+          onValueChange={handleStreakReminders}
           isDark={isDark}
         />
         <SettingRow
           label="バッジ獲得通知"
           value={store.badgeNotifications}
-          onValueChange={store.setBadgeNotifications}
+          onValueChange={handleBadgeNotifications}
           isDark={isDark}
           isLast
         />
@@ -339,7 +380,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: '#E9E5D8',
   },
   optionList: { paddingHorizontal: spacing.lg },
   option: {
