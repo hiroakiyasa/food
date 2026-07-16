@@ -33,7 +33,9 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
+/supabase/functions/.env
 .claude/settings.local.json
 
 # large generated datasets and local scratch files

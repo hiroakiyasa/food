@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {
   View,
   Text,
@@ -14,8 +15,8 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { useMealStore } from '@/src/stores/mealStore';
 import { useCreateMeal, useMealById, useDeleteMeal } from '@/src/hooks/useMeals';
 import { generateId } from '@/src/lib/localDb';
-import { supabase } from '@/src/lib/supabase';
 import { uploadMealImage } from '@/src/lib/storage';
+import { analyzeFoodImage } from '@/src/services/ai/analyzeMeal';
 import { useAuthStore } from '@/src/stores/authStore';
 import { MEAL_TYPES, MEAL_TYPE_LABELS, type MealType } from '@/src/lib/constants';
 import { TrafficLightBadge, getItemTrafficLight } from '@/src/components/ui/TrafficLightBadge';
@@ -79,6 +80,7 @@ function ExistingMealView({ id }: { id: string }) {
   const totalFat = meal.total_fat_g ?? 0;
   const totalCarbs = meal.total_carbohydrate_g ?? 0;
   const totalFiber = meal.total_fiber_g ?? 0;
+  const totalSalt = (meal.total_sodium_mg ?? 0) * 2.54 / 1000;
 
   return (
     <ScrollView
@@ -151,6 +153,11 @@ function ExistingMealView({ id }: { id: string }) {
             </View>
           ))}
         </View>
+        <View style={[styles.saltSummary, { backgroundColor: c.surfaceAlt }]}>
+          <FontAwesome name="tint" size={14} color={palette.sky} />
+          <Text style={[typography.caption1, { color: c.textSecondary }]}>食塩相当量</Text>
+          <Text style={[typography.bodyBold, { color: c.text }]}>{totalSalt.toFixed(2)}g</Text>
+        </View>
       </View>
 
       {/* Meal items */}
@@ -189,6 +196,9 @@ function ExistingMealView({ id }: { id: string }) {
               </Text>
               <Text style={[typography.caption2, { color: palette.carbs }]}>
                 C {(item.carbohydrate_g ?? 0).toFixed(1)}g
+              </Text>
+              <Text style={[typography.caption2, { color: palette.sky }]}>
+                塩 {((item.sodium_mg ?? 0) * 2.54 / 1000).toFixed(2)}g
               </Text>
             </View>
           </View>
@@ -245,12 +255,42 @@ export default function MealDetailModal() {
   const c = useThemeColors(isDark);
 
   const user = useAuthStore((s) => s.user);
-  const { pendingMeal, setAnalysis, setError, clearPending } = useMealStore();
+  const {
+    pendingMeal,
+    setAnalysis,
+    setAnalysisItemPortion,
+    removeAnalysisItem,
+    setError,
+    clearPending,
+  } = useMealStore();
   const createMeal = useCreateMeal();
   const [selectedMealType, setSelectedMealType] = useState<MealType>(
     () => pendingMeal?.mealType ?? 'lunch',
   );
   const [saving, setSaving] = useState(false);
+  const analysisTotals = useMemo(() => (
+    pendingMeal?.analysis?.items.reduce(
+      (acc, item) => ({
+        energy_kcal: acc.energy_kcal + item.energy_kcal,
+        protein_g: acc.protein_g + item.protein_g,
+        fat_g: acc.fat_g + item.fat_g,
+        carbohydrate_g: acc.carbohydrate_g + item.carbohydrate_g,
+        fiber_g: acc.fiber_g + item.fiber_g,
+        sodium_mg: acc.sodium_mg + item.sodium_mg,
+        salt_equivalent_g: acc.salt_equivalent_g + item.salt_equivalent_g,
+      }),
+      {
+        energy_kcal: 0,
+        protein_g: 0,
+        fat_g: 0,
+        carbohydrate_g: 0,
+        fiber_g: 0,
+        sodium_mg: 0,
+        salt_equivalent_g: 0,
+      },
+    ) ?? null
+  ), [pendingMeal?.analysis?.items]);
+  const analysisItemCount = pendingMeal?.analysis?.items.length ?? 0;
 
   useEffect(() => {
     if (pendingMeal?.isAnalyzing && pendingMeal.imageBase64) {
@@ -260,13 +300,10 @@ export default function MealDetailModal() {
 
   const analyzeMealImage = async (base64: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke('analyze-food-image', {
-        body: { image_base64: base64 },
-      });
-      if (error) throw error;
-      setAnalysis(data);
-      if (!pendingMeal?.mealType && data.meal_type_guess) {
-        const guess = data.meal_type_guess as MealType;
+      const analysis = await analyzeFoodImage(base64);
+      setAnalysis(analysis);
+      if (!pendingMeal?.mealType && analysis.meal_type_guess) {
+        const guess = analysis.meal_type_guess as MealType;
         if (MEAL_TYPES.includes(guess)) {
           setSelectedMealType(guess);
         }
@@ -289,17 +326,10 @@ export default function MealDetailModal() {
       }
 
       const analysis = pendingMeal.analysis;
-      const totals = analysis.items.reduce(
-        (acc, item) => ({
-          energy_kcal: acc.energy_kcal + item.energy_kcal,
-          protein_g: acc.protein_g + item.protein_g,
-          fat_g: acc.fat_g + item.fat_g,
-          carbohydrate_g: acc.carbohydrate_g + item.carbohydrate_g,
-          fiber_g: acc.fiber_g + item.fiber_g,
-          sodium_mg: acc.sodium_mg + item.sodium_mg,
-        }),
-        { energy_kcal: 0, protein_g: 0, fat_g: 0, carbohydrate_g: 0, fiber_g: 0, sodium_mg: 0 },
-      );
+      const totals = analysisTotals;
+      if (!totals || analysis.items.length === 0) {
+        throw new Error('保存する食品がありません');
+      }
 
       await createMeal.mutateAsync({
         meal: {
@@ -313,8 +343,10 @@ export default function MealDetailModal() {
           total_carbohydrate_g: totals.carbohydrate_g,
           total_fiber_g: totals.fiber_g,
           total_sodium_mg: totals.sodium_mg,
+          notes: `写真解析: ${analysis.analysis_source ?? 'AI'} / ${analysis.items.filter((item) => item.estimate_basis === 'database').length}件DB照合`,
         },
         items: analysis.items.map((item) => ({
+          food_item_id: item.food_item_id ?? null,
           ai_detected_name: item.name,
           portion_grams: item.portion_grams,
           confidence: item.confidence,
@@ -371,7 +403,8 @@ export default function MealDetailModal() {
       {pendingMeal.isAnalyzing && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={palette.primary} />
-          <Text style={[typography.body, { color: c.textMuted }]}>AI解析中...</Text>
+          <Text style={[typography.bodyBold, { color: c.text }]}>写真から料理を見つけています</Text>
+          <Text style={[typography.caption1, { color: c.textMuted }]}>食品データベースと栄養値を照合中...</Text>
         </View>
       )}
 
@@ -431,6 +464,50 @@ export default function MealDetailModal() {
             ))}
           </View>
 
+          {analysisTotals && (
+            <View style={[commonStyles.card, styles.analysisSummary, { backgroundColor: c.surface }]}>
+              <View style={styles.analysisSummaryHeader}>
+                <View>
+                  <Text style={[styles.sectionLabel, { color: c.textSecondary }]}>写真からの栄養推定</Text>
+                  <Text style={[typography.heroNumber, { color: palette.primaryDark }]}>
+                    {Math.round(analysisTotals.energy_kcal)}
+                    <Text style={typography.heroUnit}> kcal</Text>
+                  </Text>
+                </View>
+                <View style={styles.saltBubble}>
+                  <FontAwesome name="tint" size={17} color={palette.sky} />
+                  <Text style={[typography.caption2, { color: c.textMuted }]}>食塩相当量</Text>
+                  <Text style={[typography.title3, { color: c.text }]}>{analysisTotals.salt_equivalent_g.toFixed(2)}g</Text>
+                </View>
+              </View>
+              <View style={styles.summaryMacroRow}>
+                {[
+                  { label: 'たんぱく質', value: analysisTotals.protein_g, color: palette.protein },
+                  { label: '脂質', value: analysisTotals.fat_g, color: palette.fat },
+                  { label: '炭水化物', value: analysisTotals.carbohydrate_g, color: palette.carbs },
+                  { label: '食物繊維', value: analysisTotals.fiber_g, color: palette.fiber },
+                ].map((macro) => (
+                  <View key={macro.label} style={styles.summaryMacroItem}>
+                    <Text style={[typography.bodyBold, { color: macro.color }]}>{macro.value.toFixed(1)}g</Text>
+                    <Text style={[typography.caption2, { color: c.textMuted }]}>{macro.label}</Text>
+                  </View>
+                ))}
+              </View>
+              {pendingMeal.analysis.summary && (
+                <Text style={[typography.body, styles.analysisCopy, { color: c.textSecondary }]}>
+                  {pendingMeal.analysis.summary}
+                </Text>
+              )}
+              <View style={[styles.databaseCoverage, { backgroundColor: palette.primaryLight }]}>
+                <FontAwesome name="database" size={14} color={palette.primaryDark} />
+                <Text style={[typography.caption1, { color: palette.primaryDark }]}>
+                  {pendingMeal.analysis.items.filter((item) => item.estimate_basis === 'database' || item.estimate_basis === 'mock').length}
+                  /{pendingMeal.analysis.items.length}品を食品データと照合
+                </Text>
+              </View>
+            </View>
+          )}
+
           {/* Items with traffic light */}
           {pendingMeal.analysis.items.map((item, i) => {
             const trafficColor = getItemTrafficLight({
@@ -442,17 +519,30 @@ export default function MealDetailModal() {
             });
             return (
               <View
-                key={i}
+                key={`${item.food_item_id ?? item.name}-${i}`}
                 style={[commonStyles.cardCompact, { backgroundColor: c.surface, marginHorizontal: spacing.xl, marginBottom: spacing.sm }]}
               >
                 <View style={styles.itemHeader}>
                   <View style={styles.itemNameRow}>
                     <TrafficLightBadge color={trafficColor} size={10} />
-                    <Text style={[typography.bodyBold, { color: c.text }]}>{item.name}</Text>
+                    <View style={styles.itemTitleBlock}>
+                      <Text style={[typography.bodyBold, { color: c.text }]}>{item.name}</Text>
+                      {item.detected_name && item.detected_name !== item.name && (
+                        <Text style={[typography.caption2, { color: c.textMuted }]}>写真判定: {item.detected_name}</Text>
+                      )}
+                    </View>
                   </View>
-                  <Text style={[typography.caption1, { color: c.textMuted }]}>
-                    ~{item.portion_grams}g
-                  </Text>
+                  <View style={[
+                    styles.sourceBadge,
+                    { backgroundColor: item.estimate_basis === 'ai_estimate' ? '#FFF2DB' : palette.primaryLight },
+                  ]}>
+                    <Text style={[
+                      typography.caption2,
+                      { color: item.estimate_basis === 'ai_estimate' ? '#9A5D12' : palette.primaryDark },
+                    ]}>
+                      {item.estimate_basis === 'ai_estimate' ? 'AI概算' : '食品DB'}
+                    </Text>
+                  </View>
                 </View>
                 <View style={styles.itemNutrients}>
                   <Text style={[typography.caption1, { color: c.text, fontWeight: '700' }]}>
@@ -467,24 +557,65 @@ export default function MealDetailModal() {
                   <Text style={[typography.caption2, { color: palette.carbs }]}>
                     C {item.carbohydrate_g.toFixed(1)}g
                   </Text>
+                  <Text style={[typography.caption2, { color: palette.sky }]}>
+                    塩 {item.salt_equivalent_g.toFixed(2)}g
+                  </Text>
+                </View>
+                <View style={styles.portionEditor}>
+                  <Text style={[typography.caption1, { color: c.textSecondary }]}>推定量</Text>
+                  <Pressable
+                    onPress={() => setAnalysisItemPortion(i, item.portion_grams - 10)}
+                    style={({ pressed: p }) => [styles.portionButton, { backgroundColor: c.surfaceAlt }, pressed(p)]}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${item.name}を10グラム減らす`}
+                  >
+                    <Text style={[typography.title3, { color: c.text }]}>−</Text>
+                  </Pressable>
+                  <Text style={[styles.portionValue, { color: c.text }]}>{Math.round(item.portion_grams)}g</Text>
+                  <Pressable
+                    onPress={() => setAnalysisItemPortion(i, item.portion_grams + 10)}
+                    style={({ pressed: p }) => [styles.portionButton, { backgroundColor: c.surfaceAlt }, pressed(p)]}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${item.name}を10グラム増やす`}
+                  >
+                    <Text style={[typography.title3, { color: c.text }]}>＋</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => removeAnalysisItem(i)}
+                    style={({ pressed: p }) => [styles.removeButton, pressed(p)]}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${item.name}を削除`}
+                  >
+                    <FontAwesome name="trash-o" size={18} color={palette.error} />
+                  </Pressable>
                 </View>
                 <View style={[styles.confidenceBar, { backgroundColor: c.surfaceAlt }]}>
                   <View
                     style={[styles.confidenceFill, { width: `${item.confidence * 100}%` }]}
                   />
                 </View>
+                <Text style={[styles.confidenceLabel, { color: c.textMuted }]}>
+                  写真判定 {Math.round(item.confidence * 100)}%
+                  {item.database_source ? ` ・ ${item.database_source.toUpperCase()}` : ''}
+                </Text>
               </View>
             );
           })}
 
           {/* Save button */}
+          {pendingMeal.analysis.disclaimer && (
+            <Text style={[styles.disclaimer, { color: c.textMuted }]}>
+              {pendingMeal.analysis.disclaimer}
+            </Text>
+          )}
+
           <Pressable
             onPress={handleSave}
-            disabled={saving}
+            disabled={saving || analysisItemCount === 0}
             style={({ pressed: p }) => [
               commonStyles.buttonPrimary,
               { marginHorizontal: spacing.xl, marginTop: spacing.md },
-              saving && { opacity: 0.6 },
+              (saving || analysisItemCount === 0) && { opacity: 0.6 },
               pressed(p),
             ]}
             accessibilityRole="button"
@@ -524,6 +655,16 @@ const styles = StyleSheet.create({
   },
   pfcRow: { flexDirection: 'row', justifyContent: 'space-around' },
   pfcItem: { alignItems: 'center', gap: 2 },
+  saltSummary: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginTop: spacing.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.full,
+  },
   mealTypeRow: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -543,6 +684,7 @@ const styles = StyleSheet.create({
     gap: 6,
     flex: 1,
   },
+  itemTitleBlock: { flex: 1, gap: 2 },
   itemNutrients: {
     flexDirection: 'row',
     gap: spacing.md,
@@ -557,4 +699,33 @@ const styles = StyleSheet.create({
     backgroundColor: palette.primary,
     borderRadius: 2,
   },
+  analysisSummary: { marginHorizontal: spacing.xl, marginBottom: spacing.lg },
+  analysisSummaryHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  saltBubble: {
+    minWidth: 96,
+    alignItems: 'center',
+    gap: 2,
+    padding: spacing.md,
+    borderRadius: radius.md,
+    backgroundColor: palette.accentLight,
+  },
+  summaryMacroRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.md },
+  summaryMacroItem: { alignItems: 'center', flex: 1, gap: 2 },
+  analysisCopy: { marginTop: spacing.lg },
+  databaseCoverage: {
+    marginTop: spacing.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  sourceBadge: { paddingHorizontal: spacing.sm, paddingVertical: 5, borderRadius: radius.full },
+  portionEditor: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.sm },
+  portionButton: { width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+  portionValue: { ...typography.bodyBold, minWidth: 48, textAlign: 'center' },
+  removeButton: { marginLeft: 'auto', width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
+  confidenceLabel: { ...typography.caption2, textAlign: 'right', marginTop: 5 },
+  disclaimer: { ...typography.caption2, marginHorizontal: spacing.xl, lineHeight: 17 },
 });

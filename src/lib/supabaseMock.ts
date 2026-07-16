@@ -407,6 +407,49 @@ function mockRpc(fn: string, _args?: unknown) {
   return Promise.resolve({ data: null, error: null });
 }
 
+function mockFoodAnalysis() {
+  const portions = [
+    { id: 'food-0001', grams: 150, confidence: 0.94 },
+    { id: 'food-0013', grams: 90, confidence: 0.88 },
+    { id: 'food-0060', grams: 180, confidence: 0.82 },
+  ];
+  const items = portions.flatMap(({ id, grams, confidence }) => {
+    const food = MOCK_FOOD_ITEMS.find((candidate) => candidate.id === id);
+    if (!food) return [];
+    const ratio = grams / 100;
+    const sodiumMg = (food.sodium_mg ?? 0) * ratio;
+    return [{
+      name: food.food_name,
+      detected_name: food.food_name,
+      matched_food_name: food.food_name,
+      food_item_id: food.id,
+      food_code: food.food_code,
+      database_source: food.source,
+      estimate_basis: 'mock',
+      portion_grams: grams,
+      confidence,
+      database_match_score: 1,
+      energy_kcal: (food.energy_kcal ?? 0) * ratio,
+      protein_g: (food.protein_g ?? 0) * ratio,
+      fat_g: (food.fat_g ?? 0) * ratio,
+      carbohydrate_g: (food.carbohydrate_g ?? 0) * ratio,
+      fiber_g: (food.fiber_g ?? 0) * ratio,
+      sodium_mg: sodiumMg,
+      salt_equivalent_g: food.salt_equivalent_g == null
+        ? sodiumMg * 2.54 / 1000
+        : food.salt_equivalent_g * ratio,
+    }];
+  });
+  return {
+    items,
+    meal_type_guess: 'lunch',
+    summary: 'ご飯、主菜、汁物を検出しました。分量を確認して保存してください。',
+    disclaimer: '開発用モック結果です。実運用では写真認識と食品データベース照合を行います。',
+    analysis_source: 'mock',
+    model: 'mock-food-vision',
+  };
+}
+
 // ─── Mock Channel (Realtime) ───
 
 const mockChannel = {
@@ -425,7 +468,10 @@ export const mockSupabase = {
   channel: (_name: string) => mockChannel,
   removeChannel: async (_channel: unknown) => {},
   functions: {
-    invoke: async (_fn: string, _opts?: unknown) => ({ data: null, error: null }),
+    invoke: async (fn: string, _opts?: unknown) => {
+      if (fn === 'analyze-food-image') return { data: mockFoodAnalysis(), error: null };
+      return { data: null, error: null };
+    },
   },
 };
 

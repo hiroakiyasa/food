@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
+import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import { CameraView, useCameraPermissions, type CameraType } from 'expo-camera';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
@@ -16,6 +17,29 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MEAL_TYPES, type MealType } from '@/src/lib/constants';
 import { palette, pressed, radius, shadow, spacing, typography } from '@/src/lib/theme';
 import { useMealStore } from '@/src/stores/mealStore';
+
+const ANALYSIS_IMAGE_MAX_EDGE = 1024;
+
+async function prepareAnalysisImage(
+  uri: string,
+  width?: number,
+  height?: number,
+): Promise<{ uri: string; base64: string }> {
+  const isLandscape = (width ?? 0) >= (height ?? 0);
+  const resize = isLandscape
+    ? { width: ANALYSIS_IMAGE_MAX_EDGE }
+    : { height: ANALYSIS_IMAGE_MAX_EDGE };
+  const context = ImageManipulator.manipulate(uri);
+  context.resize(resize);
+  const image = await context.renderAsync();
+  const result = await image.saveAsync({
+    compress: 0.72,
+    format: SaveFormat.JPEG,
+    base64: true,
+  });
+  if (!result.base64) throw new Error('解析用画像を準備できませんでした');
+  return { uri: result.uri, base64: result.base64 };
+}
 
 export default function CameraModal() {
   const router = useRouter();
@@ -47,9 +71,10 @@ export default function CameraModal() {
     if (!cameraRef.current || isCapturing) return;
     setIsCapturing(true);
     try {
-      const photo = await cameraRef.current.takePictureAsync({ base64: true, quality: 0.72 });
-      if (!photo?.uri || !photo.base64) throw new Error('撮影画像を取得できませんでした');
-      openAnalysis(photo.uri, photo.base64);
+      const photo = await cameraRef.current.takePictureAsync({ quality: 0.82 });
+      if (!photo?.uri) throw new Error('撮影画像を取得できませんでした');
+      const prepared = await prepareAnalysisImage(photo.uri, photo.width, photo.height);
+      openAnalysis(prepared.uri, prepared.base64);
     } catch (error) {
       Alert.alert('撮影できませんでした', (error as Error).message, [
         { text: 'もう一度試す' },
@@ -67,16 +92,21 @@ export default function CameraModal() {
       return;
     }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.72,
-      base64: true,
-    });
-    const asset = result.assets?.[0];
-    if (!result.canceled && asset?.uri && asset.base64) {
-      openAnalysis(asset.uri, asset.base64);
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.82,
+        base64: false,
+      });
+      const asset = result.assets?.[0];
+      if (!result.canceled && asset?.uri) {
+        const prepared = await prepareAnalysisImage(asset.uri, asset.width, asset.height);
+        openAnalysis(prepared.uri, prepared.base64);
+      }
+    } catch (error) {
+      Alert.alert('写真を読み込めませんでした', (error as Error).message);
     }
   };
 

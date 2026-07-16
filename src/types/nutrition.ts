@@ -38,17 +38,33 @@ export interface DailySummaryData {
   bufferUsedKcal: number;
 }
 
+export type NutritionEstimateBasis = 'database' | 'ai_estimate' | 'mock';
+
+export interface AIFoodAnalysisItem {
+  name: string;
+  detected_name?: string;
+  matched_food_name?: string | null;
+  food_item_id?: string | null;
+  food_code?: string | null;
+  database_source?: string | null;
+  estimate_basis: NutritionEstimateBasis;
+  portion_grams: number;
+  confidence: number;
+  database_match_score?: number;
+  energy_kcal: number;
+  protein_g: number;
+  fat_g: number;
+  carbohydrate_g: number;
+  fiber_g: number;
+  sodium_mg: number;
+  salt_equivalent_g: number;
+}
+
 export interface AIFoodAnalysis {
-  items: {
-    name: string;
-    portion_grams: number;
-    confidence: number;
-    energy_kcal: number;
-    protein_g: number;
-    fat_g: number;
-    carbohydrate_g: number;
-    fiber_g: number;
-    sodium_mg: number;
-  }[];
+  items: AIFoodAnalysisItem[];
   meal_type_guess: string;
+  summary?: string;
+  disclaimer?: string;
+  analysis_source?: 'gemini+database' | 'mock';
+  model?: string;
 }
