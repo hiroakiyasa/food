@@ -42,7 +42,11 @@ export const useMealStore = create<MealState>((set) => ({
         return {
           ...item,
           portion_grams: nextPortion,
+          portion_min_grams: item.portion_min_grams * ratio,
+          portion_max_grams: item.portion_max_grams * ratio,
           energy_kcal: item.energy_kcal * ratio,
+          energy_min_kcal: item.energy_min_kcal * ratio,
+          energy_max_kcal: item.energy_max_kcal * ratio,
           protein_g: item.protein_g * ratio,
           fat_g: item.fat_g * ratio,
           carbohydrate_g: item.carbohydrate_g * ratio,

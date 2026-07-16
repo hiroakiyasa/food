@@ -54,7 +54,7 @@ export function useNotificationPreferences() {
 
   useEffect(() => {
     if (streakReminders) {
-      scheduleMealReminder('streak-reminder', 'ストリーク維持', '今日の食事をまだ記録していません', 21, 0);
+      scheduleMealReminder('streak-reminder', '今日をやさしく振り返る', '一品だけでも大丈夫。覚えている範囲で記録しませんか？', 21, 0);
     } else {
       cancelMealReminder('streak-reminder');
     }

@@ -12,6 +12,15 @@ interface QuickAddBarProps {
 
 const QUICK_ACTIONS = [
   {
+    key: 'barcode',
+    icon: 'barcode' as const,
+    label: 'バーコード',
+    hint: '商品をスキャン',
+    route: '/(modals)/barcode',
+    color: '#9A6A12',
+    soft: '#FFF3D7',
+  },
+  {
     key: 'camera',
     icon: 'camera' as const,
     label: '写真',
@@ -85,7 +94,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    minHeight: 92,
+    minHeight: 88,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 3,

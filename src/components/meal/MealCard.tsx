@@ -4,6 +4,7 @@ import { formatCalories } from '@/src/utils/formatters';
 import { MEAL_TYPE_LABELS, type MealType } from '@/src/lib/constants';
 import { palette, typography, spacing, radius, shadow, pressed } from '@/src/lib/theme';
 import { useMealItemImage } from '@/src/hooks/useMealItemImage';
+import { usePrivateImageUrl } from '@/src/hooks/usePrivateImageUrl';
 import type { Database } from '@/src/types/database';
 
 type Meal = Database['public']['Tables']['meals']['Row'];
@@ -30,7 +31,8 @@ export function MealCard({ meal, onPress, isDark = false }: MealCardProps) {
   // Fallback: if no meal image, fetch from Unsplash using first item name
   const firstItemName = meal.meal_items?.[0]?.ai_detected_name ?? null;
   const { data: unsplashUrl } = useMealItemImage(meal.image_url ? null : firstItemName);
-  const displayImageUrl = meal.image_url ?? unsplashUrl;
+  const { data: privateImageUrl } = usePrivateImageUrl(meal.image_url);
+  const displayImageUrl = privateImageUrl ?? unsplashUrl;
 
   return (
     <Pressable

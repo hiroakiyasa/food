@@ -1,5 +1,6 @@
 import { supabase } from '@/src/lib/supabase';
 import type { AIFoodAnalysis, NutritionEstimateBasis } from '@/src/types/nutrition';
+import { estimateJapaneseMealUncertainty } from '@/src/services/nutrition/japaneseMealEstimator';
 
 function finiteNumber(value: unknown, fallback = 0): number {
   const parsed = typeof value === 'number' ? value : Number(value);
@@ -22,7 +23,7 @@ function normalizeAnalysis(value: unknown): AIFoodAnalysis {
     const estimateBasis: NutritionEstimateBasis = basis === 'database' || basis === 'mock'
       ? basis
       : 'ai_estimate';
-    return {
+    const normalized = {
       name: String(item.name || item.matched_food_name || item.detected_name || `食品${index + 1}`),
       detected_name: item.detected_name ? String(item.detected_name) : undefined,
       matched_food_name: item.matched_food_name ? String(item.matched_food_name) : null,
@@ -43,6 +44,20 @@ function normalizeAnalysis(value: unknown): AIFoodAnalysis {
         item.salt_equivalent_g,
         sodiumMg * 2.54 / 1000,
       ),
+    };
+    const uncertainty = estimateJapaneseMealUncertainty(normalized);
+    return {
+      ...normalized,
+      portion_min_grams: finiteNumber(item.portion_min_grams, uncertainty.portionMinGrams),
+      portion_max_grams: finiteNumber(item.portion_max_grams, uncertainty.portionMaxGrams),
+      energy_min_kcal: finiteNumber(item.energy_min_kcal, uncertainty.energyMinKcal),
+      energy_max_kcal: finiteNumber(item.energy_max_kcal, uncertainty.energyMaxKcal),
+      hidden_ingredient_flags: Array.isArray(item.hidden_ingredient_flags)
+        ? item.hidden_ingredient_flags.map(String)
+        : uncertainty.hiddenIngredientFlags,
+      confirmation_prompt: item.confirmation_prompt
+        ? String(item.confirmation_prompt)
+        : uncertainty.confirmationPrompt,
     };
   });
 

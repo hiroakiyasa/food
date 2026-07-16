@@ -18,9 +18,10 @@ import { WeeklyCalendarStrip } from '@/src/components/home/WeeklyCalendarStrip';
 import { JoyfulProgressRing } from '@/src/components/joyful/JoyfulProgressRing';
 import { MealSectionCard } from '@/src/components/record/MealSectionCard';
 import { QuickAddBar } from '@/src/components/record/QuickAddBar';
+import { DailyCoachCard } from '@/src/components/coaching/DailyCoachCard';
 import { OfflineIndicator } from '@/src/components/ui/OfflineIndicator';
 import { useDailySummary } from '@/src/hooks/useDailySummary';
-import { useMealsByDate } from '@/src/hooks/useMeals';
+import { useCreateMeal, useMealsByDate } from '@/src/hooks/useMeals';
 import { useNutritionTargets } from '@/src/hooks/useNutritionTargets';
 import { MEAL_TYPE_LABELS, type MealType } from '@/src/lib/constants';
 import {
@@ -54,6 +55,52 @@ export default function RecordScreen() {
   const { data: dailySummary } = useDailySummary(selectedDate);
   const router = useRouter();
   const today = getToday();
+  const previousDate = useMemo(() => {
+    const date = new Date(`${selectedDate}T12:00:00`);
+    date.setDate(date.getDate() - 1);
+    return date.toISOString().slice(0, 10);
+  }, [selectedDate]);
+  const { data: previousMeals = [] } = useMealsByDate(previousDate);
+  const createMeal = useCreateMeal();
+
+  const repeatMeal = async (source: (typeof previousMeals)[number]) => {
+    const sourceTime = source.eaten_at.split('T')[1] ?? '12:00:00';
+    await createMeal.mutateAsync({
+      meal: {
+        meal_type: source.meal_type,
+        eaten_at: `${selectedDate}T${sourceTime}`,
+        image_url: source.image_url,
+        total_energy_kcal: source.total_energy_kcal,
+        total_protein_g: source.total_protein_g,
+        total_fat_g: source.total_fat_g,
+        total_carbohydrate_g: source.total_carbohydrate_g,
+        total_fiber_g: source.total_fiber_g,
+        total_sodium_mg: source.total_sodium_mg,
+        notes: `前日の記録からコピー${source.notes ? ` / ${source.notes}` : ''}`,
+      },
+      items: source.meal_items.map((item) => ({
+        food_item_id: item.food_item_id,
+        commercial_product_id: item.commercial_product_id,
+        ai_detected_name: item.ai_detected_name,
+        portion_grams: item.portion_grams,
+        confidence: item.confidence,
+        energy_kcal: item.energy_kcal,
+        protein_g: item.protein_g,
+        fat_g: item.fat_g,
+        carbohydrate_g: item.carbohydrate_g,
+        fiber_g: item.fiber_g,
+        sodium_mg: item.sodium_mg,
+        estimate_basis: item.estimate_basis,
+        database_source: item.database_source,
+        portion_min_grams: item.portion_min_grams,
+        portion_max_grams: item.portion_max_grams,
+        energy_min_kcal: item.energy_min_kcal,
+        energy_max_kcal: item.energy_max_kcal,
+        salt_equivalent_g: item.salt_equivalent_g,
+        hidden_ingredient_flags: item.hidden_ingredient_flags,
+      })),
+    });
+  };
 
   const totals = useMemo(() => meals.reduce(
     (sum, meal) => ({
@@ -61,8 +108,10 @@ export default function RecordScreen() {
       protein: sum.protein + (meal.total_protein_g ?? 0),
       fat: sum.fat + (meal.total_fat_g ?? 0),
       carbs: sum.carbs + (meal.total_carbohydrate_g ?? 0),
+      fiber: sum.fiber + (meal.total_fiber_g ?? 0),
+      sodium: sum.sodium + (meal.total_sodium_mg ?? 0),
     }),
-    { calories: 0, protein: 0, fat: 0, carbs: 0 },
+    { calories: 0, protein: 0, fat: 0, carbs: 0, fiber: 0, sodium: 0 },
   ), [meals]);
 
   const targetCalories = nutritionTargets?.energy_kcal ?? 2000;
@@ -181,6 +230,17 @@ export default function RecordScreen() {
         </View>
       </View>
 
+      <DailyCoachCard
+        totals={{ calories: totals.calories, protein: totals.protein, fiber: totals.fiber, sodium: totals.sodium }}
+        targets={{
+          calories: targetCalories,
+          protein: nutritionTargets?.protein_g ?? 75,
+          fiber: nutritionTargets?.fiber_g ?? 21,
+          sodium: nutritionTargets?.sodium_mg ?? 2600,
+        }}
+        isDark={isDark}
+      />
+
       {isLoading ? (
         <View style={styles.stateCard}>
           <ActivityIndicator color={palette.primary} />
@@ -217,15 +277,41 @@ export default function RecordScreen() {
             <Text style={[styles.quickSubtitle, { color: colors.textSecondary }]}>いちばん楽な方法を選んでください</Text>
           </View>
           <Pressable
-            onPress={() => router.push('/(modals)/barcode' as never)}
+            onPress={() => router.push('/(modals)/recipe-import' as never)}
             style={({ pressed: isPressed }) => [styles.barcodeButton, pressed(isPressed)]}
             accessibilityRole="button"
-            accessibilityLabel="バーコードで食品を追加"
+            accessibilityLabel="レシピURLを取り込む"
           >
-            <FontAwesome name="barcode" size={18} color={palette.warning} />
+            <FontAwesome name="book" size={18} color={palette.warning} />
           </Pressable>
         </View>
         <QuickAddBar isDark={isDark} />
+        {previousMeals.length > 0 && (
+          <View style={styles.repeatBlock}>
+            <Text style={[styles.repeatTitle, { color: colors.text }]}>昨日と同じものをすぐ記録</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.repeatRow}>
+              {previousMeals.slice(0, 6).map((meal) => (
+                <Pressable
+                  key={meal.id}
+                  onPress={() => void repeatMeal(meal)}
+                  disabled={createMeal.isPending}
+                  style={({ pressed: isPressed }) => [
+                    styles.repeatChip,
+                    { backgroundColor: colors.surface, borderColor: colors.border },
+                    pressed(isPressed),
+                  ]}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${MEAL_TYPE_LABELS[meal.meal_type as MealType]}を昨日と同じ内容で記録`}
+                >
+                  <FontAwesome name="repeat" size={13} color={palette.primary} />
+                  <Text style={[styles.repeatChipText, { color: colors.text }]} numberOfLines={1}>
+                    {meal.meal_items.map((item) => item.ai_detected_name).join('・') || MEAL_TYPE_LABELS[meal.meal_type as MealType]}
+                  </Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+        )}
       </View>
     </ScrollView>
   );
@@ -304,6 +390,20 @@ const styles = StyleSheet.create({
   },
   stateText: { ...typography.body, textAlign: 'center' },
   quickSection: { marginTop: spacing.lg },
+  repeatBlock: { marginTop: spacing.lg, gap: spacing.sm },
+  repeatTitle: { ...typography.bodyBold },
+  repeatRow: { gap: spacing.sm, paddingRight: spacing.xl },
+  repeatChip: {
+    maxWidth: 220,
+    minHeight: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.full,
+    borderWidth: 1,
+  },
+  repeatChipText: { ...typography.caption1, flexShrink: 1 },
   quickHeading: {
     flexDirection: 'row',
     alignItems: 'center',

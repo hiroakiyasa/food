@@ -58,6 +58,12 @@ export interface AIFoodAnalysisItem {
   fiber_g: number;
   sodium_mg: number;
   salt_equivalent_g: number;
+  portion_min_grams: number;
+  portion_max_grams: number;
+  energy_min_kcal: number;
+  energy_max_kcal: number;
+  hidden_ingredient_flags: string[];
+  confirmation_prompt: string | null;
 }
 
 export interface AIFoodAnalysis {

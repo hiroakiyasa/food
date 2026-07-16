@@ -5,6 +5,7 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MEAL_TYPE_LABELS, type MealType } from '@/src/lib/constants';
 import { useMealItemThumb } from '@/src/hooks/useMealItemImage';
+import { usePrivateImageUrl } from '@/src/hooks/usePrivateImageUrl';
 import { palette, pressed, radius, shadow, spacing, typography } from '@/src/lib/theme';
 import type { Database } from '@/src/types/database';
 
@@ -23,7 +24,8 @@ const MEAL_META: Record<MealType, { icon: FAIcon; color: string; soft: string }>
 function MealPhoto({ meal }: { meal: MealWithItems }) {
   const firstName = meal.meal_items?.[0]?.ai_detected_name ?? meal.meal_type;
   const { data: thumbnail } = useMealItemThumb(firstName);
-  const uri = meal.image_url ?? thumbnail;
+  const { data: privateImageUrl } = usePrivateImageUrl(meal.image_url);
+  const uri = privateImageUrl ?? thumbnail;
 
   if (!uri) {
     return (

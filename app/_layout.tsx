@@ -218,6 +218,10 @@ function RootLayoutNav() {
             options={{ presentation: 'modal', title: '週間食事プラン' }}
           />
           <Stack.Screen
+            name="(modals)/recipe-import"
+            options={{ presentation: 'modal', headerShown: false }}
+          />
+          <Stack.Screen
             name="(modals)/fasting-setup"
             options={{ presentation: 'modal', title: '食事時間の設定' }}
           />

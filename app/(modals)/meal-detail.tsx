@@ -18,6 +18,8 @@ import { generateId } from '@/src/lib/localDb';
 import { uploadMealImage } from '@/src/lib/storage';
 import { analyzeFoodImage } from '@/src/services/ai/analyzeMeal';
 import { useAuthStore } from '@/src/stores/authStore';
+import { usePrivateImageUrl } from '@/src/hooks/usePrivateImageUrl';
+import { recordMealAnalysisEvent } from '@/src/services/analytics/mealAnalysisMetrics';
 import { MEAL_TYPES, MEAL_TYPE_LABELS, type MealType } from '@/src/lib/constants';
 import { TrafficLightBadge, getItemTrafficLight } from '@/src/components/ui/TrafficLightBadge';
 import { MetabolicPredictionCard } from '@/src/components/meal/MetabolicPredictionCard';
@@ -40,6 +42,7 @@ function ExistingMealView({ id }: { id: string }) {
   const prediction = useMetabolicPrediction(meal?.meal_items ?? []);
   const mealScore = useMealScore(meal?.meal_items ?? []);
   const [scoreSheetVisible, setScoreSheetVisible] = useState(false);
+  const { data: privateImageUrl } = usePrivateImageUrl(meal?.image_url);
 
   const handleDelete = () => {
     Alert.alert('食事を削除', 'この食事記録を削除しますか？', [
@@ -89,9 +92,9 @@ function ExistingMealView({ id }: { id: string }) {
       showsVerticalScrollIndicator={false}
     >
       {/* Meal image */}
-      {meal.image_url && (
+      {privateImageUrl && (
         <Image
-          source={{ uri: meal.image_url }}
+          source={{ uri: privateImageUrl }}
           style={styles.image}
           accessibilityIgnoresInvertColors
         />
@@ -268,6 +271,7 @@ export default function MealDetailModal() {
     () => pendingMeal?.mealType ?? 'lunch',
   );
   const [saving, setSaving] = useState(false);
+  const [initialAnalysisItems, setInitialAnalysisItems] = useState(0);
   const analysisTotals = useMemo(() => (
     pendingMeal?.analysis?.items.reduce(
       (acc, item) => ({
@@ -299,9 +303,24 @@ export default function MealDetailModal() {
   }, [pendingMeal?.isAnalyzing]);
 
   const analyzeMealImage = async (base64: string) => {
+    const startedAt = Date.now();
     try {
       const analysis = await analyzeFoodImage(base64);
       setAnalysis(analysis);
+      setInitialAnalysisItems(analysis.items.length);
+      if (user) {
+        void recordMealAnalysisEvent({
+          userId: user.id,
+          eventType: 'analyzed',
+          model: analysis.model,
+          detectedItems: analysis.items.length,
+          latencyMs: Date.now() - startedAt,
+          metrics: {
+            databaseCoverage: analysis.items.filter((item) => item.estimate_basis === 'database').length,
+            averageConfidence: analysis.items.reduce((sum, item) => sum + item.confidence, 0) / analysis.items.length,
+          },
+        });
+      }
       if (!pendingMeal?.mealType && analysis.meal_type_guess) {
         const guess = analysis.meal_type_guess as MealType;
         if (MEAL_TYPES.includes(guess)) {
@@ -310,6 +329,14 @@ export default function MealDetailModal() {
       }
     } catch (err) {
       setError((err as Error).message);
+      if (user) {
+        void recordMealAnalysisEvent({
+          userId: user.id,
+          eventType: 'failed',
+          latencyMs: Date.now() - startedAt,
+          metrics: { message: (err as Error).message.slice(0, 160) },
+        });
+      }
     }
   };
 
@@ -356,7 +383,28 @@ export default function MealDetailModal() {
           carbohydrate_g: item.carbohydrate_g,
           fiber_g: item.fiber_g,
           sodium_mg: item.sodium_mg,
+          estimate_basis: item.estimate_basis,
+          database_source: item.database_source ?? null,
+          portion_min_grams: item.portion_min_grams,
+          portion_max_grams: item.portion_max_grams,
+          energy_min_kcal: item.energy_min_kcal,
+          energy_max_kcal: item.energy_max_kcal,
+          salt_equivalent_g: item.salt_equivalent_g,
+          hidden_ingredient_flags: item.hidden_ingredient_flags,
         })),
+      });
+
+      void recordMealAnalysisEvent({
+        userId: user.id,
+        mealId,
+        eventType: 'accepted',
+        model: analysis.model,
+        detectedItems: initialAnalysisItems || analysis.items.length,
+        correctedItems: Math.max(0, initialAnalysisItems - analysis.items.length),
+        metrics: {
+          finalEnergyKcal: totals.energy_kcal,
+          finalSaltGrams: totals.salt_equivalent_g,
+        },
       });
 
       clearPending();
@@ -548,6 +596,9 @@ export default function MealDetailModal() {
                   <Text style={[typography.caption1, { color: c.text, fontWeight: '700' }]}>
                     {Math.round(item.energy_kcal)} kcal
                   </Text>
+                  <Text style={[typography.caption2, { color: c.textMuted }]}>
+                    推定 {Math.round(item.energy_min_kcal)}〜{Math.round(item.energy_max_kcal)} kcal
+                  </Text>
                   <Text style={[typography.caption2, { color: palette.protein }]}>
                     P {item.protein_g.toFixed(1)}g
                   </Text>
@@ -598,6 +649,54 @@ export default function MealDetailModal() {
                   写真判定 {Math.round(item.confidence * 100)}%
                   {item.database_source ? ` ・ ${item.database_source.toUpperCase()}` : ''}
                 </Text>
+                {item.confirmation_prompt && (
+                  <View style={[styles.confirmationBox, { backgroundColor: '#FFF8E7' }]}>
+                    <FontAwesome name="question-circle" size={15} color="#9A6A12" />
+                    <View style={styles.confirmationCopy}>
+                      <Text style={[typography.caption1, { color: '#73500E', fontWeight: '700' }]}>
+                        {item.confirmation_prompt}
+                      </Text>
+                      {item.hidden_ingredient_flags.includes('broth') && (
+                        <View style={styles.confirmationActions}>
+                          {[
+                            { label: '残した', ratio: 0.35 },
+                            { label: '半分', ratio: 0.65 },
+                            { label: '全部', ratio: 1 },
+                          ].map((choice) => (
+                            <Pressable
+                              key={choice.label}
+                              onPress={() => setAnalysisItemPortion(i, Math.max(1, item.portion_grams * choice.ratio))}
+                              style={({ pressed: p }) => [styles.confirmationChip, pressed(p)]}
+                              accessibilityRole="button"
+                              accessibilityLabel={`${choice.label}として量を補正`}
+                            >
+                              <Text style={styles.confirmationChipText}>{choice.label}</Text>
+                            </Pressable>
+                          ))}
+                        </View>
+                      )}
+                      {item.hidden_ingredient_flags.includes('rice_bowl_size') && (
+                        <View style={styles.confirmationActions}>
+                          {[
+                            { label: '小盛り', grams: 100 },
+                            { label: '普通', grams: 150 },
+                            { label: '大盛り', grams: 220 },
+                          ].map((choice) => (
+                            <Pressable
+                              key={choice.label}
+                              onPress={() => setAnalysisItemPortion(i, choice.grams)}
+                              style={({ pressed: p }) => [styles.confirmationChip, pressed(p)]}
+                              accessibilityRole="button"
+                              accessibilityLabel={`ご飯${choice.label}${choice.grams}グラム`}
+                            >
+                              <Text style={styles.confirmationChipText}>{choice.label}</Text>
+                            </Pressable>
+                          ))}
+                        </View>
+                      )}
+                    </View>
+                  </View>
+                )}
               </View>
             );
           })}
@@ -687,6 +786,7 @@ const styles = StyleSheet.create({
   itemTitleBlock: { flex: 1, gap: 2 },
   itemNutrients: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: spacing.md,
     marginBottom: spacing.sm,
   },
@@ -727,5 +827,25 @@ const styles = StyleSheet.create({
   portionValue: { ...typography.bodyBold, minWidth: 48, textAlign: 'center' },
   removeButton: { marginLeft: 'auto', width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
   confidenceLabel: { ...typography.caption2, textAlign: 'right', marginTop: 5 },
+  confirmationBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.sm,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    marginTop: spacing.sm,
+  },
+  confirmationCopy: { flex: 1, gap: spacing.sm },
+  confirmationActions: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
+  confirmationChip: {
+    minHeight: 36,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.full,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E8D39B',
+  },
+  confirmationChipText: { ...typography.caption1, color: '#73500E', fontWeight: '700' },
   disclaimer: { ...typography.caption2, marginHorizontal: spacing.xl, lineHeight: 17 },
 });

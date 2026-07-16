@@ -3,6 +3,7 @@ import { useAuthStore } from '@/src/stores/authStore';
 import { mealsDb, type LocalMeal, type LocalMealItem } from '@/src/lib/localDb';
 import { upsertDailySummary } from '@/src/services/nutrition/dailySummary';
 import { getToday } from '@/src/utils/formatters';
+import { enqueueMealSync, syncMealsForUser } from '@/src/services/sync/mealSyncService';
 
 // Re-export types that downstream components expect (shape-compatible with DB types)
 export type Meal = LocalMeal;
@@ -24,6 +25,7 @@ export function useMealsByDate(date: string) {
     queryKey: ['meals', user?.id, date],
     queryFn: async (): Promise<MealWithItems[]> => {
       if (!user) return [];
+      await syncMealsForUser(user.id).catch(() => undefined);
       return mealsDb.getByDate(user.id, date);
     },
     enabled: !!user,
@@ -59,6 +61,8 @@ export function useUpdateMeal() {
     }) => {
       if (!user) throw new Error('Not authenticated');
       await mealsDb.update(user.id, id, meal as Partial<LocalMeal>, items);
+      await enqueueMealSync(user.id, id, 'upsert');
+      await syncMealsForUser(user.id).catch(() => undefined);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['meals'] });
@@ -76,6 +80,8 @@ export function useDeleteMeal() {
     mutationFn: async (id: string) => {
       if (!user) throw new Error('Not authenticated');
       await mealsDb.delete(user.id, id);
+      await enqueueMealSync(user.id, id, 'delete');
+      await syncMealsForUser(user.id).catch(() => undefined);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['meals'] });
@@ -114,7 +120,10 @@ export function useCreateMeal() {
         notes: meal.notes ?? null,
       };
 
-      return mealsDb.create(user.id, mealData, items);
+      const created = await mealsDb.create(user.id, mealData, items);
+      await enqueueMealSync(user.id, created.id, 'upsert');
+      await syncMealsForUser(user.id).catch(() => undefined);
+      return created;
     },
     onMutate: async ({ meal, items }) => {
       if (!user) return;

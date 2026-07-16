@@ -2,17 +2,24 @@
  * localDb.ts — AsyncStorage ベースのローカルデータベース
  *
  * 食事・栄養目標・日次集計・ストリーク・サジェスト・週次バッファを
- * デバイス内に保存する。Supabase は認証と Edge Functions のみ使用。
+ * デバイス内へ即時保存するオフラインキャッシュ。認証済みユーザーは
+ * mealSyncService が Supabase と双方向同期する。
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ─── ID generation (crypto.randomUUID() の代替) ───────────────────────────
 
 export function generateId(): string {
-  const ts = Date.now().toString(36);
-  const r1 = Math.random().toString(36).substring(2, 7);
-  const r2 = Math.random().toString(36).substring(2, 7);
-  return `${ts}-${r1}-${r2}`;
+  // Supabase の uuid PK と互換な RFC 4122 v4。Hermes / Web の双方で動く。
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (token) => {
+    const random = Math.floor(Math.random() * 16);
+    const value = token === 'x' ? random : (random & 0x3) | 0x8;
+    return value.toString(16);
+  });
+}
+
+export function isUuid(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
 
 // ─── Storage keys ─────────────────────────────────────────────────────────
@@ -80,6 +87,14 @@ export interface LocalMealItem {
   carbohydrate_g: number | null;
   fiber_g: number | null;
   sodium_mg: number | null;
+  estimate_basis?: string | null;
+  database_source?: string | null;
+  portion_min_grams?: number | null;
+  portion_max_grams?: number | null;
+  energy_min_kcal?: number | null;
+  energy_max_kcal?: number | null;
+  salt_equivalent_g?: number | null;
+  hidden_ingredient_flags?: string[];
   created_at: string;
 }
 
@@ -149,6 +164,14 @@ export const mealsDb = {
       carbohydrate_g: item.carbohydrate_g ?? null,
       fiber_g: item.fiber_g ?? null,
       sodium_mg: item.sodium_mg ?? null,
+      estimate_basis: item.estimate_basis ?? null,
+      database_source: item.database_source ?? null,
+      portion_min_grams: item.portion_min_grams ?? null,
+      portion_max_grams: item.portion_max_grams ?? null,
+      energy_min_kcal: item.energy_min_kcal ?? null,
+      energy_max_kcal: item.energy_max_kcal ?? null,
+      salt_equivalent_g: item.salt_equivalent_g ?? null,
+      hidden_ingredient_flags: item.hidden_ingredient_flags ?? [],
     }));
 
     await Promise.all([
@@ -193,6 +216,14 @@ export const mealsDb = {
         carbohydrate_g: item.carbohydrate_g ?? null,
         fiber_g: item.fiber_g ?? null,
         sodium_mg: item.sodium_mg ?? null,
+        estimate_basis: item.estimate_basis ?? null,
+        database_source: item.database_source ?? null,
+        portion_min_grams: item.portion_min_grams ?? null,
+        portion_max_grams: item.portion_max_grams ?? null,
+        energy_min_kcal: item.energy_min_kcal ?? null,
+        energy_max_kcal: item.energy_max_kcal ?? null,
+        salt_equivalent_g: item.salt_equivalent_g ?? null,
+        hidden_ingredient_flags: item.hidden_ingredient_flags ?? [],
       }));
       updatedItems = [...remaining, ...newItems];
     }
@@ -214,11 +245,86 @@ export const mealsDb = {
     ]);
   },
 
+  async deleteMany(userId: string, ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+    const targetIds = new Set(ids);
+    const [allMeals, allItems] = await Promise.all([
+      readAll<LocalMeal>(KEYS.meals),
+      readAll<LocalMealItem>(KEYS.mealItems),
+    ]);
+    const ownedIds = new Set(
+      allMeals
+        .filter((meal) => meal.user_id === userId && targetIds.has(meal.id))
+        .map((meal) => meal.id),
+    );
+    await Promise.all([
+      writeAll(KEYS.meals, allMeals.filter((meal) => !ownedIds.has(meal.id))),
+      writeAll(KEYS.mealItems, allItems.filter((item) => !ownedIds.has(item.meal_id))),
+    ]);
+  },
+
   async getByUserAndPeriod(userId: string, from: string, to: string): Promise<LocalMeal[]> {
     const all = await readAll<LocalMeal>(KEYS.meals);
     return all
       .filter((m) => m.user_id === userId && m.eaten_at >= from && m.eaten_at <= to)
       .sort((a, b) => a.eaten_at.localeCompare(b.eaten_at));
+  },
+
+  async getAllWithItems(userId: string): Promise<(LocalMeal & { meal_items: LocalMealItem[] })[]> {
+    const [allMeals, allItems] = await Promise.all([
+      readAll<LocalMeal>(KEYS.meals),
+      readAll<LocalMealItem>(KEYS.mealItems),
+    ]);
+    return allMeals
+      .filter((meal) => meal.user_id === userId)
+      .map((meal) => ({
+        ...meal,
+        meal_items: allItems.filter((item) => item.meal_id === meal.id),
+      }));
+  },
+
+  async upsertFromCloud(
+    userId: string,
+    remoteMeals: (LocalMeal & { meal_items: LocalMealItem[] })[],
+  ): Promise<void> {
+    const [allMeals, allItems] = await Promise.all([
+      readAll<LocalMeal>(KEYS.meals),
+      readAll<LocalMealItem>(KEYS.mealItems),
+    ]);
+    const remoteIds = new Set(remoteMeals.map((meal) => meal.id));
+    const localById = new Map(allMeals.map((meal) => [meal.id, meal]));
+    const mergedRemote = remoteMeals.map((remote) => {
+      const local = localById.get(remote.id);
+      return local && local.updated_at > remote.updated_at ? local : remote;
+    });
+    const nextMeals = [
+      ...allMeals.filter((meal) => meal.user_id !== userId || !remoteIds.has(meal.id)),
+      ...mergedRemote,
+    ];
+    const nextItems = [
+      ...allItems.filter((item) => !remoteIds.has(item.meal_id)),
+      ...remoteMeals.flatMap((meal) => meal.meal_items),
+    ];
+    await Promise.all([writeAll(KEYS.meals, nextMeals), writeAll(KEYS.mealItems, nextItems)]);
+  },
+
+  async migrateLegacyIds(userId: string): Promise<void> {
+    const [allMeals, allItems] = await Promise.all([
+      readAll<LocalMeal>(KEYS.meals),
+      readAll<LocalMealItem>(KEYS.mealItems),
+    ]);
+    const idMap = new Map<string, string>();
+    for (const meal of allMeals) {
+      if (meal.user_id === userId && !isUuid(meal.id)) idMap.set(meal.id, generateId());
+    }
+    if (idMap.size === 0) return;
+    const nextMeals = allMeals.map((meal) => ({ ...meal, id: idMap.get(meal.id) ?? meal.id }));
+    const nextItems = allItems.map((item) => ({
+      ...item,
+      id: isUuid(item.id) ? item.id : generateId(),
+      meal_id: idMap.get(item.meal_id) ?? item.meal_id,
+    }));
+    await Promise.all([writeAll(KEYS.meals, nextMeals), writeAll(KEYS.mealItems, nextItems)]);
   },
 };
 
@@ -336,6 +442,8 @@ export interface LocalStreak {
   last_recorded_date: string;
   created_at: string;
   updated_at: string;
+  grace_days_used?: number;
+  last_gap_date?: string | null;
 }
 
 export const streaksDb = {
@@ -350,17 +458,21 @@ export const streaksDb = {
     const idx = all.findIndex((s) => s.user_id === userId && s.streak_type === 'daily_logging');
     const today = date;
     const yesterday = new Date(new Date(date).getTime() - 86400000).toISOString().split('T')[0];
+    const dayBeforeYesterday = new Date(new Date(date).getTime() - 172800000).toISOString().split('T')[0];
 
     if (idx >= 0) {
       const s = all[idx]!;
       if (s.last_recorded_date === today) return; // already recorded today
-      const newCount = s.last_recorded_date === yesterday ? s.current_count + 1 : 1;
+      const usedGrace = s.last_recorded_date === dayBeforeYesterday;
+      const newCount = s.last_recorded_date === yesterday || usedGrace ? s.current_count + 1 : 1;
       all[idx] = {
         ...s,
         current_count: newCount,
         longest_count: Math.max(s.longest_count, newCount),
         last_recorded_date: today,
         updated_at: now,
+        grace_days_used: (s.grace_days_used ?? 0) + (usedGrace ? 1 : 0),
+        last_gap_date: usedGrace ? yesterday : s.last_gap_date ?? null,
       };
     } else {
       all.push({
@@ -372,6 +484,8 @@ export const streaksDb = {
         last_recorded_date: today,
         created_at: now,
         updated_at: now,
+        grace_days_used: 0,
+        last_gap_date: null,
       });
     }
     await writeAll(KEYS.streaks, all);

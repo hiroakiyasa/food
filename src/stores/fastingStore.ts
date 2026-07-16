@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+const { persist, createJSONStorage } = require('zustand/middleware') as typeof import('zustand/middleware');
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { FastingProtocol, FastingSession } from '@/src/services/fasting/fastingEngine';
 

@@ -29,7 +29,12 @@ npm run ios
 ## 検証
 
 ```bash
-npx tsc --noEmit
+npm run typecheck
+npm test
+npx expo export --platform web
 ```
 
 UI変更はiOSまたはAndroidで対象画面のスクリーンショットも確認してください。
+
+P0〜P2の栄養コーチ機能、データ契約、運用上の注意は
+`docs/p0-p2-nutrition-coach.md` にまとめています。
