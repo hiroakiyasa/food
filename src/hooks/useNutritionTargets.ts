@@ -3,8 +3,19 @@ import { useAuthStore } from '@/src/stores/authStore';
 import { nutritionTargetsDb, activeConditionsDb, type LocalNutritionTarget } from '@/src/lib/localDb';
 import { getToday } from '@/src/utils/formatters';
 import { supabase } from '@/src/lib/supabase';
+import { ALL_GUIDELINES } from '@/src/services/nutrition/conditionGoals';
 
 const GLP1_CONDITION = 'GLP-1薬服用中';
+
+// True when any active condition medically restricts protein (e.g. CKD) —
+// the GLP-1 protein boost must never override such a restriction.
+function hasProteinRestriction(conditions: string[]): boolean {
+  return ALL_GUIDELINES.some(
+    (g) =>
+      conditions.includes(g.subCategoryName) &&
+      g.focusNutrients.some((fn) => fn.nutrientKey === 'protein_g' && fn.action === 'limit'),
+  );
+}
 
 export function useNutritionTargets() {
   const user = useAuthStore((s) => s.user);
@@ -40,8 +51,13 @@ export function useNutritionTargets() {
         targets = await nutritionTargetsDb.getLatest(user.id);
       }
       if (!targets) return null;
-      // GLP-1薬服用中はタンパク質目標を1.2倍に増加（筋肉量維持）
-      if (conditions.includes(GLP1_CONDITION) && targets.protein_g != null) {
+      // GLP-1薬服用中はタンパク質目標を1.2倍に増加（筋肉量維持）。
+      // ただしタンパク質制限のある条件（腎臓病など）があるときは適用しない。
+      if (
+        conditions.includes(GLP1_CONDITION) &&
+        targets.protein_g != null &&
+        !hasProteinRestriction(conditions)
+      ) {
         return { ...targets, protein_g: Math.round(targets.protein_g * 1.2) };
       }
       return targets;

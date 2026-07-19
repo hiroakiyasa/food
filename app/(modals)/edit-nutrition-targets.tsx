@@ -135,6 +135,23 @@ export default function EditNutritionTargetsModal() {
       return;
     }
 
+    // Safety ranges: reject targets that are dangerous or clearly typos.
+    const ranges: Array<[keyof typeof parsed, number, number, string]> = [
+      ['energy_kcal', 1000, 6000, 'カロリーは1000〜6000kcalの範囲で設定してください。1000kcalを下回る目標は健康を損なうおそれがあります'],
+      ['protein_g', 10, 400, 'タンパク質は10〜400gの範囲で入力してください'],
+      ['fat_g', 10, 300, '脂質は10〜300gの範囲で入力してください'],
+      ['carbohydrate_g', 20, 800, '炭水化物は20〜800gの範囲で入力してください'],
+      ['fiber_g', 0, 100, '食物繊維は0〜100gの範囲で入力してください'],
+      ['salt_g', 1, 30, '塩分は1〜30gの範囲で入力してください'],
+    ];
+    for (const [key, min, max, message] of ranges) {
+      const value = parsed[key];
+      if (value != null && (value < min || value > max)) {
+        Alert.alert('入力エラー', message);
+        return;
+      }
+    }
+
     try {
       await updateTargets.mutateAsync(parsed);
       router.dismiss();

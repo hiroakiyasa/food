@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import {
-  View, Text, Pressable, StyleSheet, Alert,
+  View, Text, Pressable, StyleSheet, Alert, Linking,
   TextInput, ScrollView, ActivityIndicator, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { supabase } from '@/src/lib/supabase';
 import { useCreateMeal } from '@/src/hooks/useMeals';
+import { eatenAtForDate, getToday } from '@/src/utils/formatters';
 import {
   palette, typography, spacing, radius, shadow,
   commonStyles, pressed, useThemeColors,
@@ -63,7 +64,8 @@ function NutritionRow({ label, value, unit }: { label: string; value: number | n
 
 export default function BarcodeModal() {
   const router = useRouter();
-  const { mealType: requestedMealType } = useLocalSearchParams<{ mealType?: string }>();
+  const { mealType: requestedMealType, date } = useLocalSearchParams<{ mealType?: string; date?: string }>();
+  const targetDate = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : getToday();
   const isDark = useColorScheme() === 'dark';
   const c = useThemeColors(isDark);
   const [permission, requestPermission] = useCameraPermissions();
@@ -81,18 +83,44 @@ export default function BarcodeModal() {
   const createMeal = useCreateMeal();
 
   if (!permission?.granted) {
+    const canAskAgain = permission?.canAskAgain ?? true;
     return (
       <View style={[styles.permissionContainer, { backgroundColor: c.bg }]}>
-        <Text style={[typography.title3, { color: c.text, marginBottom: spacing.md }]}>
+        <Text style={[typography.title3, { color: c.text, marginBottom: spacing.sm }]}>
           カメラへのアクセスが必要です
         </Text>
+        <Text
+          style={[
+            typography.body,
+            { color: c.textSecondary, textAlign: 'center', marginBottom: spacing.lg },
+          ]}
+        >
+          商品のバーコードを読み取るためにカメラを使用します。
+          {!canAskAgain && '\n設定アプリからカメラの利用を許可してください。'}
+        </Text>
         <Pressable
-          onPress={requestPermission}
+          onPress={() => {
+            if (canAskAgain) {
+              requestPermission();
+            } else {
+              Linking.openSettings();
+            }
+          }}
           style={({ pressed: p }) => [commonStyles.buttonPrimary, pressed(p)]}
           accessibilityRole="button"
-          accessibilityLabel="カメラを許可する"
+          accessibilityLabel={canAskAgain ? 'カメラを許可する' : '設定を開く'}
         >
-          <Text style={commonStyles.buttonText}>許可する</Text>
+          <Text style={commonStyles.buttonText}>
+            {canAskAgain ? '許可する' : '設定を開く'}
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => router.back()}
+          style={({ pressed: p }) => [styles.permissionCloseButton, pressed(p)]}
+          accessibilityRole="button"
+          accessibilityLabel="閉じる"
+        >
+          <Text style={[typography.bodyBold, { color: c.textSecondary }]}>閉じる</Text>
         </Pressable>
       </View>
     );
@@ -141,6 +169,7 @@ export default function BarcodeModal() {
       await createMeal.mutateAsync({
         meal: {
           meal_type: mealType,
+          eaten_at: eatenAtForDate(targetDate),
           total_energy_kcal: energy,
           total_protein_g: protein,
           total_fat_g: fat,
@@ -418,6 +447,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.xl,
+  },
+  permissionCloseButton: {
+    marginTop: spacing.lg,
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.xl,
   },
   topBar: { paddingTop: 60, paddingHorizontal: spacing.lg },
   closeButton: {

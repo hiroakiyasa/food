@@ -20,7 +20,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { supabase } from '@/src/lib/supabase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from 'expo-notifications';
 import { signUpWithEmail } from '@/src/lib/auth';
+import { useNotificationStore } from '@/src/stores/notificationStore';
 import { setGuestModeEnabled } from '@/src/lib/guestMode';
 import { useAuthStore } from '@/src/stores/authStore';
 import { isValidEmail, isValidPassword } from '@/src/utils/validators';
@@ -82,6 +85,8 @@ interface FormData {
 
 type BirthDateField = 'year' | 'month' | 'day';
 
+const ONBOARDING_FORM_KEY = 'onboarding_form_v1';
+
 function getDaysInMonth(year: number | null, month: number | null): number {
   if (!year || !month) return 31;
   return new Date(year, month, 0).getDate();
@@ -107,6 +112,7 @@ export default function OnboardingScreen() {
     protein: number;
     fat: number;
     carbs: number;
+    isMinor: boolean;
   } | null>(null);
 
   const [form, setForm] = useState<FormData>({
@@ -231,11 +237,41 @@ export default function OnboardingScreen() {
       ? birthMonth
       : birthDay;
 
-  // If user is already authenticated (e.g. came from login), skip to step 4
+  // If user is already authenticated (e.g. came from login), restore any
+  // inputs saved before the email-confirmation round trip and skip to step 4.
   useEffect(() => {
-    if (session && step < 4) {
-      setStep(4);
-    }
+    if (!session || step >= 4) return;
+    let mounted = true;
+    AsyncStorage.getItem(ONBOARDING_FORM_KEY)
+      .then((raw) => {
+        if (!mounted) return;
+        if (raw) {
+          const saved = JSON.parse(raw) as {
+            form?: Partial<FormData>;
+            birthYear?: number | null;
+            birthMonth?: number | null;
+            birthDay?: number | null;
+          };
+          if (saved.form) {
+            setForm((prev) => ({
+              ...prev,
+              ...saved.form,
+              password: '',
+              confirmPassword: '',
+            }));
+          }
+          if (saved.birthYear) setBirthYear(saved.birthYear);
+          if (saved.birthMonth) setBirthMonth(saved.birthMonth);
+          if (saved.birthDay) setBirthDay(saved.birthDay);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (mounted) setStep(4);
+      });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Determine if step 4 (target/pace/approach) should be skipped
@@ -263,6 +299,7 @@ export default function OnboardingScreen() {
       ? new Date(form.birthDate).getFullYear()
       : 1990;
     const age = new Date().getFullYear() - birthYear;
+    const isMinor = form.birthDate !== '' && age < 18;
 
     let bmr: number;
     if (form.gender === 'female') {
@@ -281,20 +318,35 @@ export default function OnboardingScreen() {
 
     let tdee = bmr * activityMultipliers[form.activityLevel];
 
-    // Adjust for goal
-    if (form.goal === 'diet') {
+    // Adjust for goal. Minors never get a calorie deficit — growth-phase
+    // restriction is unsafe, so their target stays at maintenance.
+    if (form.goal === 'diet' && !isMinor) {
       tdee = form.pace === 'aggressive' ? tdee - 500 : tdee - 300;
     } else if (form.goal === 'body_make') {
       tdee = tdee + 200;
     }
 
-    const calories = Math.round(tdee);
+    // Safety floor: never below BMR, and never below the commonly-accepted
+    // adult minimum (women 1200 / men 1500 kcal).
+    const genderFloor = form.gender === 'female' ? 1200 : 1500;
+    const floor = Math.max(genderFloor, Math.round(bmr));
+    const calories = Math.max(Math.round(tdee), floor);
     const protein = Math.round(weight * (form.goal === 'body_make' ? 2.0 : 1.2));
     const fat = Math.round((calories * 0.25) / 9);
-    const carbs = Math.round((calories - protein * 4 - fat * 9) / 4);
+    const carbs = Math.round(Math.max(0, calories - protein * 4 - fat * 9) / 4);
 
-    return { calories, protein, fat, carbs };
+    return { calories, protein, fat, carbs, isMinor };
   }, [form]);
+
+  // Persist non-sensitive onboarding inputs so they survive the
+  // email-confirmation round trip (sign up -> confirm -> log in -> resume).
+  const persistOnboardingForm = async () => {
+    const { password: _pw, confirmPassword: _cpw, ...safeForm } = form;
+    await AsyncStorage.setItem(
+      ONBOARDING_FORM_KEY,
+      JSON.stringify({ form: safeForm, birthYear, birthMonth, birthDay }),
+    ).catch(() => {});
+  };
 
   // Handle account creation (Step 3)
   const handleSignUp = async () => {
@@ -317,7 +369,18 @@ export default function OnboardingScreen() {
 
     setLoading(true);
     try {
-      await signUpWithEmail(form.email, form.password);
+      await persistOnboardingForm();
+      const { session: newSession } = await signUpWithEmail(form.email, form.password);
+      if (!newSession) {
+        // Email confirmation is required — the profile can only be saved
+        // after the user confirms and signs in. Inputs are already persisted.
+        Alert.alert(
+          '確認メールを送信しました',
+          `${form.email} 宛に確認メールを送信しました。メール内のリンクを開いて確認を完了し、ログインしてください。入力いただいた内容は保存されているので、続きから設定できます。`,
+          [{ text: 'ログイン画面へ', onPress: () => router.replace('/auth/login') }],
+        );
+        return;
+      }
       setStep(getNextStep(3));
     } catch (error) {
       Alert.alert('登録エラー', (error as Error).message);
@@ -405,6 +468,8 @@ export default function OnboardingScreen() {
         sodium_mg: 2300,
         salt_g: 6,
       } as Record<string, unknown>);
+
+      await AsyncStorage.removeItem(ONBOARDING_FORM_KEY).catch(() => {});
     } catch (error) {
       clearInterval(progressInterval);
       setGenerating(false);
@@ -417,20 +482,23 @@ export default function OnboardingScreen() {
       if (!useAuthStore.getState().user) {
         await setGuestModeEnabled(true);
       }
+      // Ask for notification permission at a meaningful moment (plan just
+      // created) and turn on the default meal reminders when granted.
+      try {
+        const { status: existing } = await Notifications.getPermissionsAsync();
+        const status = existing === 'granted'
+          ? existing
+          : (await Notifications.requestPermissionsAsync()).status;
+        if (status === 'granted') {
+          useNotificationStore.getState().setMealReminders(true);
+        }
+      } catch {
+        // Notifications unavailable (e.g. web/simulator) — not fatal.
+      }
       router.replace('/(tabs)');
     };
     complete().catch(() => {
       router.replace('/(tabs)');
-    });
-  };
-
-  const handleSkipAuthLater = () => {
-    const skip = async () => {
-      await setGuestModeEnabled(true);
-      setStep(getNextStep(3));
-    };
-    skip().catch(() => {
-      setStep(getNextStep(3));
     });
   };
 
@@ -688,7 +756,7 @@ export default function OnboardingScreen() {
     >
       <Text style={styles.stepTitle}>アカウント作成</Text>
       <Text style={styles.stepSubtitle}>
-        あなた専用プランの診断へ進みましょう
+        あなた専用プランの作成へ進みましょう
       </Text>
 
       <View style={styles.sectionSpacing}>
@@ -739,6 +807,9 @@ export default function OnboardingScreen() {
         <Pressable
           style={styles.checkboxRow}
           onPress={() => updateForm('agreedToTerms', !form.agreedToTerms)}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: form.agreedToTerms }}
+          accessibilityLabel="利用規約とプライバシーポリシーに同意します"
         >
           <View
             style={[
@@ -754,28 +825,46 @@ export default function OnboardingScreen() {
             利用規約・プライバシーポリシーに同意します
           </Text>
         </Pressable>
+        <View style={styles.legalLinkRow}>
+          <Pressable
+            onPress={() => router.push({ pathname: '/(modals)/legal', params: { doc: 'terms' } } as never)}
+            style={styles.legalLink}
+            accessibilityRole="link"
+            accessibilityLabel="利用規約を読む"
+          >
+            <Text style={styles.legalLinkText}>利用規約を読む</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => router.push({ pathname: '/(modals)/legal', params: { doc: 'privacy' } } as never)}
+            style={styles.legalLink}
+            accessibilityRole="link"
+            accessibilityLabel="プライバシーポリシーを読む"
+          >
+            <Text style={styles.legalLinkText}>プライバシーポリシーを読む</Text>
+          </Pressable>
+        </View>
       </View>
 
       <Pressable
         onPress={handleSignUp}
         disabled={loading}
         style={[styles.primaryButton, loading && styles.buttonDisabled]}
+        accessibilityRole="button"
+        accessibilityLabel="アカウントを作成"
       >
         <Text style={styles.primaryButtonText}>
           {loading ? '登録中...' : 'アカウントを作成'}
         </Text>
       </Pressable>
 
-      <Pressable
-        onPress={handleSkipAuthLater}
-        style={styles.skipAuthButton}
-      >
-        <Text style={styles.skipAuthButtonText}>後で登録する</Text>
-      </Pressable>
+      {/* NOTE: guest mode (後で登録する) removed — recording requires an
+          account, so the skip path only led to a dead end. */}
 
       <Pressable
         onPress={() => router.push('/auth/login')}
         style={styles.linkContainer}
+        accessibilityRole="button"
+        accessibilityLabel="ログイン画面へ"
       >
         <Text style={styles.linkText}>
           すでにアカウントをお持ちの方は{' '}
@@ -1057,6 +1146,12 @@ export default function OnboardingScreen() {
             </View>
           </View>
 
+          {planResult.isMinor && (
+            <Text style={styles.minorNote}>
+              18歳未満の方は成長期のため、減量ではなく現状維持のカロリーを設定しています。食事について気になることは保護者や医師にご相談ください。
+            </Text>
+          )}
+
           {form.displayName ? (
             <Text style={styles.resultMessage}>
               {form.displayName}さん、一緒に頑張りましょう
@@ -1104,7 +1199,9 @@ export default function OnboardingScreen() {
       case 1:
         return form.goal !== null;
       case 2:
-        return form.heightCm !== '' && form.weightKg !== '';
+        // Birth date is required: age drives the BMR calculation and the
+        // minor-safety gates, so a default-age fallback would be unsafe.
+        return form.heightCm !== '' && form.weightKg !== '' && form.birthDate !== '';
       case 3:
         return false; // Handled by handleSignUp
       case 4:
@@ -1501,6 +1598,22 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     lineHeight: 18,
   },
+  legalLinkRow: {
+    flexDirection: 'row',
+    gap: 16,
+    marginTop: 4,
+    marginLeft: 34,
+  },
+  legalLink: {
+    minHeight: 44,
+    justifyContent: 'center',
+  },
+  legalLinkText: {
+    fontSize: 13,
+    color: colors.primary,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
+  },
   linkContainer: {
     marginTop: 20,
   },
@@ -1831,6 +1944,15 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: 'center',
     marginBottom: 18,
+  },
+  minorNote: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    lineHeight: 19,
+    backgroundColor: '#FFF6E5',
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 16,
   },
 
   // Buttons

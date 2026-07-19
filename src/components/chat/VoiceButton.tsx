@@ -18,6 +18,8 @@ interface VoiceButtonProps {
   onPressSend?: () => void;
   sendMode: 'auto' | 'manual';
   isDark: boolean;
+  /** Disables starting a new recording while the assistant is responding. */
+  disabled?: boolean;
 }
 
 export function VoiceButton({
@@ -28,6 +30,7 @@ export function VoiceButton({
   onPressSend,
   sendMode,
   isDark,
+  disabled = false,
 }: VoiceButtonProps) {
   const c = useThemeColors(isDark);
   const pulseScale = useSharedValue(1);
@@ -74,12 +77,16 @@ export function VoiceButton({
           />
           <Pressable
             onPress={isRecording ? onPressStop : onPressStart}
+            disabled={disabled && !isRecording}
+            hitSlop={8}
             style={[
               styles.micButton,
               { backgroundColor: isRecording ? palette.error : palette.primary },
+              disabled && !isRecording && { opacity: 0.5 },
             ]}
             accessibilityRole="button"
             accessibilityLabel={isRecording ? '録音停止' : '録音開始'}
+            accessibilityState={{ disabled: disabled && !isRecording }}
           >
             <Ionicons
               name={isRecording ? 'stop' : 'mic'}
@@ -93,6 +100,7 @@ export function VoiceButton({
         {sendMode === 'manual' && isRecording && interimTranscript && (
           <Pressable
             onPress={onPressSend}
+            hitSlop={8}
             style={[styles.sendButton, { backgroundColor: palette.primary }]}
             accessibilityRole="button"
             accessibilityLabel="送信"

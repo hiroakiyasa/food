@@ -5,6 +5,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useCycleStore } from '@/src/stores/cycleStore';
+import { addDays, getToday } from '@/src/utils/formatters';
 import {
   PHASE_INFO, calcCurrentPhase,
 } from '@/src/services/cycle/cycleNutritionEngine';
@@ -30,9 +31,7 @@ const PERIOD_START_OPTIONS = [
 ];
 
 function dateFromDaysAgo(daysAgo: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() - daysAgo);
-  return d.toISOString().split('T')[0]!;
+  return addDays(getToday(), -daysAgo);
 }
 
 function daysAgoFromDate(dateStr: string | null): number | null {

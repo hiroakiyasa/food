@@ -129,13 +129,36 @@ async function pushOperation(userId: string, operation: SyncOperation): Promise<
   const { error: mealError } = await supabase.from('meals').upsert(mealPayload(meal));
   if (mealError) throw mealError;
 
-  const { error: deleteError } = await supabase.from('meal_items').delete().eq('meal_id', meal.id);
-  if (deleteError) throw deleteError;
-  if (meal.meal_items.length > 0) {
-    const { error: itemError } = await supabase
+  // Replace items without ever passing through an empty state on the server:
+  // upsert/insert the current items first, then delete only the stale ones.
+  // A crash mid-way leaves extra rows (cleaned up next sync), never zero rows.
+  const { data: existingRows, error: existingError } = await supabase
+    .from('meal_items')
+    .select('id')
+    .eq('meal_id', meal.id);
+  if (existingError) throw existingError;
+
+  const payloads = meal.meal_items.map(itemPayload);
+  const withId = payloads.filter((payload) => payload.id != null);
+  const withoutId = payloads.filter((payload) => payload.id == null);
+  if (withId.length > 0) {
+    const { error: upsertError } = await supabase
       .from('meal_items')
-      .insert(meal.meal_items.map(itemPayload));
-    if (itemError) throw itemError;
+      .upsert(withId, { onConflict: 'id' });
+    if (upsertError) throw upsertError;
+  }
+  if (withoutId.length > 0) {
+    const { error: insertError } = await supabase.from('meal_items').insert(withoutId);
+    if (insertError) throw insertError;
+  }
+
+  const keepIds = new Set(withId.map((payload) => payload.id as string));
+  const staleIds = (existingRows ?? [])
+    .map((row) => String(row.id))
+    .filter((id) => !keepIds.has(id));
+  if (staleIds.length > 0) {
+    const { error: staleError } = await supabase.from('meal_items').delete().in('id', staleIds);
+    if (staleError) throw staleError;
   }
 }
 
@@ -199,11 +222,12 @@ async function pullCloudMeals(userId: string, protectedMealIds: Set<string>): Pr
   await mealsDb.upsertFromCloud(userId, remoteMeals);
 }
 
-let activeSync: Promise<void> | null = null;
+const activeSyncByUser = new Map<string, Promise<void>>();
 
 export async function syncMealsForUser(userId: string): Promise<void> {
-  if (activeSync) return activeSync;
-  activeSync = (async () => {
+  const existing = activeSyncByUser.get(userId);
+  if (existing) return existing;
+  const syncPromise = (async () => {
     await mealsDb.migrateLegacyIds(userId);
     let queue = await readQueue(userId);
     const hasSyncedBefore = await AsyncStorage.getItem(statusKey(userId));
@@ -246,9 +270,10 @@ export async function syncMealsForUser(userId: string): Promise<void> {
       throw error;
     }
   })().finally(() => {
-    activeSync = null;
+    activeSyncByUser.delete(userId);
   });
-  return activeSync;
+  activeSyncByUser.set(userId, syncPromise);
+  return syncPromise;
 }
 
 export async function queueAllLocalMeals(userId: string): Promise<void> {

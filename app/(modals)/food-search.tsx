@@ -16,6 +16,7 @@ import {
   Modal,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { eatenAtForDate, getToday } from '@/src/utils/formatters';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useCreateMeal } from '@/src/hooks/useMeals';
 import { useFoodSearchInfinite, useFoodCategories } from '@/src/hooks/useFoodSearch';
@@ -407,7 +408,8 @@ function FoodDetailModal({
 
 export default function FoodSearchModal() {
   const router = useRouter();
-  const { mealType } = useLocalSearchParams<{ mealType?: string }>();
+  const { mealType, date } = useLocalSearchParams<{ mealType?: string; date?: string }>();
+  const targetDate = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : getToday();
   const isDark = useColorScheme() === 'dark';
   const c = useThemeColors(isDark);
 
@@ -428,6 +430,8 @@ export default function FoodSearchModal() {
     isFetchingNextPage,
     isLoading,
     isFetching,
+    isError: isSearchError,
+    refetch: refetchSearch,
   } = useFoodSearchInfinite(query, selectedCategory);
 
   const searchResults = useMemo(
@@ -506,7 +510,7 @@ export default function FoodSearchModal() {
       await createMeal.mutateAsync({
         meal: {
           meal_type: selectedMealType,
-          eaten_at: new Date().toISOString(),
+          eaten_at: eatenAtForDate(targetDate),
           image_url: mealImageUrl,
           total_energy_kcal: cartTotals.energy_kcal,
           total_protein_g: cartTotals.protein_g,
@@ -636,8 +640,25 @@ export default function FoodSearchModal() {
         </View>
       )}
 
+      {/* Error */}
+      {showFoodList && isSearchError && !isLoading && !isFetching && (
+        <View style={styles.hintContainer}>
+          <Text style={[typography.body, { color: c.textMuted, textAlign: 'center' }]}>
+            検索できませんでした。通信環境をご確認ください。
+          </Text>
+          <Pressable
+            onPress={() => refetchSearch()}
+            style={({ pressed: p }) => [styles.retryButton, pressed(p)]}
+            accessibilityRole="button"
+            accessibilityLabel="再試行"
+          >
+            <Text style={[typography.bodyBold, { color: palette.primary }]}>再試行</Text>
+          </Pressable>
+        </View>
+      )}
+
       {/* No results */}
-      {showFoodList && !isLoading && !isFetching && searchResults.length === 0 && (
+      {showFoodList && !isSearchError && !isLoading && !isFetching && searchResults.length === 0 && (
         <View style={styles.hintContainer}>
           <Text style={[typography.body, { color: c.textMuted, textAlign: 'center' }]}>
             一致する食品が見つかりませんでした
@@ -851,6 +872,12 @@ const styles = StyleSheet.create({
   hintContainer: {
     alignItems: 'center',
     paddingVertical: spacing['3xl'],
+  },
+  retryButton: {
+    marginTop: spacing.md,
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.xl,
   },
 
   // ─── Category grid ───

@@ -9,6 +9,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useFasting } from '@/src/hooks/useFasting';
+import { useProfile } from '@/src/hooks/useProfile';
 import {
   FASTING_PROTOCOLS,
   type FastingProtocol,
@@ -44,6 +45,20 @@ export default function FastingSetupModal() {
   const router = useRouter();
   const isDark = useColorScheme() === 'dark';
   const c = useThemeColors(isDark);
+  const { data: profile } = useProfile();
+
+  // Fasting is unsafe for growing minors — block it entirely under 18.
+  const isMinor = (() => {
+    if (!profile?.birth_date) return false;
+    const birth = new Date(profile.birth_date);
+    const now = new Date();
+    let age = now.getFullYear() - birth.getFullYear();
+    const beforeBirthday =
+      now.getMonth() < birth.getMonth() ||
+      (now.getMonth() === birth.getMonth() && now.getDate() < birth.getDate());
+    if (beforeBirthday) age -= 1;
+    return age < 18;
+  })();
 
   const {
     selectedProtocol,
@@ -67,6 +82,36 @@ export default function FastingSetupModal() {
     startFasting(localProtocol, localEatStart);
     router.dismiss();
   };
+
+  if (isMinor) {
+    return (
+      <ScrollView
+        style={[styles.container, { backgroundColor: c.bg }]}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={[typography.title1, { color: c.text, marginBottom: spacing.md }]}>
+          時間制限食の設定
+        </Text>
+        <View style={[styles.cautionBox, { backgroundColor: c.surface, borderColor: c.border }]}>
+          <Text style={[typography.bodyBold, { color: c.text, marginBottom: spacing.xs }]}>
+            18歳未満の方はご利用いただけません
+          </Text>
+          <Text style={[typography.caption1, styles.cautionText, { color: c.textSecondary }]}>
+            成長期には規則正しく十分な食事をとることが大切です。時間制限食（断食）は成長に必要な栄養が不足するおそれがあるため、この機能は提供していません。食事について気になることがあれば、保護者や医師にご相談ください。
+          </Text>
+        </View>
+        <Pressable
+          onPress={() => router.dismiss()}
+          style={({ pressed: p }) => [styles.cancelButton, pressed(p)]}
+          accessibilityRole="button"
+          accessibilityLabel="閉じる"
+        >
+          <Text style={[typography.body, { color: c.textSecondary }]}>閉じる</Text>
+        </Pressable>
+      </ScrollView>
+    );
+  }
 
   return (
     <ScrollView
@@ -222,6 +267,16 @@ export default function FastingSetupModal() {
         </View>
       )}
 
+      {/* Safety notice */}
+      <View style={[styles.cautionBox, { backgroundColor: c.surface, borderColor: c.border }]}>
+        <Text style={[typography.bodyBold, { color: c.text, marginBottom: spacing.xs }]}>
+          はじめる前にご確認ください
+        </Text>
+        <Text style={[typography.caption1, styles.cautionText, { color: c.textSecondary }]}>
+          時間制限食はすべての方に適した方法ではありません。妊娠中・授乳中の方、糖尿病などで治療中の方、摂食障害の既往がある方、18歳未満の方にはおすすめできません。実施前に医師にご相談ください。体調に異変を感じたときは、時間にかかわらずすぐに食事をとり、無理をしないでください。
+        </Text>
+      </View>
+
       {/* Start button */}
       <Pressable
         onPress={handleStart}
@@ -249,6 +304,15 @@ const styles = StyleSheet.create({
   content: {
     padding: spacing.xl,
     paddingBottom: 48,
+  },
+  cautionBox: {
+    borderRadius: radius.md,
+    borderWidth: 1,
+    padding: spacing.lg,
+    marginTop: spacing.lg,
+  },
+  cautionText: {
+    lineHeight: 19,
   },
   handle: {
     width: 36,

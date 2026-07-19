@@ -22,6 +22,8 @@ interface FastingStore {
   setEatEndHour: (hour: number) => void;
   setEnabled: (enabled: boolean) => void;
   endSession: () => void;
+  /** Reset to defaults (sign-out). */
+  reset: () => void;
 }
 
 export const useFastingStore = create<FastingStore>()(
@@ -44,6 +46,14 @@ export const useFastingStore = create<FastingStore>()(
             ? { ...state.activeSession, completed: true }
             : null,
         })),
+      reset: () =>
+        set({
+          activeSession: null,
+          selectedProtocol: '16:8',
+          eatStartHour: 12,
+          eatEndHour: 20,
+          isEnabled: false,
+        }),
     }),
     {
       name: 'fasting-store',

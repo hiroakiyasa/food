@@ -269,7 +269,7 @@ export const commonStyles = StyleSheet.create({
     fontWeight: '600' as const,
   },
 
-  // Chips / Tags
+  // Chips / Tags — minHeight 44 keeps every chip at the accessible tap size.
   chip: {
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -277,7 +277,7 @@ export const commonStyles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
     backgroundColor: '#F8FAFC',
-    minHeight: 36,
+    minHeight: 44,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
   },

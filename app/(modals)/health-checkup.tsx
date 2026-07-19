@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   ScrollView, View, Text, Pressable, StyleSheet,
-  ActivityIndicator, Alert,
+  ActivityIndicator, Alert, Linking,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -61,9 +61,9 @@ const TL_EMOJI: Record<TrafficLight, string> = {
 function MetricChip({
   label, value, unit, status,
 }: { label: string; value: number | null; unit: string; status?: TrafficLight }) {
-  if (value == null) return null;
   const isDark = useColorScheme() === 'dark';
   const c = useThemeColors(isDark);
+  if (value == null) return null;
   const color = status ? TL_COLOR[status] : c.textSecondary;
   const emoji = status ? TL_EMOJI[status] : '';
   return (
@@ -110,6 +110,9 @@ function AdviceSection({ advice, isDark }: { advice: CheckupAdvice; isDark: bool
           {advice.next_checkup_note}
         </Text>
       )}
+      <Text style={[typography.caption2, { color: c.textMuted, marginTop: spacing.sm }]}>
+        ※ AIによる一般的な食事情報であり、医療上の助言ではありません。
+      </Text>
     </View>
   );
 }
@@ -122,6 +125,14 @@ function CheckupCard({ checkup, isDark }: { checkup: HealthCheckup; isDark: bool
     year: 'numeric', month: 'long', day: 'numeric',
   });
   const advice = checkup.advice_json as CheckupAdvice | null;
+
+  const hasRedValue = [
+    checkup.hba1c != null ? hba1cStatus(checkup.hba1c) : null,
+    checkup.fasting_glucose != null ? glucoseStatus(checkup.fasting_glucose) : null,
+    checkup.triglycerides != null ? triglyceridesStatus(checkup.triglycerides) : null,
+    checkup.ldl_cholesterol != null ? ldlStatus(checkup.ldl_cholesterol) : null,
+    checkup.hdl_cholesterol != null ? hdlStatus(checkup.hdl_cholesterol) : null,
+  ].includes('red');
 
   return (
     <View style={[commonStyles.card, { backgroundColor: c.surface, marginBottom: spacing.md }, shadow.sm]}>
@@ -153,6 +164,13 @@ function CheckupCard({ checkup, isDark }: { checkup: HealthCheckup; isDark: bool
           血圧: {checkup.systolic_bp}/{checkup.diastolic_bp} mmHg
         </Text>
       )}
+      {hasRedValue && (
+        <View style={[styles.redValueNotice, { backgroundColor: c.surfaceAlt }]}>
+          <Text style={[typography.caption1, { color: c.text }]}>
+            🔴の項目があります。基準値を大きく外れている可能性があるため、医療機関への相談・受診をおすすめします。食事改善はその補助としてご活用ください。
+          </Text>
+        </View>
+      )}
       {advice && <AdviceSection advice={advice} isDark={isDark} />}
     </View>
   );
@@ -169,9 +187,24 @@ export default function HealthCheckupModal() {
   const [analyzing, setAnalyzing] = useState(false);
 
   const pickImage = async (fromCamera: boolean) => {
+    const permission = fromCamera
+      ? await ImagePicker.requestCameraPermissionsAsync()
+      : await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert(
+        fromCamera ? 'カメラへのアクセスが必要です' : '写真へのアクセスが必要です',
+        '健診結果を読み取るために許可が必要です。設定アプリから許可してください。',
+        [
+          { text: 'キャンセル', style: 'cancel' },
+          { text: '設定を開く', onPress: () => Linking.openSettings() },
+        ],
+      );
+      return;
+    }
+
     const result = fromCamera
-      ? await ImagePicker.launchCameraAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.8 })
-      : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.8 });
+      ? await ImagePicker.launchCameraAsync({ mediaTypes: ['images'] as ImagePicker.MediaType[], quality: 0.8 })
+      : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'] as ImagePicker.MediaType[], quality: 0.8 });
 
     if (result.canceled || result.assets.length === 0) return;
     const asset = result.assets[0];
@@ -201,7 +234,7 @@ export default function HealthCheckupModal() {
           健診結果を取り込む
         </Text>
         <Text style={[typography.caption1, { color: c.textMuted, marginBottom: spacing.lg }]}>
-          健診結果の用紙や画面を撮影すると、AIが数値を自動で読み取ります
+          健診結果の用紙や画面を撮影すると、AIが数値を自動で読み取ります。読み取り結果には誤りが含まれる場合があります。
         </Text>
 
         {analyzing ? (
@@ -252,6 +285,9 @@ export default function HealthCheckupModal() {
       {latestCheckup && (
         <>
           <Text style={[styles.sectionLabel, { color: c.textSecondary }]}>最新の結果</Text>
+          <Text style={[typography.caption2, { color: c.textMuted, marginBottom: spacing.sm }]}>
+            🟢🟡🔴の表示は一般的な基準値をもとにした参考情報であり、診断ではありません。数値の解釈や気になる点は、医師にご相談ください。
+          </Text>
           <CheckupCard checkup={latestCheckup} isDark={isDark} />
           {/* AI Advice generation button — shown when no advice yet */}
           {latestCheckup.advice_json == null && (
@@ -326,6 +362,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.sm,
+  },
+  redValueNotice: {
+    marginTop: spacing.md,
+    padding: spacing.md,
+    borderRadius: radius.md,
   },
   metricChip: {
     paddingHorizontal: spacing.md,

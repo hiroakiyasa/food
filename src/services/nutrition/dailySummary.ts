@@ -76,8 +76,9 @@ export async function upsertDailySummary({ userId, date, meals, targetKcal = 200
     carbon_grade: null,
   });
 
-  // Update streak when meals are recorded
-  if (meals.length > 0) {
+  // Update streak when meals are recorded. Only for today — recomputing a
+  // past day (edit/delete of an old meal) must not rewind the streak.
+  if (meals.length > 0 && date === getToday()) {
     await streaksDb.upsertDailyLogging(userId, date);
   }
 }

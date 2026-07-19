@@ -12,9 +12,14 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useAuth } from '@/src/hooks/useAuth';
 import { useProfile } from '@/src/hooks/useProfile';
-import { useNotificationSetup } from '@/src/hooks/useNotifications';
+import { useNotificationSetup, useNotificationPreferences } from '@/src/hooks/useNotifications';
 import { usePurchaseSetup } from '@/src/hooks/usePurchases';
 import { isGuestModeEnabled } from '@/src/lib/guestMode';
+import { clearAllLocalData } from '@/src/lib/localDb';
+import { supabase } from '@/src/lib/supabase';
+import { useFastingStore } from '@/src/stores/fastingStore';
+import { useCycleStore } from '@/src/stores/cycleStore';
+import { useChatStore } from '@/src/stores/chatStore';
 import { palette } from '@/src/lib/theme';
 
 export { ErrorBoundary } from 'expo-router';
@@ -47,7 +52,26 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   const [guestModeEnabled, setGuestModeEnabled] = useState<boolean | null>(null);
 
   useNotificationSetup();
+  // Keep reminder schedules in sync app-wide, not only while the
+  // notification-settings screen is mounted.
+  useNotificationPreferences();
   usePurchaseSetup();
+
+  // Drop all cached user data (memory + persisted) when the session ends so a
+  // later sign-in with a different account never sees the previous user's data.
+  useEffect(() => {
+    const { data: subscription } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') {
+        queryClient.clear();
+        asyncStoragePersister.removeClient();
+        clearAllLocalData().catch(() => {});
+        useFastingStore.getState().reset();
+        useCycleStore.getState().reset();
+        useChatStore.getState().resetChat();
+      }
+    });
+    return () => subscription.subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -228,6 +252,14 @@ function RootLayoutNav() {
           <Stack.Screen
             name="(modals)/cycle-setup"
             options={{ presentation: 'modal', title: '月経周期と栄養' }}
+          />
+          <Stack.Screen
+            name="(modals)/legal"
+            options={{ presentation: 'modal', title: '利用規約' }}
+          />
+          <Stack.Screen
+            name="(modals)/weight-log"
+            options={{ presentation: 'modal', title: '体重を記録' }}
           />
         </Stack>
       </AuthGate>

@@ -4,6 +4,8 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
+import { useProfile } from '@/src/hooks/useProfile';
+import { PremiumLockCard } from '@/src/components/ui/PremiumLockCard';
 import {
   useWeeklyMealPlan,
   useGenerateMealPlan,
@@ -44,7 +46,9 @@ export default function MealPlanModal() {
   const [weekOffset, setWeekOffset] = useState(0);
   const [activeTab, setActiveTab] = useState<TabKey>('plan');
 
-  const { data: plan, isLoading } = useWeeklyMealPlan(weekOffset);
+  const { data: profile } = useProfile();
+  const isPremium = profile?.is_premium ?? false;
+  const { data: plan, isLoading } = useWeeklyMealPlan(weekOffset, { enabled: isPremium });
   const generatePlan = useGenerateMealPlan();
   const acceptPlan = useAcceptMealPlan();
 
@@ -81,11 +85,28 @@ export default function MealPlanModal() {
         </Pressable>
       </View>
 
+      {/* Premium gate */}
+      {!isPremium && (
+        <PremiumLockCard
+          title="AI週間食事プラン"
+          description="あなたの目標・嗜好・栄養状態に合わせて、AIが1週間分の食事プランと買い物リストを作成します。"
+          features={[
+            '目標に合わせた1週間の献立提案',
+            'そのまま使える買い物リスト',
+            '味覚の好みと疾患プロファイルを考慮',
+          ]}
+        />
+      )}
+
+      {isPremium && (
+      <>
       {/* Week navigator */}
       <View style={[styles.weekNav, { backgroundColor: c.surface }, shadow.sm]}>
         <Pressable
           onPress={() => setWeekOffset((o) => o - 1)}
           style={({ pressed: p }) => [styles.navArrow, pressed(p)]}
+          accessibilityRole="button"
+          accessibilityLabel="前の週へ"
         >
           <Text style={{ color: c.textSecondary, fontSize: 18 }}>‹</Text>
         </Pressable>
@@ -95,6 +116,8 @@ export default function MealPlanModal() {
         <Pressable
           onPress={() => setWeekOffset((o) => o + 1)}
           style={({ pressed: p }) => [styles.navArrow, pressed(p)]}
+          accessibilityRole="button"
+          accessibilityLabel="次の週へ"
         >
           <Text style={{ color: c.textSecondary, fontSize: 18 }}>›</Text>
         </Pressable>
@@ -230,6 +253,8 @@ export default function MealPlanModal() {
             </View>
           )}
         </>
+      )}
+      </>
       )}
     </ScrollView>
   );

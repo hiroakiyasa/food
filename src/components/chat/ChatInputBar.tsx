@@ -41,6 +41,7 @@ export function ChatInputBar({
       <View style={[styles.container, { backgroundColor: c.surface, borderTopColor: c.border }]}>
         <Pressable
           onPress={onToggleInputMode}
+          hitSlop={8}
           style={({ pressed: p }) => [styles.modeButton, { backgroundColor: c.surfaceAlt }, pressed(p)]}
           accessibilityRole="button"
           accessibilityLabel="テキスト入力に切り替え"
@@ -59,6 +60,7 @@ export function ChatInputBar({
       {showVoiceToggle && (
         <Pressable
           onPress={onToggleInputMode}
+          hitSlop={8}
           style={({ pressed: p }) => [styles.modeButton, { backgroundColor: c.surfaceAlt }, pressed(p)]}
           accessibilityRole="button"
           accessibilityLabel="音声入力に切り替え"
@@ -83,6 +85,7 @@ export function ChatInputBar({
       <Pressable
         onPress={handleSend}
         disabled={!canSend}
+        hitSlop={8}
         style={({ pressed: p }) => [
           styles.sendButton,
           canSend

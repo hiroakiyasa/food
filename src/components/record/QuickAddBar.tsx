@@ -8,6 +8,8 @@ import { palette, pressed, radius, shadow, spacing, typography } from '@/src/lib
 interface QuickAddBarProps {
   isDark: boolean;
   mealType?: string;
+  /** Calendar day (YYYY-MM-DD) the recording flows should target. */
+  date?: string;
 }
 
 const QUICK_ACTIONS = [
@@ -49,7 +51,7 @@ const QUICK_ACTIONS = [
   },
 ];
 
-function QuickAddBarComponent({ isDark, mealType }: QuickAddBarProps) {
+function QuickAddBarComponent({ isDark, mealType, date }: QuickAddBarProps) {
   const router = useRouter();
   const surface = isDark ? '#1E293B' : '#FFFFFF';
   const text = isDark ? '#F1F5F9' : palette.ink;
@@ -62,8 +64,12 @@ function QuickAddBarComponent({ isDark, mealType }: QuickAddBarProps) {
           {index > 0 && <View style={styles.divider} />}
           <Pressable
             onPress={() => {
-              const suffix = mealType ? `?mealType=${mealType}` : '';
-              router.push(`${action.route}${suffix}` as never);
+              const params = [
+                mealType ? `mealType=${mealType}` : null,
+                date ? `date=${date}` : null,
+              ].filter(Boolean);
+              const query = params.length > 0 ? `?${params.join('&')}` : '';
+              router.push(`${action.route}${query}` as never);
             }}
             style={({ pressed: isPressed }) => [styles.button, pressed(isPressed)]}
             accessibilityRole="button"

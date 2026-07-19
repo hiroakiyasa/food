@@ -9,7 +9,6 @@ import {
   REVENUECAT_API_KEY_ANDROID,
   PREMIUM_ENTITLEMENT_ID,
 } from '@/src/lib/constants';
-import { supabase } from '@/src/lib/supabase';
 
 export async function initializePurchases(userId: string): Promise<void> {
   const apiKey = Platform.OS === 'ios' ? REVENUECAT_API_KEY_IOS : REVENUECAT_API_KEY_ANDROID;
@@ -68,9 +67,6 @@ export function checkPremiumEntitlement(info: CustomerInfo): boolean {
   return info.entitlements.active[PREMIUM_ENTITLEMENT_ID] !== undefined;
 }
 
-export async function syncPremiumStatus(userId: string, isPremium: boolean): Promise<void> {
-  await supabase
-    .from('profiles')
-    .update({ is_premium: isPremium, updated_at: new Date().toISOString() })
-    .eq('user_id', userId);
-}
+// NOTE: profiles.is_premium is written ONLY by the RevenueCat webhook
+// (service role). The client never writes it — a client-side write would be an
+// unverified entitlement grant, and the DB trigger reverts it anyway.

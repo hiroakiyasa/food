@@ -25,12 +25,21 @@ export function useActiveConditions() {
   });
 
   // Build focusNutrients from new guidelines format, High → Medium → Low order
-  // Deduplicate by nutrientName (first occurrence wins)
+  // Deduplicate by nutrientName (first occurrence wins). A nutrient that any
+  // active condition limits must never surface as "increase" — the
+  // restriction wins regardless of priority order (e.g. CKD protein limit
+  // vs muscle-gain protein increase).
   const focusNutrients = useMemo((): MergedFocusNutrient[] => {
     if (activeConditions.length === 0) return [];
 
     const matched = ALL_GUIDELINES.filter((g) =>
       activeConditions.includes(g.subCategoryName)
+    );
+
+    const limitedNutrients = new Set(
+      matched.flatMap((g) =>
+        g.focusNutrients.filter((fn) => fn.action === 'limit').map((fn) => fn.nutrientName),
+      ),
     );
 
     const seen = new Set<string>();
@@ -39,6 +48,7 @@ export function useActiveConditions() {
     for (const priority of ['High', 'Medium', 'Low'] as const) {
       for (const guideline of matched) {
         for (const fn of guideline.focusNutrients) {
+          if (fn.action === 'increase' && limitedNutrients.has(fn.nutrientName)) continue;
           if (fn.priority === priority && !seen.has(fn.nutrientName)) {
             seen.add(fn.nutrientName);
             result.push({

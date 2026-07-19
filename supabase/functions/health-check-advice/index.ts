@@ -40,6 +40,31 @@ Deno.serve(async (req: Request) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Premium-only feature: enforce server-side so the client gate cannot be bypassed.
+    const { data: premiumProfile } = await supabase
+      .from('profiles')
+      .select('is_premium')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    if (!premiumProfile?.is_premium) {
+      return Response.json({ error: 'Premium required' }, { status: 403 });
+    }
+
+    // Per-user daily rate limit (cost guard for the metered AI API).
+    const DAILY_LIMIT = 10;
+    const { data: usageCount, error: usageError } = await supabase.rpc('increment_ai_usage', {
+      p_user_id: user.id,
+      p_function: 'health-check-advice',
+    });
+    if (usageError) {
+      console.error('[health-check-advice] rate-limit counter failed:', usageError.message);
+    } else if ((usageCount ?? 0) > DAILY_LIMIT) {
+      return Response.json(
+        { error: '本日のAIアドバイス生成回数の上限に達しました。明日また利用できます。' },
+        { status: 429 },
+      );
+    }
+
     const { checkup_id } = await req.json().catch(() => ({})) as { checkup_id?: string };
     if (!checkup_id) {
       return Response.json({ error: 'checkup_id is required' }, { status: 400 });
@@ -63,7 +88,7 @@ Deno.serve(async (req: Request) => {
       return Response.json({ error: 'AI service not configured' }, { status: 503 });
     }
 
-    const prompt = `あなたは日本の管理栄養士として、以下の健診結果に基づいた具体的な食事アドバイスを提供してください。
+    const prompt = `あなたは栄養学の専門知識を持つAI食事アシスタントです。資格者（医師・管理栄養士など）を名乗らず、診断や治療の判断をせず、一般的な食事改善の情報として、以下の健診結果に基づいた具体的な食事アドバイスを提供してください。受診が必要かどうかの判断には言及せず、気になる数値は医療機関に相談するよう促してください。
 
 ## 健診結果
 - 検査日: ${checkup.checkup_date}

@@ -7,6 +7,8 @@ import {
   Pressable,
   StyleSheet,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -43,11 +45,21 @@ export default function EditProfileModal() {
   }, [profile]);
 
   const handleSave = async () => {
+    const height = heightCm ? Number(heightCm) : null;
+    const weight = weightKg ? Number(weightKg) : null;
+    if (height != null && (Number.isNaN(height) || height < 80 || height > 250)) {
+      Alert.alert('入力エラー', '身長は80〜250cmの範囲で入力してください');
+      return;
+    }
+    if (weight != null && (Number.isNaN(weight) || weight < 20 || weight > 300)) {
+      Alert.alert('入力エラー', '体重は20〜300kgの範囲で入力してください');
+      return;
+    }
     try {
       await updateProfile.mutateAsync({
         display_name: displayName || null,
-        height_cm: heightCm ? Number(heightCm) : null,
-        weight_kg: weightKg ? Number(weightKg) : null,
+        height_cm: height,
+        weight_kg: weight,
         activity_level: activityLevel,
       });
       router.dismiss();
@@ -57,10 +69,15 @@ export default function EditProfileModal() {
   };
 
   return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
     <ScrollView
       style={[styles.container, { backgroundColor: c.bg }]}
       contentContainerStyle={commonStyles.scrollContent}
       showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
     >
       <Text style={[styles.fieldLabel, { color: c.text }]}>表示名</Text>
       <TextInput
@@ -164,6 +181,7 @@ export default function EditProfileModal() {
         </Text>
       </Pressable>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

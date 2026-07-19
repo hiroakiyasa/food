@@ -1,5 +1,6 @@
 import { healthBridge, type HealthData } from './nativeHealthBridge';
 import { syncHealthKitData } from './syncHealthKit';
+import { toLocalDateString } from '@/src/utils/formatters';
 
 export async function syncHealthData(days = 7): Promise<number> {
   const entries: HealthData[] = [];
@@ -8,7 +9,7 @@ export async function syncHealthData(days = 7): Promise<number> {
   for (let i = 0; i < days; i++) {
     const date = new Date(now);
     date.setDate(date.getDate() - i);
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = toLocalDateString(date);
 
     const startOfDay = new Date(dateStr + 'T00:00:00');
     const endOfDay = new Date(dateStr + 'T23:59:59');

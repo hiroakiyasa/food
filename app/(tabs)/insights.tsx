@@ -1,4 +1,5 @@
 import { ScrollView, StyleSheet, View, Text, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useUIStore } from '@/src/stores/uiStore';
 import { useInsightsData } from '@/src/hooks/useInsightsData';
@@ -27,6 +28,7 @@ const PERIODS: { key: Period; label: string }[] = [
 ];
 
 export default function InsightsScreen() {
+  const router = useRouter();
   const isDark = useColorScheme() === 'dark';
   const c = useThemeColors(isDark);
   const { insightsPeriod, setInsightsPeriod } = useUIStore();
@@ -229,9 +231,21 @@ export default function InsightsScreen() {
           )}
 
           {/* Weight */}
-          {weightData.length > 0 && (
-            <View style={[commonStyles.card, { backgroundColor: c.surface }]}>
+          <View style={[commonStyles.card, { backgroundColor: c.surface }]}>
+            <View style={styles.weightHeader}>
               <Text style={[styles.chartTitle, { color: c.textSecondary }]}>WEIGHT</Text>
+              <Pressable
+                onPress={() => router.push('/(modals)/weight-log' as never)}
+                style={({ pressed: p }) => [styles.weightLogButton, pressed(p)]}
+                accessibilityRole="button"
+                accessibilityLabel="体重を記録する"
+              >
+                <Text style={[typography.caption1, { color: palette.primary, fontWeight: '700' }]}>
+                  ＋ 記録する
+                </Text>
+              </Pressable>
+            </View>
+            {weightData.length > 0 ? (
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <LineChart
                   data={weightData}
@@ -248,8 +262,12 @@ export default function InsightsScreen() {
                   noOfSections={4}
                 />
               </ScrollView>
-            </View>
-          )}
+            ) : (
+              <Text style={[typography.caption1, { color: c.textMuted }]}>
+                体重を記録するとグラフが表示されます。食事と体重をあわせて見ると、変化の理由がわかりやすくなります。
+              </Text>
+            )}
+          </View>
         </>
       )}
 
@@ -307,6 +325,16 @@ const styles = StyleSheet.create({
     backgroundColor: palette.accentLight,
   },
   chartTitle: { ...commonStyles.sectionHeader },
+  weightHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  weightLogButton: {
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.sm,
+  },
   legend: {
     flexDirection: 'row',
     gap: spacing.lg,

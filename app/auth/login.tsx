@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { signInWithEmail } from '@/src/lib/auth';
+import { signInWithEmail, resetPassword } from '@/src/lib/auth';
 import { supabase } from '@/src/lib/supabase';
 import { isValidEmail } from '@/src/utils/validators';
 
@@ -19,6 +19,19 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const handleResetPassword = async () => {
+    if (!isValidEmail(email)) {
+      Alert.alert('パスワード再設定', 'メールアドレス欄に登録済みのメールアドレスを入力してから、再度お試しください。');
+      return;
+    }
+    try {
+      await resetPassword(email);
+      Alert.alert('メールを送信しました', `${email} 宛にパスワード再設定用のメールを送信しました。メール内の案内に従って再設定してください。`);
+    } catch (error) {
+      Alert.alert('エラー', (error as Error).message);
+    }
+  };
 
   const handleLogin = async () => {
     if (!isValidEmail(email)) {
@@ -70,6 +83,7 @@ export default function LoginScreen() {
             autoCapitalize="none"
             keyboardType="email-address"
             textContentType="emailAddress"
+            accessibilityLabel="メールアドレス"
           />
           <TextInput
             style={styles.input}
@@ -78,12 +92,15 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             secureTextEntry
             textContentType="password"
+            accessibilityLabel="パスワード"
           />
 
           <Pressable
             onPress={handleLogin}
             disabled={loading}
             style={[styles.button, loading && styles.buttonDisabled]}
+            accessibilityRole="button"
+            accessibilityLabel="ログイン"
           >
             <Text style={styles.buttonText}>
               {loading ? 'ログイン中...' : 'ログイン'}
@@ -91,7 +108,23 @@ export default function LoginScreen() {
           </Pressable>
         </View>
 
-        <Pressable onPress={() => router.push('/auth/register')}>
+        <Pressable
+          onPress={handleResetPassword}
+          style={styles.secondaryLinkButton}
+          accessibilityRole="button"
+          accessibilityLabel="パスワードを再設定"
+        >
+          <Text style={styles.linkText}>
+            <Text style={styles.link}>パスワードをお忘れですか？</Text>
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => router.push('/auth/register')}
+          style={styles.secondaryLinkButton}
+          accessibilityRole="button"
+          accessibilityLabel="新規登録"
+        >
           <Text style={styles.linkText}>
             アカウントをお持ちでない方は <Text style={styles.link}>新規登録</Text>
           </Text>
@@ -141,9 +174,13 @@ const styles = StyleSheet.create({
   buttonText: { color: '#fff', fontSize: 18, fontWeight: '600' },
   linkText: {
     textAlign: 'center',
-    marginTop: 24,
     color: '#666',
     fontSize: 14,
   },
   link: { color: '#3b82f6', fontWeight: '500' },
+  secondaryLinkButton: {
+    marginTop: 20,
+    minHeight: 44,
+    justifyContent: 'center',
+  },
 });

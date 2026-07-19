@@ -3,9 +3,9 @@ import { palette, typography, spacing, radius, shadow, useThemeColors } from '@/
 import type { MetabolicPrediction, SpikeRisk } from '@/src/hooks/useMetabolicPrediction';
 
 const RISK_CONFIG: Record<SpikeRisk, { label: string; color: string }> = {
-  low: { label: '低リスク', color: palette.success },
-  moderate: { label: '中リスク', color: palette.warning },
-  high: { label: '高リスク', color: palette.error },
+  low: { label: '上がりにくい', color: palette.success },
+  moderate: { label: 'やや上がりやすい', color: palette.warning },
+  high: { label: '上がりやすい', color: palette.error },
 };
 
 interface MetabolicPredictionCardProps {
@@ -21,11 +21,11 @@ export function MetabolicPredictionCard({ prediction, isDark = false }: Metaboli
     <View
       style={[styles.card, { backgroundColor: c.surface }, shadow.md]}
       accessibilityRole="text"
-      accessibilityLabel={`血糖値スパイク予測: ${config.label}`}
+      accessibilityLabel={`血糖値の上がりやすさの目安: ${config.label}`}
     >
       <View style={styles.header}>
         <Text style={[typography.title3, { color: c.text }]}>
-          血糖値スパイク予測
+          血糖値の上がりやすさ（目安）
         </Text>
         <View style={[styles.riskBadge, { backgroundColor: config.color + '15' }]}>
           <View style={[styles.riskDot, { backgroundColor: config.color }]} />
@@ -59,6 +59,10 @@ export function MetabolicPredictionCard({ prediction, isDark = false }: Metaboli
           ))}
         </View>
       )}
+
+      <Text style={[typography.caption2, { color: c.textMuted, marginTop: spacing.sm }]}>
+        ※ 食事内容からの一般的な目安であり、実際の血糖値の測定・予測ではありません。
+      </Text>
     </View>
   );
 }

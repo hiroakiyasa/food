@@ -9,6 +9,12 @@ const TRAFFIC_COLORS: Record<TrafficColor, string> = {
   red: palette.red,
 };
 
+const TRAFFIC_LABELS: Record<TrafficColor, string> = {
+  green: '良好',
+  amber: '注意',
+  red: '要注意',
+};
+
 interface TrafficLightBadgeProps {
   color: TrafficColor;
   label?: string;
@@ -22,7 +28,7 @@ export function TrafficLightBadge({ color, label, size = 8 }: TrafficLightBadgeP
     <View
       style={styles.container}
       accessible
-      accessibilityLabel={`${color} indicator${label ? `: ${label}` : ''}`}
+      accessibilityLabel={`${TRAFFIC_LABELS[color]}${label ? `: ${label}` : ''}`}
     >
       <View
         style={[

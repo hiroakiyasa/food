@@ -34,9 +34,14 @@ Deno.serve(async (req: Request) => {
     return new Response('Method not allowed', { status: 405 });
   }
 
-  // Verify webhook authorization
+  // Verify webhook authorization. Fail closed: an unset secret must reject
+  // every request — otherwise anyone could grant themselves premium for free.
+  if (!REVENUECAT_WEBHOOK_SECRET) {
+    console.error('[revenuecat-webhook] REVENUECAT_WEBHOOK_SECRET is not configured');
+    return new Response('Webhook not configured', { status: 500 });
+  }
   const authHeader = req.headers.get('Authorization');
-  if (REVENUECAT_WEBHOOK_SECRET && authHeader !== `Bearer ${REVENUECAT_WEBHOOK_SECRET}`) {
+  if (authHeader !== `Bearer ${REVENUECAT_WEBHOOK_SECRET}`) {
     return new Response('Unauthorized', { status: 401 });
   }
 

@@ -253,6 +253,18 @@ Deno.serve(async (req: Request) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) return json({ error: 'Unauthorized' }, 401);
 
+    // Per-user daily rate limit (cost guard for the metered vision API).
+    const DAILY_LIMIT = 30;
+    const { data: usageCount, error: usageError } = await supabase.rpc('increment_ai_usage', {
+      p_user_id: user.id,
+      p_function: 'analyze-food-image',
+    });
+    if (usageError) {
+      console.error('[analyze-food-image] rate-limit counter failed:', usageError.message);
+    } else if ((usageCount ?? 0) > DAILY_LIMIT) {
+      return json({ error: '本日のAI解析回数の上限に達しました。明日また利用できます。' }, 429);
+    }
+
     const body = await req.json().catch(() => ({})) as {
       image_base64?: string;
       mime_type?: string;

@@ -16,12 +16,16 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.foodhealthapp.app",
+      "buildNumber": "1",
       "infoPlist": {
+        "NSCameraUsageDescription": "食事の写真撮影とバーコード読み取りのためにカメラを使用します",
+        "NSPhotoLibraryUsageDescription": "食事や健診結果の写真を選択するためにフォトライブラリを使用します",
         "NSHealthShareUsageDescription": "歩数、心拍数、睡眠データを取得して健康管理に活用します",
         "NSHealthUpdateUsageDescription": "HealthKitにデータを記録します",
         "NSSpeechRecognitionUsageDescription": "音声を認識して食事を記録します",
         "NSMicrophoneUsageDescription": "食事記録の音声入力にマイクを使用します",
-        "NSLocationWhenInUseUsageDescription": "現在地に合わせて地域情報を設定するために位置情報を使用します"
+        "NSLocationWhenInUseUsageDescription": "現在地に合わせて地域情報を設定するために位置情報を使用します",
+        "ITSAppUsesNonExemptEncryption": false
       },
       "entitlements": {
         "com.apple.developer.healthkit": true,
@@ -29,13 +33,21 @@
       }
     },
     "android": {
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "RECORD_AUDIO",
+        "android.permission.health.READ_STEPS",
+        "android.permission.health.READ_HEART_RATE",
+        "android.permission.health.READ_SLEEP",
+        "android.permission.health.READ_WEIGHT",
+        "android.permission.health.WRITE_NUTRITION"
       ],
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
@@ -48,6 +60,19 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "食事の写真撮影とバーコード読み取りのためにカメラを使用します",
+          "microphonePermission": "食事記録の音声入力にマイクを使用します"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "食事や健診結果の写真を選択するためにフォトライブラリを使用します"
+        }
+      ],
       [
         "expo-notifications",
         {

@@ -9,7 +9,6 @@ import {
   purchaseHalfYearly,
   restorePurchases,
   checkPremiumEntitlement,
-  syncPremiumStatus,
 } from '@/src/services/purchases/purchaseService';
 
 export function usePurchaseSetup() {
@@ -21,11 +20,10 @@ export function usePurchaseSetup() {
 
     initializePurchases(user.id).catch(() => {});
 
-    const listener = (info: CustomerInfo) => {
-      const isPremium = checkPremiumEntitlement(info);
-      syncPremiumStatus(user.id, isPremium).then(() => {
-        queryClient.invalidateQueries({ queryKey: ['profile'] });
-      });
+    // profiles.is_premium is updated server-side by the RevenueCat webhook;
+    // the client only refetches so the UI catches up.
+    const listener = (_info: CustomerInfo) => {
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
     };
 
     Purchases.addCustomerInfoUpdateListener(listener);
@@ -55,11 +53,9 @@ export function usePurchase() {
       const info = plan === 'monthly' ? await purchaseMonthly() : await purchaseHalfYearly();
       return info;
     },
-    onSuccess: async (info) => {
+    onSuccess: (info) => {
       if (!info || !user) return;
-      const isPremium = checkPremiumEntitlement(info);
-      if (isPremium) {
-        await syncPremiumStatus(user.id, true);
+      if (checkPremiumEntitlement(info)) {
         queryClient.invalidateQueries({ queryKey: ['profile'] });
       }
     },
@@ -75,10 +71,8 @@ export function useRestorePurchases() {
       const info = await restorePurchases();
       return info;
     },
-    onSuccess: async (info) => {
+    onSuccess: () => {
       if (!user) return;
-      const isPremium = checkPremiumEntitlement(info);
-      await syncPremiumStatus(user.id, isPremium);
       queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
   });

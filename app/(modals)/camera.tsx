@@ -7,6 +7,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
   ActivityIndicator,
   Alert,
+  Linking,
   Pressable,
   StyleSheet,
   Text,
@@ -44,7 +45,7 @@ async function prepareAnalysisImage(
 export default function CameraModal() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { mealType } = useLocalSearchParams<{ mealType?: string }>();
+  const { mealType, date } = useLocalSearchParams<{ mealType?: string; date?: string }>();
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
   const [isCapturing, setIsCapturing] = useState(false);
@@ -63,6 +64,7 @@ export default function CameraModal() {
       isAnalyzing: true,
       error: null,
       mealType: selectedMealType,
+      targetDate: typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : undefined,
     });
     router.replace('/(modals)/meal-detail');
   };
@@ -88,7 +90,10 @@ export default function CameraModal() {
   const handleLibrary = async () => {
     const libraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!libraryPermission.granted) {
-      Alert.alert('写真へのアクセスが必要です', '設定から写真へのアクセスを許可してください。');
+      Alert.alert('写真へのアクセスが必要です', '設定から写真へのアクセスを許可してください。', [
+        { text: 'キャンセル', style: 'cancel' },
+        { text: '設定を開く', onPress: () => Linking.openSettings() },
+      ]);
       return;
     }
 
@@ -125,12 +130,20 @@ export default function CameraModal() {
           料理を撮影して、AIが食品と栄養を解析します。撮影した写真は食事記録にだけ使用します。
         </Text>
         <Pressable
-          onPress={requestPermission}
+          onPress={() => {
+            if (permission.canAskAgain) {
+              requestPermission();
+            } else {
+              Linking.openSettings();
+            }
+          }}
           style={({ pressed: isPressed }) => [styles.permissionButton, pressed(isPressed)]}
           accessibilityRole="button"
-          accessibilityLabel="カメラへのアクセスを許可"
+          accessibilityLabel={permission.canAskAgain ? 'カメラへのアクセスを許可' : '設定を開く'}
         >
-          <Text style={styles.permissionButtonText}>カメラを許可する</Text>
+          <Text style={styles.permissionButtonText}>
+            {permission.canAskAgain ? 'カメラを許可する' : '設定を開く'}
+          </Text>
         </Pressable>
         <Pressable
           onPress={handleLibrary}

@@ -1,14 +1,21 @@
-import { ScrollView, StyleSheet, View, Text, Pressable, Alert } from 'react-native';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, View, Text, Pressable, Alert, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
+import Constants from 'expo-constants';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useColorScheme } from '@/components/useColorScheme';
+import { useAuth } from '@/src/hooks/useAuth';
 import { useProfile } from '@/src/hooks/useProfile';
 import { signOut } from '@/src/lib/auth';
+import { supabase } from '@/src/lib/supabase';
+import { LEGAL_CONTACT_EMAIL } from '@/src/lib/legal';
 import { useExportMeals } from '@/src/hooks/useExport';
+import { useRestorePurchases } from '@/src/hooks/usePurchases';
 import { useNutritionTargets } from '@/src/hooks/useNutritionTargets';
 import { useActiveConditions } from '@/src/hooks/useActiveConditions';
 import { useFastingStore } from '@/src/stores/fastingStore';
 import { useCycleStore } from '@/src/stores/cycleStore';
+import { ACTIVITY_LEVEL_LABELS, type ActivityLevel } from '@/src/lib/constants';
 import {
   palette, typography, spacing, radius, shadow,
   commonStyles, pressed, useThemeColors,
@@ -68,8 +75,11 @@ export default function SettingsScreen() {
   const router = useRouter();
   const isDark = useColorScheme() === 'dark';
   const c = useThemeColors(isDark);
+  const { session } = useAuth();
   const { data: profile } = useProfile();
   const exportMeals = useExportMeals();
+  const restorePurchases = useRestorePurchases();
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const { data: nutritionTargets } = useNutritionTargets();
   const { activeConditions } = useActiveConditions();
   const fastingProtocol = useFastingStore((s) => s.selectedProtocol);
@@ -94,6 +104,65 @@ export default function SettingsScreen() {
       { text: 'キャンセル', style: 'cancel' },
       { text: 'ログアウト', style: 'destructive', onPress: () => signOut() },
     ]);
+  };
+
+  const handleRestorePurchases = async () => {
+    try {
+      await restorePurchases.mutateAsync();
+      Alert.alert('復元完了', '購入情報を確認しました。');
+    } catch {
+      Alert.alert('エラー', '購入の復元に失敗しました。時間をおいて再度お試しください。');
+    }
+  };
+
+  const handleContact = () => {
+    Linking.openURL(
+      `mailto:${LEGAL_CONTACT_EMAIL}?subject=${encodeURIComponent('「食事サポート」お問い合わせ')}`,
+    ).catch(() => {
+      Alert.alert('お問い合わせ', `メールアプリを開けませんでした。\n${LEGAL_CONTACT_EMAIL} までご連絡ください。`);
+    });
+  };
+
+  const executeAccountDeletion = async () => {
+    setIsDeletingAccount(true);
+    try {
+      const { error } = await supabase.functions.invoke('delete-account', {
+        body: { confirm: 'DELETE' },
+      });
+      if (error) throw error;
+      await signOut().catch(() => {
+        // Session is already invalid after deletion; local cleanup happens
+        // via the SIGNED_OUT listener either way.
+      });
+      Alert.alert('削除完了', 'アカウントとすべてのデータを削除しました。ご利用ありがとうございました。');
+    } catch {
+      Alert.alert(
+        '削除に失敗しました',
+        `時間をおいて再度お試しください。解決しない場合は ${LEGAL_CONTACT_EMAIL} までご連絡ください。`,
+      );
+    } finally {
+      setIsDeletingAccount(false);
+    }
+  };
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      'アカウントを削除',
+      '食事記録・写真・健康情報を含むすべてのデータが完全に削除されます。この操作は取り消せません。',
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: '削除する',
+          style: 'destructive',
+          onPress: () => {
+            Alert.alert('最終確認', '本当にアカウントを削除しますか？', [
+              { text: 'キャンセル', style: 'cancel' },
+              { text: '完全に削除する', style: 'destructive', onPress: executeAccountDeletion },
+            ]);
+          },
+        },
+      ],
+    );
   };
 
   // Profile summary card data
@@ -164,7 +233,11 @@ export default function SettingsScreen() {
           label="活動レベル"
           icon="line-chart"
           iconColor={palette.apricot}
-          value={profile?.activity_level ?? '未設定'}
+          value={
+            profile?.activity_level
+              ? ACTIVITY_LEVEL_LABELS[profile.activity_level as ActivityLevel] ?? profile.activity_level
+              : '未設定'
+          }
           isDark={isDark}
           onPress={() => router.push('/(modals)/edit-profile' as never)}
           isLast
@@ -174,6 +247,13 @@ export default function SettingsScreen() {
       {/* Health */}
       <Text style={[styles.sectionLabel, { color: c.textSecondary }]}>HEALTH</Text>
       <View style={[commonStyles.card, { backgroundColor: c.surface, marginBottom: spacing.xl }]}>
+        <SettingsItem
+          label="今日の体重を記録"
+          icon="balance-scale"
+          iconColor={palette.primary}
+          isDark={isDark}
+          onPress={() => router.push('/(modals)/weight-log' as never)}
+        />
         <SettingsItem
           label="疾患プロファイル"
           icon="medkit"
@@ -283,12 +363,52 @@ export default function SettingsScreen() {
           />
         )}
         <SettingsItem
+          label="購入を復元"
+          icon="refresh"
+          iconColor={palette.primary}
+          isDark={isDark}
+          onPress={handleRestorePurchases}
+        />
+        <SettingsItem
           label="データエクスポート"
           icon="download"
           iconColor={palette.sky}
           isDark={isDark}
           isPremium
           onPress={handleExport}
+          isLast
+        />
+      </View>
+
+      {/* Support */}
+      <Text style={[styles.sectionLabel, { color: c.textSecondary }]}>SUPPORT</Text>
+      <View style={[commonStyles.card, { backgroundColor: c.surface, marginBottom: spacing.xl }]}>
+        <SettingsItem
+          label="利用規約"
+          icon="file-text-o"
+          iconColor={palette.sky}
+          isDark={isDark}
+          onPress={() => router.push({ pathname: '/(modals)/legal', params: { doc: 'terms' } } as never)}
+        />
+        <SettingsItem
+          label="プライバシーポリシー"
+          icon="lock"
+          iconColor={palette.sky}
+          isDark={isDark}
+          onPress={() => router.push({ pathname: '/(modals)/legal', params: { doc: 'privacy' } } as never)}
+        />
+        <SettingsItem
+          label="お問い合わせ"
+          icon="envelope-o"
+          iconColor={palette.apricot}
+          isDark={isDark}
+          onPress={handleContact}
+        />
+        <SettingsItem
+          label="アプリバージョン"
+          icon="info-circle"
+          value={Constants.expoConfig?.version ?? '1.0.0'}
+          isDark={isDark}
           isLast
         />
       </View>
@@ -302,6 +422,21 @@ export default function SettingsScreen() {
       >
         <Text style={styles.signOutText}>ログアウト</Text>
       </Pressable>
+
+      {/* Account deletion (App Store requirement for apps with account creation) */}
+      {session && (
+        <Pressable
+          onPress={handleDeleteAccount}
+          disabled={isDeletingAccount}
+          style={({ pressed: p }) => [styles.deleteAccountButton, pressed(p), isDeletingAccount && { opacity: 0.5 }]}
+          accessibilityRole="button"
+          accessibilityLabel="アカウントを削除"
+        >
+          <Text style={[typography.caption1, { color: c.textMuted }]}>
+            {isDeletingAccount ? '削除しています…' : 'アカウントを削除'}
+          </Text>
+        </Pressable>
+      )}
     </ScrollView>
   );
 }
@@ -381,4 +516,10 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   signOutText: { ...typography.bodyBold, color: palette.error },
+  deleteAccountButton: {
+    alignItems: 'center',
+    paddingVertical: 14,
+    minHeight: 44,
+    justifyContent: 'center',
+  },
 });

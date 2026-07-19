@@ -9,6 +9,8 @@ interface PendingMeal {
   isAnalyzing: boolean;
   error: string | null;
   mealType?: MealType;
+  /** Calendar day (YYYY-MM-DD) the meal should be recorded against. */
+  targetDate?: string;
 }
 
 interface MealState {

@@ -97,6 +97,31 @@ Deno.serve(async (req: Request) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Premium-only feature: enforce server-side so the client gate cannot be bypassed.
+    const { data: premiumProfile } = await supabase
+      .from('profiles')
+      .select('is_premium')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    if (!premiumProfile?.is_premium) {
+      return Response.json({ error: 'Premium required' }, { status: 403 });
+    }
+
+    // Per-user daily rate limit (cost guard; `force` bypasses the plan cache).
+    const DAILY_LIMIT = 10;
+    const { data: usageCount, error: usageError } = await supabase.rpc('increment_ai_usage', {
+      p_user_id: user.id,
+      p_function: 'generate-meal-plan',
+    });
+    if (usageError) {
+      console.error('[generate-meal-plan] rate-limit counter failed:', usageError.message);
+    } else if ((usageCount ?? 0) > DAILY_LIMIT) {
+      return Response.json(
+        { error: '本日のプラン生成回数の上限に達しました。明日また利用できます。' },
+        { status: 429 },
+      );
+    }
+
     const body = await req.json().catch(() => ({})) as { week_offset?: number; force?: boolean };
     const weekOffset = body.week_offset ?? 0;
     const force = body.force ?? false;
@@ -259,7 +284,7 @@ function buildPrompt(params: {
     };
   });
 
-  return `あなたは日本の管理栄養士です。ユーザーの1週間の食事プランを日本語で作成してください。
+  return `あなたは栄養学の専門知識を持つAI食事アシスタントです。資格者（医師・管理栄養士など）を名乗らず、診断・治療にあたる助言をせず、ユーザーの1週間の食事プランを日本語で作成してください。
 
 ## ユーザー情報
 - 目標カロリー: ${target.energy_kcal} kcal/日

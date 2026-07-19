@@ -400,7 +400,7 @@ export default function NutritionBalanceModal() {
             </View>
 
             <View style={[styles.nutrientSetCard, { backgroundColor: isDark ? '#0F172ACC' : '#FFFFFFD9' }]}>
-              <Text style={[styles.nutrientSetTitle, { color: c.text }]}>使用栄養セット（15）</Text>
+              <Text style={[styles.nutrientSetTitle, { color: c.text }]}>使用栄養セット（{nutrientSet.length}）</Text>
               <View style={styles.nutrientChipWrap}>
                 {nutrientSet.map((nutrient) => (
                   <View key={nutrient.key} style={[styles.nutrientChip, { borderColor: `${nutrient.color}55` }]}>

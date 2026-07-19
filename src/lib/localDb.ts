@@ -6,6 +6,7 @@
  * mealSyncService が Supabase と双方向同期する。
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { addDays } from '@/src/utils/formatters';
 
 // ─── ID generation (crypto.randomUUID() の代替) ───────────────────────────
 
@@ -50,6 +51,12 @@ async function readAll<T>(key: string): Promise<T[]> {
 
 async function writeAll<T>(key: string, items: T[]): Promise<void> {
   await AsyncStorage.setItem(key, JSON.stringify(items));
+}
+
+// Wipes every local cache table. Called on sign-out so a following sign-in
+// with a different account never sees the previous user's data.
+export async function clearAllLocalData(): Promise<void> {
+  await AsyncStorage.multiRemove(Object.values(KEYS));
 }
 
 // ─── Meal types ──────────────────────────────────────────────────────────
@@ -293,17 +300,27 @@ export const mealsDb = {
     ]);
     const remoteIds = new Set(remoteMeals.map((meal) => meal.id));
     const localById = new Map(allMeals.map((meal) => [meal.id, meal]));
+    // Header and items must come from the SAME side per meal — mixing a
+    // locally-edited header with remote items silently rolls the edit back.
+    const localWins = new Set<string>();
     const mergedRemote = remoteMeals.map((remote) => {
       const local = localById.get(remote.id);
-      return local && local.updated_at > remote.updated_at ? local : remote;
+      if (local && local.updated_at > remote.updated_at) {
+        localWins.add(remote.id);
+        return local;
+      }
+      return remote;
     });
     const nextMeals = [
       ...allMeals.filter((meal) => meal.user_id !== userId || !remoteIds.has(meal.id)),
       ...mergedRemote,
     ];
     const nextItems = [
-      ...allItems.filter((item) => !remoteIds.has(item.meal_id)),
-      ...remoteMeals.flatMap((meal) => meal.meal_items),
+      // Items of meals not in this pull, plus local items of local-win meals.
+      ...allItems.filter((item) => !remoteIds.has(item.meal_id) || localWins.has(item.meal_id)),
+      ...remoteMeals
+        .filter((meal) => !localWins.has(meal.id))
+        .flatMap((meal) => meal.meal_items),
     ];
     await Promise.all([writeAll(KEYS.meals, nextMeals), writeAll(KEYS.mealItems, nextItems)]);
   },
@@ -457,8 +474,8 @@ export const streaksDb = {
     const now = new Date().toISOString();
     const idx = all.findIndex((s) => s.user_id === userId && s.streak_type === 'daily_logging');
     const today = date;
-    const yesterday = new Date(new Date(date).getTime() - 86400000).toISOString().split('T')[0];
-    const dayBeforeYesterday = new Date(new Date(date).getTime() - 172800000).toISOString().split('T')[0];
+    const yesterday = addDays(date, -1);
+    const dayBeforeYesterday = addDays(date, -2);
 
     if (idx >= 0) {
       const s = all[idx]!;

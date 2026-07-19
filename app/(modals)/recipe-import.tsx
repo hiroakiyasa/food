@@ -5,6 +5,8 @@ import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, Text
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { supabase } from '@/src/lib/supabase';
+import { useProfile } from '@/src/hooks/useProfile';
+import { PremiumLockCard } from '@/src/components/ui/PremiumLockCard';
 import { palette, pressed, radius, shadow, spacing, typography, useThemeColors } from '@/src/lib/theme';
 
 type ImportedRecipe = {
@@ -20,6 +22,8 @@ export default function RecipeImportModal() {
   const router = useRouter();
   const isDark = useColorScheme() === 'dark';
   const colors = useThemeColors(isDark);
+  const { data: profile } = useProfile();
+  const isPremium = profile?.is_premium ?? false;
   const [url, setUrl] = useState('');
   const [recipe, setRecipe] = useState<ImportedRecipe | null>(null);
   const [loading, setLoading] = useState(false);
@@ -54,6 +58,35 @@ export default function RecipeImportModal() {
       setSaving(false);
     }
   };
+
+  if (!isPremium) {
+    return (
+      <ScrollView style={[styles.container, { backgroundColor: colors.bg }]} contentContainerStyle={styles.content}>
+        <View style={styles.header}>
+          <View>
+            <Text style={[styles.eyebrow, { color: palette.primary }]}>RECIPE IMPORT</Text>
+            <Text style={[styles.title, { color: colors.text }]}>レシピURLを取り込む</Text>
+          </View>
+          <Pressable
+            onPress={() => router.dismiss()}
+            style={styles.close}
+            accessibilityRole="button"
+            accessibilityLabel="閉じる"
+          >
+            <Text style={{ color: colors.text, fontSize: 24 }}>×</Text>
+          </Pressable>
+        </View>
+        <PremiumLockCard
+          title="MYレシピ登録"
+          description="お気に入りのレシピページのURLを貼るだけで、材料と栄養価を自動で取り込み、いつでも記録に使えます。"
+          features={[
+            'レシピURLから栄養価を自動計算',
+            'MYレシピとして保存・再利用',
+          ]}
+        />
+      </ScrollView>
+    );
+  }
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.bg }]} contentContainerStyle={styles.content}>

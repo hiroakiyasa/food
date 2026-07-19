@@ -65,6 +65,7 @@ export default function RegisterScreen() {
             autoCapitalize="none"
             keyboardType="email-address"
             textContentType="emailAddress"
+            accessibilityLabel="メールアドレス"
           />
           <TextInput
             style={styles.input}
@@ -73,6 +74,7 @@ export default function RegisterScreen() {
             onChangeText={setPassword}
             secureTextEntry
             textContentType="newPassword"
+            accessibilityLabel="パスワード 8文字以上"
           />
           <TextInput
             style={styles.input}
@@ -81,12 +83,15 @@ export default function RegisterScreen() {
             onChangeText={setConfirmPassword}
             secureTextEntry
             textContentType="newPassword"
+            accessibilityLabel="パスワード確認"
           />
 
           <Pressable
             onPress={handleRegister}
             disabled={loading}
             style={[styles.button, loading && styles.buttonDisabled]}
+            accessibilityRole="button"
+            accessibilityLabel="登録する"
           >
             <Text style={styles.buttonText}>
               {loading ? '登録中...' : '登録する'}
@@ -94,7 +99,12 @@ export default function RegisterScreen() {
           </Pressable>
         </View>
 
-        <Pressable onPress={() => router.back()}>
+        <Pressable
+          onPress={() => router.replace('/auth/login')}
+          style={styles.loginLinkButton}
+          accessibilityRole="button"
+          accessibilityLabel="ログイン画面へ"
+        >
           <Text style={styles.linkText}>
             すでにアカウントをお持ちの方は <Text style={styles.link}>ログイン</Text>
           </Text>
@@ -143,9 +153,13 @@ const styles = StyleSheet.create({
   buttonText: { color: '#fff', fontSize: 18, fontWeight: '600' },
   linkText: {
     textAlign: 'center',
-    marginTop: 24,
     color: '#666',
     fontSize: 14,
   },
   link: { color: '#3b82f6', fontWeight: '500' },
+  loginLinkButton: {
+    marginTop: 24,
+    minHeight: 44,
+    justifyContent: 'center',
+  },
 });

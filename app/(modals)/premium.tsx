@@ -23,49 +23,32 @@ interface FeatureCategory {
 
 const FEATURE_CATEGORIES: FeatureCategory[] = [
   {
-    title: '基本機能',
+    title: '基本機能（ずっと無料）',
     color: palette.primary,
     features: [
       { label: 'AI画像解析（カロリー・PFC）', free: true, premium: true },
-      { label: 'デイリースコア＆フィードバック', free: true, premium: true },
-      { label: '基本HealthKit連携', free: true, premium: true },
-    ],
-  },
-  {
-    title: '簡単な食事記録に',
-    color: palette.accent,
-    features: [
       { label: 'バーコードスキャン', free: true, premium: true },
-      { label: 'MYセット（よく食べる組合せ）', free: false, premium: true },
-      { label: 'MYレシピ登録', free: false, premium: true },
+      { label: 'デイリースコア＆フィードバック', free: true, premium: true },
+      { label: '栄養バランスガーデン', free: true, premium: true },
+      { label: 'HealthKit / ヘルスコネクト連携', free: true, premium: true },
+      { label: '疾患・条件に合わせた栄養目標', free: true, premium: true },
     ],
   },
   {
-    title: '賢いコントロールに',
-    color: palette.fiber,
-    features: [
-      { label: '1食ごとのアドバイス', free: false, premium: true },
-      { label: 'PFCバランスの表示', free: false, premium: true },
-      { label: '微量栄養素の数値表示', free: false, premium: true },
-      { label: '週間バッファ＆リカバリープラン', free: false, premium: true },
-    ],
-  },
-  {
-    title: '目的に沿ったアドバイスに',
+    title: 'AIパーソナル機能',
     color: palette.warning,
     features: [
-      { label: '健診OCR＆目標自動計算', free: false, premium: true },
-      { label: '「足し算」提案・調理ハック', free: false, premium: true },
-      { label: '代替商品提案（Yuka型）', free: false, premium: true },
-      { label: '疾患別パーソナライズ', free: false, premium: true },
+      { label: 'AI週間食事プラン＆買い物リスト', free: false, premium: true },
+      { label: 'リカバリープラン（食べすぎ調整）', free: false, premium: true },
+      { label: '健診結果のAI読み取り＆アドバイス', free: false, premium: true },
     ],
   },
   {
-    title: '快適なご利用に',
-    color: palette.error,
+    title: '記録とデータ',
+    color: palette.sky,
     features: [
-      { label: 'バナー広告非表示', free: false, premium: true },
-      { label: 'データエクスポート', free: false, premium: true },
+      { label: 'MYレシピ登録（URL取り込み）', free: false, premium: true },
+      { label: 'データエクスポート（CSV）', free: false, premium: true },
     ],
   },
 ];
@@ -77,14 +60,29 @@ export default function PremiumModal() {
   const { data: profile } = useProfile();
   const isPremium = profile?.is_premium ?? false;
 
-  const { data: offerings } = useOfferings();
+  const { data: offerings, isLoading: offeringsLoading } = useOfferings();
   const purchase = usePurchase();
   const restore = useRestorePurchases();
 
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('half_yearly');
 
-  const monthlyPrice = offerings?.current?.monthly?.product.priceString ?? '¥480';
-  const halfYearlyPrice = offerings?.current?.sixMonth?.product.priceString ?? '¥2,400';
+  const monthlyPackage = offerings?.current?.monthly ?? null;
+  const halfYearlyPackage = offerings?.current?.sixMonth ?? null;
+  const offeringsReady = monthlyPackage != null && halfYearlyPackage != null;
+
+  const monthlyPrice = monthlyPackage?.product.priceString ?? '—';
+  const halfYearlyPrice = halfYearlyPackage?.product.priceString ?? '—';
+
+  // Compute the savings claim from real store prices only (never hardcode).
+  const savingsLabel = (() => {
+    const monthly = monthlyPackage?.product.price;
+    const halfYearly = halfYearlyPackage?.product.price;
+    if (!monthly || !halfYearly) return null;
+    const perMonth = halfYearly / 6;
+    const percent = Math.round((1 - perMonth / monthly) * 100);
+    if (percent <= 0) return null;
+    return `月あたり¥${Math.round(perMonth).toLocaleString()}（${percent}%お得）`;
+  })();
 
   const handlePurchase = async () => {
     try {
@@ -227,11 +225,25 @@ export default function PremiumModal() {
             <Text style={[typography.title1, { color: c.text }]}>
               {halfYearlyPrice}<Text style={[typography.caption1, { color: c.textMuted }]}>/半年</Text>
             </Text>
-            <Text style={[typography.caption2, { color: palette.warning, marginTop: spacing.xs }]}>
-              月あたり¥400（17%お得）
-            </Text>
+            {savingsLabel && (
+              <Text style={[typography.caption2, { color: palette.warning, marginTop: spacing.xs }]}>
+                {savingsLabel}
+              </Text>
+            )}
           </Pressable>
         </View>
+        {!offeringsReady && (
+          <Text
+            style={[
+              typography.caption1,
+              { color: c.textMuted, textAlign: 'center', marginTop: spacing.md },
+            ]}
+          >
+            {offeringsLoading
+              ? '価格情報を取得しています…'
+              : '価格情報を取得できませんでした。通信環境をご確認のうえ、しばらくしてから再度お開きください。'}
+          </Text>
+        )}
       </View>
 
       {/* CTA Button */}
@@ -240,10 +252,10 @@ export default function PremiumModal() {
           style={({ pressed: p }) => [
             styles.ctaButton,
             pressed(p),
-            isLoading && { opacity: 0.6 },
+            (isLoading || !offeringsReady) && { opacity: 0.6 },
           ]}
           onPress={handlePurchase}
-          disabled={isLoading}
+          disabled={isLoading || !offeringsReady}
           accessibilityRole="button"
           accessibilityLabel={selectedPlan === 'half_yearly' ? '半年プランに登録する' : '月額プランに登録する'}
         >
@@ -255,6 +267,13 @@ export default function PremiumModal() {
             </Text>
           )}
         </Pressable>
+      )}
+
+      {/* Auto-renewal disclosure (App Store Review Guideline 3.1.2) */}
+      {!isPremium && (
+        <Text style={[typography.caption2, styles.disclosureText, { color: c.textMuted }]}>
+          Premiumは自動更新サブスクリプションです。期間終了の24時間以上前に解約しない限り、選択したプランの料金で自動更新されます。購入確定時にApp Store / Google Playアカウントに課金され、解約はOSのサブスクリプション設定からいつでも行えます。
+        </Text>
       )}
 
       {isPremium && (
@@ -275,14 +294,16 @@ export default function PremiumModal() {
           <Text style={[typography.caption2, { color: c.textMuted }]}>購入を復元する</Text>
         </Pressable>
         <Pressable
-          style={({ pressed: p }) => [pressed(p)]}
+          style={({ pressed: p }) => [styles.footerLink, pressed(p)]}
+          onPress={() => router.push({ pathname: '/(modals)/legal', params: { doc: 'terms' } } as never)}
           accessibilityRole="button"
           accessibilityLabel="利用規約"
         >
           <Text style={[typography.caption2, { color: c.textMuted }]}>利用規約</Text>
         </Pressable>
         <Pressable
-          style={({ pressed: p }) => [pressed(p)]}
+          style={({ pressed: p }) => [styles.footerLink, pressed(p)]}
+          onPress={() => router.push({ pathname: '/(modals)/legal', params: { doc: 'privacy' } } as never)}
           accessibilityRole="button"
           accessibilityLabel="プライバシーポリシー"
         >
@@ -423,5 +444,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: spacing.xl,
     marginTop: spacing.xl,
+  },
+  footerLink: {
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.sm,
+  },
+  disclosureText: {
+    marginTop: spacing.md,
+    lineHeight: 16,
   },
 });

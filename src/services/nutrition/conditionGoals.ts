@@ -152,8 +152,30 @@ export function computeNutritionGoals(selectedConditions: string[]): GoalDraft[]
     }
   }
 
+  // Safety pass: when the same nutrient has both a limit and an increase
+  // recommendation (e.g. CKD protein restriction vs muscle-gain protein
+  // increase), the restriction must win — never encourage a nutrient a
+  // medical condition restricts.
+  const drafts = Array.from(draftMap.values());
+  const limitedKeys = new Set(
+    drafts.filter((d) => d.action === 'limit').map((d) => d.nutrient_key),
+  );
+  const resolved = drafts
+    .filter((d) => !(d.action === 'increase' && limitedKeys.has(d.nutrient_key)))
+    .map((d) => {
+      if (d.action !== 'limit') return d;
+      const conflicting = drafts.find(
+        (o) => o.nutrient_key === d.nutrient_key && o.action === 'increase',
+      );
+      if (!conflicting) return d;
+      return {
+        ...d,
+        reason: `${d.reason}（※${conflicting.source_conditions.join('・')}では増量が推奨されますが、制限のある条件を優先しています。医師にご相談ください）`,
+      };
+    });
+
   // Sort by priority descending, then nutrient_key ascending for stable ordering
-  return Array.from(draftMap.values()).sort((a, b) => {
+  return resolved.sort((a, b) => {
     const pd = (PRIORITY_ORDER[b.priority] ?? 0) - (PRIORITY_ORDER[a.priority] ?? 0);
     if (pd !== 0) return pd;
     return a.nutrient_key.localeCompare(b.nutrient_key);

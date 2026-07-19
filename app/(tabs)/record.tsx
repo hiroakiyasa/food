@@ -35,7 +35,7 @@ import {
   useThemeColors,
 } from '@/src/lib/theme';
 import { useUIStore } from '@/src/stores/uiStore';
-import { formatDateFull, getToday } from '@/src/utils/formatters';
+import { addDays, formatDateFull, getToday } from '@/src/utils/formatters';
 import { useColorScheme } from '@/components/useColorScheme';
 
 const DISPLAY_ORDER: MealType[] = ['breakfast', 'lunch', 'snack', 'dinner'];
@@ -55,11 +55,7 @@ export default function RecordScreen() {
   const { data: dailySummary } = useDailySummary(selectedDate);
   const router = useRouter();
   const today = getToday();
-  const previousDate = useMemo(() => {
-    const date = new Date(`${selectedDate}T12:00:00`);
-    date.setDate(date.getDate() - 1);
-    return date.toISOString().slice(0, 10);
-  }, [selectedDate]);
+  const previousDate = useMemo(() => addDays(selectedDate, -1), [selectedDate]);
   const { data: previousMeals = [] } = useMealsByDate(previousDate);
   const createMeal = useCreateMeal();
 
@@ -135,7 +131,7 @@ export default function RecordScreen() {
   const showAddOptions = (mealType: MealType) => {
     const options = ['写真で記録', '食品を検索', 'AIに話す', 'バーコード', 'キャンセル'];
     const open = (index: number) => {
-      const query = `?mealType=${mealType}`;
+      const query = `?mealType=${mealType}&date=${selectedDate}`;
       if (index === 0) router.push(`/(modals)/camera${query}` as never);
       if (index === 1) router.push(`/(modals)/food-search${query}` as never);
       if (index === 2) router.push(`/(modals)/chat-meal${query}` as never);
@@ -285,7 +281,7 @@ export default function RecordScreen() {
             <FontAwesome name="book" size={18} color={palette.warning} />
           </Pressable>
         </View>
-        <QuickAddBar isDark={isDark} />
+        <QuickAddBar isDark={isDark} date={selectedDate} />
         {previousMeals.length > 0 && (
           <View style={styles.repeatBlock}>
             <Text style={[styles.repeatTitle, { color: colors.text }]}>昨日と同じものをすぐ記録</Text>

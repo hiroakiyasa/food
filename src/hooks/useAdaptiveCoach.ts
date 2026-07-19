@@ -4,18 +4,14 @@ import { useAuthStore } from '@/src/stores/authStore';
 import { mealsDb, nutritionTargetsDb, type LocalNutritionTarget } from '@/src/lib/localDb';
 import { supabase } from '@/src/lib/supabase';
 import { calculateAdaptiveEnergy, type AdaptiveEnergyResult } from '@/src/services/coaching/adaptiveEnergy';
+import { getToday, addDays, getWeekStart } from '@/src/utils/formatters';
 
 function dateDaysAgo(days: number): string {
-  const date = new Date();
-  date.setDate(date.getDate() - days);
-  return date.toISOString().slice(0, 10);
+  return addDays(getToday(), -days);
 }
 
 function weekStart(): string {
-  const date = new Date();
-  const offset = (date.getDay() + 6) % 7;
-  date.setDate(date.getDate() - offset);
-  return date.toISOString().slice(0, 10);
+  return getWeekStart(getToday());
 }
 
 export function useAdaptiveCoach() {
@@ -25,7 +21,7 @@ export function useAdaptiveCoach() {
     queryFn: async (): Promise<{ result: AdaptiveEnergyResult; target: LocalNutritionTarget } | null> => {
       if (!user) return null;
       const from = `${dateDaysAgo(20)}T00:00:00`;
-      const to = `${new Date().toISOString().slice(0, 10)}T23:59:59`;
+      const to = `${getToday()}T23:59:59`;
       const [meals, target, healthResponse, profileResponse] = await Promise.all([
         mealsDb.getByUserAndPeriod(user.id, from, to),
         nutritionTargetsDb.getLatest(user.id),

@@ -1,9 +1,66 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/src/stores/authStore';
-import { mealsDb, type LocalMeal, type LocalMealItem } from '@/src/lib/localDb';
+import {
+  mealsDb,
+  dailySummariesDb,
+  weeklyBuffersDb,
+  nutritionTargetsDb,
+  type LocalMeal,
+  type LocalMealItem,
+} from '@/src/lib/localDb';
 import { upsertDailySummary } from '@/src/services/nutrition/dailySummary';
-import { getToday } from '@/src/utils/formatters';
+import { evaluateAndAwardBadges } from '@/src/services/gamification/badgeService';
+import { eatenAtForDate, getToday, getWeekStart, addDays } from '@/src/utils/formatters';
 import { enqueueMealSync, syncMealsForUser } from '@/src/services/sync/mealSyncService';
+
+const WEEKLY_BUFFER_TOTAL_KCAL = 1400; // 200 kcal/day of flexible budget
+const WEEKLY_BUFFER_TOTAL_SODIUM_MG = 5600;
+
+// Recompute the aggregates a meal mutation affects: the day's summary (score,
+// totals, feedback) and the ISO week's buffer usage. Must run after create,
+// update AND delete — otherwise the home score and insights keep stale values.
+async function recomputeDayAggregates(
+  userId: string,
+  date: string,
+  queryClient: QueryClient,
+): Promise<void> {
+  const [meals, target] = await Promise.all([
+    mealsDb.getByDate(userId, date),
+    nutritionTargetsDb.getLatest(userId),
+  ]);
+  const targetKcal = target?.energy_kcal ?? 2000;
+  await upsertDailySummary({ userId, date, meals, targetKcal });
+
+  // Weekly buffer: accumulated overage across the week vs the daily targets.
+  const weekStart = getWeekStart(date);
+  const weekEnd = addDays(weekStart, 6);
+  const summaries = await dailySummariesDb.getRange(userId, weekStart, weekEnd);
+  const targetSodium = target?.sodium_mg ?? 2300;
+  const usedKcal = summaries.reduce(
+    (sum, s) => sum + Math.max(0, (s.total_energy_kcal ?? 0) - targetKcal),
+    0,
+  );
+  const usedSodium = summaries.reduce(
+    (sum, s) => sum + Math.max(0, (s.total_sodium_mg ?? 0) - targetSodium),
+    0,
+  );
+  await weeklyBuffersDb.upsert(userId, weekStart, {
+    buffer_total_kcal: WEEKLY_BUFFER_TOTAL_KCAL,
+    buffer_used_kcal: Math.round(usedKcal),
+    buffer_total_sodium_mg: WEEKLY_BUFFER_TOTAL_SODIUM_MG,
+    buffer_used_sodium_mg: Math.round(usedSodium),
+  });
+
+  queryClient.invalidateQueries({ queryKey: ['daily-summary'] });
+  queryClient.invalidateQueries({ queryKey: ['weekly-buffer'] });
+  queryClient.invalidateQueries({ queryKey: ['streaks'] });
+  queryClient.invalidateQueries({ queryKey: ['insights-data'] });
+}
+
+function dateOfMeal(meal: { eaten_at: string } | null | undefined): string {
+  const eatenAt = meal?.eaten_at;
+  return eatenAt && eatenAt.length >= 10 ? eatenAt.slice(0, 10) : getToday();
+}
 
 // Re-export types that downstream components expect (shape-compatible with DB types)
 export type Meal = LocalMeal;
@@ -60,14 +117,22 @@ export function useUpdateMeal() {
       items?: MealItemInsert[];
     }) => {
       if (!user) throw new Error('Not authenticated');
+      const before = await mealsDb.getById(user.id, id);
       await mealsDb.update(user.id, id, meal as Partial<LocalMeal>, items);
+      const after = await mealsDb.getById(user.id, id);
       await enqueueMealSync(user.id, id, 'upsert');
       await syncMealsForUser(user.id).catch(() => undefined);
+      return { beforeDate: dateOfMeal(before), afterDate: dateOfMeal(after) };
     },
-    onSuccess: (_data, variables) => {
+    onSuccess: async (dates, variables) => {
       queryClient.invalidateQueries({ queryKey: ['meals'] });
       queryClient.invalidateQueries({ queryKey: ['meal', variables.id] });
-      queryClient.invalidateQueries({ queryKey: ['daily-summary'] });
+      if (user) {
+        await recomputeDayAggregates(user.id, dates.afterDate, queryClient);
+        if (dates.beforeDate !== dates.afterDate) {
+          await recomputeDayAggregates(user.id, dates.beforeDate, queryClient);
+        }
+      }
     },
   });
 }
@@ -79,13 +144,17 @@ export function useDeleteMeal() {
   return useMutation({
     mutationFn: async (id: string) => {
       if (!user) throw new Error('Not authenticated');
+      const meal = await mealsDb.getById(user.id, id);
       await mealsDb.delete(user.id, id);
       await enqueueMealSync(user.id, id, 'delete');
       await syncMealsForUser(user.id).catch(() => undefined);
+      return { date: dateOfMeal(meal) };
     },
-    onSuccess: () => {
+    onSuccess: async (result) => {
       queryClient.invalidateQueries({ queryKey: ['meals'] });
-      queryClient.invalidateQueries({ queryKey: ['daily-summary'] });
+      if (user) {
+        await recomputeDayAggregates(user.id, result.date, queryClient);
+      }
     },
   });
 }
@@ -104,10 +173,9 @@ export function useCreateMeal() {
     }) => {
       if (!user) throw new Error('Not authenticated');
 
-      const now = new Date().toISOString();
       const mealData: Omit<LocalMeal, 'id' | 'user_id' | 'created_at' | 'updated_at'> = {
         meal_type: meal.meal_type ?? 'lunch',
-        eaten_at: meal.eaten_at ?? now,
+        eaten_at: meal.eaten_at ?? eatenAtForDate(getToday()),
         image_url: meal.image_url ?? null,
         total_energy_kcal: meal.total_energy_kcal ?? null,
         total_protein_g: meal.total_protein_g ?? null,
@@ -139,7 +207,7 @@ export function useCreateMeal() {
         id: optimisticId,
         user_id: user.id,
         meal_type: meal.meal_type ?? 'lunch',
-        eaten_at: meal.eaten_at ?? now,
+        eaten_at: meal.eaten_at ?? eatenAtForDate(today),
         image_url: meal.image_url ?? null,
         total_energy_kcal: meal.total_energy_kcal ?? null,
         total_protein_g: meal.total_protein_g ?? null,
@@ -182,20 +250,19 @@ export function useCreateMeal() {
         queryClient.setQueryData(context.queryKey, context.previousMeals);
       }
     },
-    onSuccess: async () => {
+    onSuccess: async (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['meals'] });
-      queryClient.invalidateQueries({ queryKey: ['daily-summary'] });
 
       if (user) {
-        const today = getToday();
-        const todayMeals = await mealsDb.getByDate(user.id, today);
-        await upsertDailySummary({
-          userId: user.id,
-          date: today,
-          meals: todayMeals,
-        });
-        queryClient.invalidateQueries({ queryKey: ['daily-summary'] });
-        queryClient.invalidateQueries({ queryKey: ['streaks'] });
+        const date = variables.meal.eaten_at?.slice(0, 10) ?? getToday();
+        await recomputeDayAggregates(user.id, date, queryClient);
+        evaluateAndAwardBadges(user.id)
+          .then((newBadges) => {
+            if (newBadges.length > 0) {
+              queryClient.invalidateQueries({ queryKey: ['badges'] });
+            }
+          })
+          .catch(() => {});
       }
     },
   });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useFasting } from '@/src/hooks/useFasting';
 import { formatRemainingTime, formatTime } from '@/src/services/fasting/fastingEngine';
@@ -92,7 +92,12 @@ function FastingTimerCardComponent({ isDark }: FastingTimerCardProps) {
           {/* Actions */}
           <View style={styles.actions}>
             <Pressable
-              onPress={stopFasting}
+              onPress={() => {
+                Alert.alert('断食を終了', '今回の断食を終了しますか？', [
+                  { text: 'キャンセル', style: 'cancel' },
+                  { text: '終了する', style: 'destructive', onPress: stopFasting },
+                ]);
+              }}
               style={({ pressed: p }) => [styles.stopButton, { borderColor }, pressed(p)]}
               accessibilityRole="button"
               accessibilityLabel="断食を終了する"

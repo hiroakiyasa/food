@@ -477,7 +477,8 @@ export const mockSupabase = {
 
 // Seed initial data helper (call in dev to add test meals)
 export function seedMockMeal() {
-  const today = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   const mealId = generateId();
   const mealItemId = generateId();
 

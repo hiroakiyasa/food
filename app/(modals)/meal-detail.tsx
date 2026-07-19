@@ -27,7 +27,7 @@ import { FoodScoreChip } from '@/src/components/meal/FoodScoreChip';
 import { ScoreBreakdownSheet } from '@/src/components/meal/ScoreBreakdownSheet';
 import { useMealScore } from '@/src/hooks/useFoodScore';
 import { useMetabolicPrediction } from '@/src/hooks/useMetabolicPrediction';
-import { formatCalories } from '@/src/utils/formatters';
+import { formatCalories, eatenAtForDate, getToday } from '@/src/utils/formatters';
 import {
   palette, typography, spacing, radius, shadow,
   commonStyles, pressed, useThemeColors,
@@ -362,7 +362,7 @@ export default function MealDetailModal() {
         meal: {
           id: mealId,
           meal_type: selectedMealType,
-          eaten_at: new Date().toISOString(),
+          eaten_at: eatenAtForDate(pendingMeal.targetDate ?? getToday()),
           image_url: imageUrl ?? null,
           total_energy_kcal: totals.energy_kcal,
           total_protein_g: totals.protein_g,
@@ -549,7 +549,7 @@ export default function MealDetailModal() {
               <View style={[styles.databaseCoverage, { backgroundColor: palette.primaryLight }]}>
                 <FontAwesome name="database" size={14} color={palette.primaryDark} />
                 <Text style={[typography.caption1, { color: palette.primaryDark }]}>
-                  {pendingMeal.analysis.items.filter((item) => item.estimate_basis === 'database' || item.estimate_basis === 'mock').length}
+                  {pendingMeal.analysis.items.filter((item) => item.estimate_basis === 'database').length}
                   /{pendingMeal.analysis.items.length}品を食品データと照合
                 </Text>
               </View>

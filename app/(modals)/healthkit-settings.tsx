@@ -1,7 +1,8 @@
-import { ScrollView, View, Text, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, Pressable, ActivityIndicator, StyleSheet, Alert, Linking, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useHealthStore } from '@/src/stores/healthStore';
+import { addDays, getToday } from '@/src/utils/formatters';
 import { useHealthSync, useHealthConnection } from '@/src/hooks/useHealthSync';
 import { useHealthDataRange } from '@/src/hooks/useHealthData';
 import {
@@ -29,8 +30,8 @@ export default function HealthKitSettingsModal() {
   const { isConnected, lastSyncAt, isSyncing } = useHealthStore();
   const { connect, disconnect } = useHealthConnection();
   const syncMutation = useHealthSync();
-  const today = new Date().toISOString().split('T')[0];
-  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const today = getToday();
+  const weekAgo = addDays(today, -7);
   const { data: healthData } = useHealthDataRange(weekAgo, today);
 
   const latestData = healthData?.[healthData.length - 1];
@@ -39,7 +40,18 @@ export default function HealthKitSettingsModal() {
     const success = await connect();
     if (success) {
       syncMutation.mutate();
+      return;
     }
+    Alert.alert(
+      '連携できませんでした',
+      Platform.OS === 'ios'
+        ? 'ヘルスケアへのアクセスが許可されていない可能性があります。設定アプリの「ヘルスケア」からアクセスを許可してください。'
+        : 'ヘルスコネクトへのアクセスが許可されていない可能性があります。ヘルスコネクトの設定からアクセスを許可してください。',
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        { text: '設定を開く', onPress: () => Linking.openSettings() },
+      ],
+    );
   };
 
   const handleDisconnect = async () => {
@@ -160,8 +172,8 @@ export default function HealthKitSettingsModal() {
       )}
 
       <Text style={[typography.caption1, { color: c.textMuted, textAlign: 'center', marginTop: spacing.xl }]}>
-        HealthKit/Health Connectの接続にはEAS Buildが必要です。{'\n'}
-        Expo Goでは利用できません。
+        取得したヘルスケアデータは、栄養提案と分析の表示にのみ使用します。{'\n'}
+        広告目的で利用したり、第三者へ提供することはありません。
       </Text>
     </ScrollView>
   );

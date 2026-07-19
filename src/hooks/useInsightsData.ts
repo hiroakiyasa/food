@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/src/lib/supabase';
 import { useAuthStore } from '@/src/stores/authStore';
 import { dailySummariesDb, type LocalDailySummary } from '@/src/lib/localDb';
+import { toLocalDateString } from '@/src/utils/formatters';
 import type { Database } from '@/src/types/database';
 
 type DailyHealthData = Database['public']['Tables']['daily_health_data']['Row'];
@@ -26,8 +27,8 @@ function getDateRange(period: '1W' | '1M' | '3M'): { start: string; end: string 
       break;
   }
   return {
-    start: start.toISOString().split('T')[0]!,
-    end: end.toISOString().split('T')[0]!,
+    start: toLocalDateString(start),
+    end: toLocalDateString(end),
   };
 }
 

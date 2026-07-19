@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 const { persist, createJSONStorage } = require('zustand/middleware') as typeof import('zustand/middleware');
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getToday } from '@/src/utils/formatters';
 
 interface CycleStore {
   /** 月経周期トラッキングを有効にしているか */
@@ -19,6 +20,8 @@ interface CycleStore {
   setAvgPeriodLength: (days: number) => void;
   /** 今日を生理開始日として記録する */
   recordPeriodStart: () => void;
+  /** Reset to defaults (sign-out). */
+  reset: () => void;
 }
 
 export const useCycleStore = create<CycleStore>()(
@@ -34,7 +37,14 @@ export const useCycleStore = create<CycleStore>()(
       setAvgCycleLength: (avgCycleLength) => set({ avgCycleLength }),
       setAvgPeriodLength: (avgPeriodLength) => set({ avgPeriodLength }),
       recordPeriodStart: () =>
-        set({ lastPeriodStart: new Date().toISOString().split('T')[0] }),
+        set({ lastPeriodStart: getToday() }),
+      reset: () =>
+        set({
+          isEnabled: false,
+          lastPeriodStart: null,
+          avgCycleLength: 28,
+          avgPeriodLength: 5,
+        }),
     }),
     {
       name: 'cycle-store',

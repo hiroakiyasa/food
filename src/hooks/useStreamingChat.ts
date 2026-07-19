@@ -20,6 +20,10 @@ export function useStreamingChat() {
     (content: string) => {
       if (!content.trim()) return;
 
+      // Never run two streams at once — abort any in-flight response first.
+      abortRef.current?.abort();
+      abortRef.current = null;
+
       addUserMessage(content);
       const assistantId = addAssistantMessage();
       setIsStreaming(true);

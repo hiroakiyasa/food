@@ -105,7 +105,9 @@ export const HEALTH_CONCERN_LABELS: Record<HealthConcern, string> = {
   eye_fatigue: '疲れ目',
 };
 
-// RevenueCat
-export const REVENUECAT_API_KEY_IOS = ''; // Set in app config or env
-export const REVENUECAT_API_KEY_ANDROID = ''; // Set in app config or env
+// RevenueCat (public SDK keys — safe to expose in the client)
+export const REVENUECAT_API_KEY_IOS =
+  process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY ?? '';
+export const REVENUECAT_API_KEY_ANDROID =
+  process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? '';
 export const PREMIUM_ENTITLEMENT_ID = 'premium';

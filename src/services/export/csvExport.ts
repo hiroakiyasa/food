@@ -2,6 +2,7 @@ import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { mealsDb } from '@/src/lib/localDb';
 import { MEAL_TYPE_LABELS, type MealType } from '@/src/lib/constants';
+import { getToday } from '@/src/utils/formatters';
 
 const CSV_HEADER = '日付,食事タイプ,食品名,分量(g),エネルギー(kcal),P(g),F(g),C(g),食物繊維(g),Na(mg)';
 const BOM = '\uFEFF';
@@ -56,7 +57,7 @@ export async function exportMealsToCSV({ userId, months }: ExportOptions): Promi
   }
 
   const csvContent = BOM + rows.join('\n');
-  const fileName = `meals_export_${new Date().toISOString().split('T')[0]}.csv`;
+  const fileName = `meals_export_${getToday()}.csv`;
   const file = new File(Paths.cache, fileName);
   file.create({ overwrite: true });
   file.write(csvContent);
@@ -71,10 +72,13 @@ export async function exportMealsToCSV({ userId, months }: ExportOptions): Promi
 }
 
 function escapeCSV(value: string): string {
-  if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-    return `"${value.replace(/"/g, '""')}"`;
+  // Neutralize spreadsheet formula injection: a leading =, +, -, @, tab or CR
+  // would be executed as a formula by Excel/Numbers/Sheets.
+  const neutralized = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  if (neutralized.includes(',') || neutralized.includes('"') || neutralized.includes('\n')) {
+    return `"${neutralized.replace(/"/g, '""')}"`;
   }
-  return value;
+  return neutralized;
 }
 
 function formatRow(

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { getToday } from '@/src/utils/formatters';
 
 export type LocationPermissionStatus =
   | 'idle'
@@ -29,7 +30,7 @@ interface UIState {
   setLocationStatus: (status: LocationPermissionStatus) => void;
 }
 
-const today = new Date().toISOString().split('T')[0];
+const today = getToday();
 
 export const useUIStore = create<UIState>((set) => ({
   selectedDate: today,

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/src/stores/authStore';
 import { supabase } from '@/src/lib/supabase';
+import { toLocalDateString } from '@/src/utils/formatters';
 import type { Database } from '@/src/types/database';
 
 type MealPlanRow = Database['public']['Tables']['meal_plans']['Row'];
@@ -74,7 +75,7 @@ function getWeekStart(offsetWeeks = 0): string {
   const dayOfWeek = now.getDay();
   const monday = new Date(now);
   monday.setDate(now.getDate() - ((dayOfWeek + 6) % 7) + offsetWeeks * 7);
-  return monday.toISOString().split('T')[0]!;
+  return toLocalDateString(monday);
 }
 
 // ─── フック ───────────────────────────────────────────────────────────────────
@@ -83,7 +84,7 @@ function getWeekStart(offsetWeeks = 0): string {
  * 特定週の食事プランを取得するフック
  * @param weekOffset 0=今週, 1=来週, -1=先週
  */
-export function useWeeklyMealPlan(weekOffset = 0) {
+export function useWeeklyMealPlan(weekOffset = 0, options?: { enabled?: boolean }) {
   const user = useAuthStore((s) => s.user);
   const weekStart = getWeekStart(weekOffset);
 
@@ -102,7 +103,7 @@ export function useWeeklyMealPlan(weekOffset = 0) {
       if (error) throw error;
       return data as MealPlan | null;
     },
-    enabled: !!user,
+    enabled: !!user && (options?.enabled ?? true),
     staleTime: 60 * 60 * 1000, // 1時間
   });
 }

@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/src/stores/authStore';
 import { dailySummariesDb } from '@/src/lib/localDb';
 import { supabase } from '@/src/lib/supabase';
+import { toLocalDateString } from '@/src/utils/formatters';
 import {
   analyzeSleepNutritionCorrelations,
   generateSleepInsights,
@@ -45,8 +46,8 @@ export function useSleepNutritionCorrelation(days: number = 14) {
       const end = new Date();
       const start = new Date();
       start.setDate(end.getDate() - days);
-      const startStr = start.toISOString().split('T')[0]!;
-      const endStr = end.toISOString().split('T')[0]!;
+      const startStr = toLocalDateString(start);
+      const endStr = toLocalDateString(end);
 
       // 日次サマリーと健康データを並行取得
       const [summaries, healthResult] = await Promise.all([

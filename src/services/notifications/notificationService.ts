@@ -52,6 +52,8 @@ export async function scheduleMealReminder(
   hour: number,
   minute: number,
 ): Promise<void> {
+  if (Platform.OS === 'web') return; // expo-notifications scheduling is native-only
+
   await Notifications.cancelScheduledNotificationAsync(identifier).catch(() => {});
 
   await Notifications.scheduleNotificationAsync({
@@ -62,10 +64,11 @@ export async function scheduleMealReminder(
       hour,
       minute,
     },
-  });
+  }).catch(() => {});
 }
 
 export async function cancelMealReminder(identifier: string): Promise<void> {
+  if (Platform.OS === 'web') return;
   await Notifications.cancelScheduledNotificationAsync(identifier).catch(() => {});
 }
 

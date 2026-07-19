@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { eatenAtForDate, getToday } from '@/src/utils/formatters';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useChatStore } from '@/src/stores/chatStore';
 import { useStreamingChat } from '@/src/hooks/useStreamingChat';
@@ -26,12 +27,13 @@ import {
   palette, typography, spacing, radius, useThemeColors,
 } from '@/src/lib/theme';
 
-const GREETING_MESSAGE = 'こんにちは！AI栄養士です。今日は何を食べましたか？料理名や食材を教えてください。';
+const GREETING_MESSAGE = 'こんにちは！AI食事アシスタントです。今日は何を食べましたか？料理名や食材を教えてください。';
 const AUTO_RECORD_DELAY_MS = 300;
 
 export default function ChatMealModal() {
   const router = useRouter();
-  const { mealType } = useLocalSearchParams<{ mealType?: string }>();
+  const { mealType, date } = useLocalSearchParams<{ mealType?: string; date?: string }>();
+  const targetDate = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : getToday();
   const isDark = useColorScheme() === 'dark';
   const c = useThemeColors(isDark);
   const user = useAuthStore((s) => s.user);
@@ -53,7 +55,7 @@ export default function ChatMealModal() {
     finalizeMessage,
   } = useChatStore();
 
-  const { sendMessage } = useStreamingChat();
+  const { sendMessage, abortStream } = useStreamingChat();
   const scrollViewRef = useRef<ScrollView>(null);
   const [saving, setSaving] = useState(false);
   const initializedRef = useRef(false);
@@ -136,10 +138,12 @@ export default function ChatMealModal() {
     prevMessageCountRef.current = currentCount;
   }, [messages.length, messages[messages.length - 1]?.isStreaming]);
 
-  // Cleanup on unmount
+  // Cleanup on unmount — also abort any in-flight stream so it stops
+  // consuming tokens and updating state after the screen is gone.
   useEffect(() => {
     return () => {
       stopTTS();
+      abortStream();
       resetChat();
     };
   }, []);
@@ -180,7 +184,7 @@ export default function ChatMealModal() {
       await createMeal.mutateAsync({
         meal: {
           meal_type: selectedMealType,
-          eaten_at: new Date().toISOString(),
+          eaten_at: eatenAtForDate(targetDate),
           total_energy_kcal: totals.energy_kcal,
           total_protein_g: totals.protein_g,
           total_fat_g: totals.fat_g,
@@ -219,6 +223,7 @@ export default function ChatMealModal() {
       onPressSend={sendManualTranscript}
       sendMode={sendMode}
       isDark={isDark}
+      disabled={isStreaming}
     />
   );
 
@@ -243,7 +248,7 @@ export default function ChatMealModal() {
             <View style={[styles.welcomeIcon, { backgroundColor: palette.primaryMuted }]}>
               <FontAwesome name="leaf" size={24} color={palette.primary} />
             </View>
-            <Text style={[styles.welcomeTitle, { color: c.text }]}>AI栄養士</Text>
+            <Text style={[styles.welcomeTitle, { color: c.text }]}>AI食事アシスタント</Text>
             <Text style={[styles.welcomeSubtitle, { color: c.textMuted }]}>
               食べたものを教えてください{'\n'}栄養素を自動で計算します
             </Text>
