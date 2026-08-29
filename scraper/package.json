@@ -1,0 +1,25 @@
+{
+  "name": "food-scraper",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "usda": "tsx usda/index.ts",
+    "usda:test": "tsx usda/index.ts --test",
+    "usda:download": "tsx usda/index.ts --download-only",
+    "upload": "tsx uploader/index.ts",
+    "upload:test": "tsx uploader/index.ts --test",
+    "upload:verify": "tsx uploader/index.ts --verify-only"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "stream-chain": "^2.2.5",
+    "stream-json": "^1.9.1",
+    "tsx": "^4.0.0",
+    "unzipper": "^0.12.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/stream-json": "^1.7.7",
+    "typescript": "~5.9.2"
+  }
+}

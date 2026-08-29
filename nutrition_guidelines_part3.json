@@ -1,0 +1,1599 @@
+[
+  {
+    "categoryId": "5_DailyHealth",
+    "subCategoryName": "鉄欠乏性貧血",
+    "description": "鉄吸収促進と貯蔵鉄回復",
+    "focusNutrients": [
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 10.5,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "ヘム鉄を優先。月経あり成人女性推奨量10.5mg/日。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminC",
+        "nutrientName": "ビタミンC",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 100,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "非ヘム鉄吸収を2-6倍促進。鉄含有食品と同時摂取。",
+        "evidenceBase": "各種栄養学文献",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "folicAcid",
+        "nutrientName": "葉酸",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 240,
+          "targetMax": 1000,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "赤血球形成に必要。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "5_DailyHealth",
+    "subCategoryName": "巨赤芽球性貧血",
+    "description": "B12/葉酸欠乏による貧血の栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "vitaminB12",
+        "nutrientName": "ビタミンB12",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 2.4,
+          "targetMax": null,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "悪性貧血では内因子欠乏のため注射補充が必要な場合も。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "folicAcid",
+        "nutrientName": "葉酸",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 400,
+          "targetMax": 1000,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "DNA合成に必須。B12欠乏の鑑別が先行。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "5_DailyHealth",
+    "subCategoryName": "慢性疲労・倦怠感",
+    "description": "エネルギー代謝と栄養不足に起因する疲労改善",
+    "focusNutrients": [
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 7.5,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "潜在性鉄欠乏は疲労の主因の一つ。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminB1",
+        "nutrientName": "ビタミンB1",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1.1,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "糖質代謝補酵素。不足は倦怠感を引き起こす。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminB12",
+        "nutrientName": "ビタミンB12",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 2.4,
+          "targetMax": null,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "エネルギー産生・神経機能に関与。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "5_DailyHealth",
+    "subCategoryName": "睡眠障害・不眠",
+    "description": "睡眠の質向上に関連する栄養素管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "tryptophan",
+        "nutrientName": "トリプトファン",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "セロトニン→メラトニン前駆体。乳製品・大豆・バナナに豊富。",
+        "evidenceBase": "各種神経栄養学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "magnesium",
+        "nutrientName": "マグネシウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 290,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "GABA受容体活性化。睡眠の質改善との関連。",
+        "evidenceBase": "Abbasi B, et al. J Res Med Sci 2012",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "glycine",
+        "nutrientName": "グリシン",
+        "action": "increase",
+        "priority": "Low",
+        "quantitativeCriteria": {
+          "targetMin": 3000,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "就寝前3g摂取で睡眠質改善報告。深部体温低下作用。",
+        "evidenceBase": "Inagawa K, et al. 2006",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "caffeine",
+        "nutrientName": "カフェイン",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "就寝6時間前以降のカフェイン摂取を避ける。",
+        "evidenceBase": "Drake C, et al. J Clin Sleep Med 2013",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "5_DailyHealth",
+    "subCategoryName": "便秘",
+    "description": "腸管運動促進と便通改善",
+    "focusNutrients": [
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 20,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "水溶性と不溶性をバランスよく。20-25g/日以上。",
+        "evidenceBase": "慢性便秘症診療ガイドライン2023",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "water",
+        "nutrientName": "水分",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1500,
+          "targetMax": null,
+          "unit": "mL",
+          "per": "day"
+        },
+        "reason": "食物繊維とともに便の軟化に必要。",
+        "evidenceBase": "慢性便秘症診療ガイドライン2023",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "magnesium",
+        "nutrientName": "マグネシウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 290,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "浸透圧効果で腸管内に水分。",
+        "evidenceBase": "慢性便秘症診療ガイドライン2023",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "5_DailyHealth",
+    "subCategoryName": "冷え性",
+    "description": "末梢循環改善と熱産生促進",
+    "focusNutrients": [
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 10.5,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "鉄欠乏性貧血は冷えの主因の一つ。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminE",
+        "nutrientName": "ビタミンE",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 6.0,
+          "targetMax": 750,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "末梢血管拡張促進。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 50,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "食事誘発性熱産生(DIT)はたんぱく質が最も高い。",
+        "evidenceBase": "一般栄養学",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "5_DailyHealth",
+    "subCategoryName": "ストレス・不安",
+    "description": "抗ストレス栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "vitaminC",
+        "nutrientName": "ビタミンC",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 100,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "コルチゾール合成に必要。ストレス時消費増加。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "magnesium",
+        "nutrientName": "マグネシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 290,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "HPA軸調節。慢性ストレス下でMg排泄増加。",
+        "evidenceBase": "Boyle NB, et al. Nutrients 2017",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminB6",
+        "nutrientName": "ビタミンB6",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1.1,
+          "targetMax": 40,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "セロトニン・GABA合成補酵素。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "5_DailyHealth",
+    "subCategoryName": "PMS (月経前症候群)",
+    "description": "月経前症状緩和",
+    "focusNutrients": [
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1000,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "1000-1200mg/日でPMS症状48%軽減のRCT報告。",
+        "evidenceBase": "Thys-Jacobs S, et al. Am J Obstet Gynecol 1998",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "magnesium",
+        "nutrientName": "マグネシウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 200,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "気分の落ち込み・水分貯留改善。200-360mg/日。",
+        "evidenceBase": "Walker AF, et al. J Womens Health 1998",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminB6",
+        "nutrientName": "ビタミンB6",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 50,
+          "targetMax": 100,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "セロトニン合成促進。50-100mg/日。",
+        "evidenceBase": "Wyatt KM, et al. BMJ 1999",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "5_DailyHealth",
+    "subCategoryName": "片頭痛",
+    "description": "片頭痛発作の頻度・重症度軽減",
+    "focusNutrients": [
+      {
+        "nutrientKey": "magnesium",
+        "nutrientName": "マグネシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 400,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "400-600mg/日で発作頻度減少。AHS/AAN Level B。",
+        "evidenceBase": "AHS/AAN ガイドライン",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "riboflavin",
+        "nutrientName": "リボフラビン(B2)",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 400,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "400mg/日で発作回数50%減のRCTあり。",
+        "evidenceBase": "Schoenen J, et al. Neurology 1998",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "coQ10",
+        "nutrientName": "コエンザイムQ10",
+        "action": "increase",
+        "priority": "Low",
+        "quantitativeCriteria": {
+          "targetMin": 100,
+          "targetMax": 300,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "100mg×3/日で発作頻度低下報告。",
+        "evidenceBase": "Sandor PS, et al. Neurology 2005",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "5_DailyHealth",
+    "subCategoryName": "むくみ (浮腫)",
+    "description": "体液バランス正常化と浮腫軽減",
+    "focusNutrients": [
+      {
+        "nutrientKey": "saltEquivalent",
+        "nutrientName": "食塩相当量",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 6.0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "過剰な塩分は水分貯留促進。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "potassium",
+        "nutrientName": "カリウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 2600,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "ナトリウム排泄促進。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "6_Digestive_Allergy",
+    "subCategoryName": "過敏性腸症候群 (IBS) / 低FODMAP食",
+    "description": "腸管過敏反応軽減のための食事療法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "FODMAP",
+        "nutrientName": "高FODMAP食品",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": null,
+          "per": "day"
+        },
+        "reason": "発酵性糖質を2-6週間制限後段階的再導入。",
+        "evidenceBase": "IBS診療GL2020/Monash University",
+        "evidenceUrl": "https://www.jsge.or.jp/committees/guideline/guideline/pdf/IBSGL2020_.pdf"
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "水溶性食物繊維",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 15,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "サイリウム等がIBS腹痛・便通改善に有用。",
+        "evidenceBase": "IBS診療GL2020",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "6_Digestive_Allergy",
+    "subCategoryName": "乳糖不耐症",
+    "description": "ラクターゼ活性低下に対応した栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "lactose",
+        "nutrientName": "乳糖",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 12,
+          "unit": "g",
+          "per": "回"
+        },
+        "reason": "1回12g以下なら多くの人が耐容。",
+        "evidenceBase": "EFSA Scientific Opinion",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 650,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "乳製品回避によるCa不足リスク。チーズ・ヨーグルト・強化豆乳で代替。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "6_Digestive_Allergy",
+    "subCategoryName": "セリアック病・グルテン過敏症",
+    "description": "グルテン完全除去と栄養不足予防",
+    "focusNutrients": [
+      {
+        "nutrientKey": "gluten",
+        "nutrientName": "グルテン",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 20,
+          "unit": "ppm",
+          "per": "day"
+        },
+        "reason": "Codex基準20ppm未満。小麦・大麦・ライ麦を厳格回避。",
+        "evidenceBase": "Codex Alimentarius/ESPGHAN GL",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 7.5,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "小腸絨毛萎縮による吸収不良。",
+        "evidenceBase": "各種消化器学GL",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1000,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "吸収不良による骨密度低下リスク。",
+        "evidenceBase": "ACG Clinical Guideline: Celiac Disease",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 15,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "吸収不良と骨代謝異常の補正。",
+        "evidenceBase": "ACG Clinical Guideline",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "6_Digestive_Allergy",
+    "subCategoryName": "アトピー性皮膚炎",
+    "description": "皮膚バリア機能と免疫バランス改善",
+    "focusNutrients": [
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 2.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "抗炎症作用。n-6/n-3比改善が重要。",
+        "evidenceBase": "各種アレルギー学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 9.0,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "免疫調節・抗菌ペプチド産生。VD不足と重症度相関。",
+        "evidenceBase": "Peroni DG, et al. Br J Dermatol 2011",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "probiotics",
+        "nutrientName": "プロバイオティクス",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": null,
+          "per": "day"
+        },
+        "reason": "腸内環境改善を介した免疫調節。LGGのエビデンスあり。",
+        "evidenceBase": "WAO Guidelines for Probiotics (2015)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "6_Digestive_Allergy",
+    "subCategoryName": "炎症性腸疾患 (IBD)",
+    "description": "潰瘍性大腸炎・クローン病の栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1.2,
+          "targetMax": 1.5,
+          "unit": "g/kg体重",
+          "per": "day"
+        },
+        "reason": "炎症による異化亢進・吸収不良に対応。",
+        "evidenceBase": "ESPEN Practical Guideline on IBD (2020)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "慢性出血・炎症による鉄欠乏が高頻度。",
+        "evidenceBase": "ECCO Guidelines/ESPEN GL",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 15,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "免疫調節・再燃予防。IBD患者の多くがVD不足。",
+        "evidenceBase": "ESPEN GL",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1000,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "ステロイド使用・吸収不良による骨粗鬆症リスク。",
+        "evidenceBase": "ESPEN GL",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "6_Digestive_Allergy",
+    "subCategoryName": "胃食道逆流症 (GERD)",
+    "description": "下部食道括約筋圧低下と酸逆流防止",
+    "focusNutrients": [
+      {
+        "nutrientKey": "fat",
+        "nutrientName": "脂質(過剰)",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 30,
+          "unit": "%E",
+          "per": "day"
+        },
+        "reason": "高脂肪食はLES圧低下させ逆流誘発。",
+        "evidenceBase": "GERD診療GL2021",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "caffeine",
+        "nutrientName": "カフェイン",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "胃酸分泌促進・LES弛緩誘発。",
+        "evidenceBase": "GERD診療GL2021",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "alcohol",
+        "nutrientName": "アルコール",
+        "action": "limit",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "LES弛緩と胃酸分泌促進。",
+        "evidenceBase": "GERD診療GL2021",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "6_Digestive_Allergy",
+    "subCategoryName": "食物アレルギー (一般)",
+    "description": "原因食物除去と代替栄養確保",
+    "focusNutrients": [
+      {
+        "nutrientKey": "allergen",
+        "nutrientName": "原因アレルゲン食品",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "確定診断に基づく必要最小限の除去。",
+        "evidenceBase": "食物アレルギー診療GL2021",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 650,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "牛乳アレルギー時の代替Ca源確保必須。",
+        "evidenceBase": "食物アレルギー診療GL2021",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "6_Digestive",
+    "subCategoryName": "胃・十二指腸潰瘍",
+    "description": "胃粘膜保護と潰瘍治癒促進",
+    "focusNutrients": [
+      {
+        "nutrientKey": "spicyFoods",
+        "nutrientName": "刺激物(香辛料・酸味)",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": null,
+          "per": "day"
+        },
+        "reason": "胃酸分泌促進・粘膜刺激を避ける。",
+        "evidenceBase": "日本消化器病学会 消化性潰瘍診療GL",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "alcohol",
+        "nutrientName": "アルコール",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "胃粘膜損傷を悪化。治療中は禁酒。",
+        "evidenceBase": "消化性潰瘍診療GL",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminA",
+        "nutrientName": "ビタミンA",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 650,
+          "targetMax": 2700,
+          "unit": "μgRAE",
+          "per": "day"
+        },
+        "reason": "粘膜上皮の修復・再生に必要。",
+        "evidenceBase": "一般栄養学",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "6_Digestive",
+    "subCategoryName": "慢性膵炎",
+    "description": "膵臓の負担軽減と栄養吸収不良への対応",
+    "focusNutrients": [
+      {
+        "nutrientKey": "fat",
+        "nutrientName": "脂質",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 40,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "脂肪制限(30-40g/日以下)。脂肪消化不良による脂肪便予防。MCTオイルは比較的良好。",
+        "evidenceBase": "日本消化器病学会 慢性膵炎診療GL/ESPEN GL",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "alcohol",
+        "nutrientName": "アルコール",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "膵臓への直接的な毒性。完全禁酒が原則。",
+        "evidenceBase": "慢性膵炎診療GL",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminADEK",
+        "nutrientName": "脂溶性ビタミン(A,D,E,K)",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": null,
+          "per": "day"
+        },
+        "reason": "脂肪吸収障害により脂溶性ビタミンが欠乏しやすい。補充が必要。",
+        "evidenceBase": "ESPEN GL",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "7_Immune_Allergy",
+    "subCategoryName": "関節リウマチ",
+    "description": "関節の炎症軽減と骨保護",
+    "focusNutrients": [
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸(EPA/DHA)",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 3.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "抗炎症作用。EPA/DHA 3g/日以上で関節腫脹・疼痛軽減のメタアナリシスあり。",
+        "evidenceBase": "Lee YH, et al. Clin Rheumatol 2017",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 15,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "免疫調節・骨保護。RA患者はVD低値が多い。",
+        "evidenceBase": "各種リウマチ学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 800,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "ステロイド性骨粗鬆症予防。",
+        "evidenceBase": "日本リウマチ学会GL",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "7_Immune_Allergy",
+    "subCategoryName": "花粉症・アレルギー性鼻炎",
+    "description": "アレルギー反応の緩和",
+    "focusNutrients": [
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 9.0,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "免疫調節機能。VD不足とアレルギー疾患リスクの相関報告。",
+        "evidenceBase": "各種アレルギー学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 2.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "炎症性メディエーター産生抑制。",
+        "evidenceBase": "各種アレルギー学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "probiotics",
+        "nutrientName": "プロバイオティクス",
+        "action": "increase",
+        "priority": "Low",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": null,
+          "per": "day"
+        },
+        "reason": "腸管免疫調節を介したアレルギー症状緩和の可能性。エビデンスは限定的。",
+        "evidenceBase": "各種メタアナリシス(結果混在)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "7_Immune_Allergy",
+    "subCategoryName": "気管支喘息",
+    "description": "気道炎症の軽減と肺機能維持",
+    "focusNutrients": [
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 9.0,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "喘息増悪リスク低減との関連。メタアナリシスで増悪30%減少の報告。",
+        "evidenceBase": "Jolliffe DA, et al. Lancet Respir Med 2017",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 2.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "気道炎症の軽減に寄与する可能性。",
+        "evidenceBase": "各種呼吸器学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "magnesium",
+        "nutrientName": "マグネシウム",
+        "action": "increase",
+        "priority": "Low",
+        "quantitativeCriteria": {
+          "targetMin": 290,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "気管支平滑筋の弛緩作用。Mg不足と喘息重症度の相関。",
+        "evidenceBase": "各種呼吸器学研究",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "8_Mental_Neurological",
+    "subCategoryName": "うつ病",
+    "description": "神経伝達物質合成と脳機能を支える栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸(EPA)",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1.0,
+          "targetMax": 2.0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "EPA≥60%の製剤で抗うつ効果。メタアナリシスでうつ症状改善。",
+        "evidenceBase": "Liao Y, et al. Transl Psychiatry 2019 / ISSFAL推奨",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "folicAcid",
+        "nutrientName": "葉酸",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 400,
+          "targetMax": 1000,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "SAMe合成→モノアミン神経伝達物質のメチル化に関与。低葉酸とうつリスクの相関。",
+        "evidenceBase": "各種精神医学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 15,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "セロトニン合成への関与。VD不足とうつリスク増加の相関。",
+        "evidenceBase": "Anglin RE, et al. Br J Psychiatry 2013",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "zinc",
+        "nutrientName": "亜鉛",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 8,
+          "targetMax": 35,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "NMDA受容体・BDNF調節に関与。亜鉛低値とうつ重症度の相関。",
+        "evidenceBase": "Swardfager W, et al. Biol Psychiatry 2013",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "8_Mental_Neurological",
+    "subCategoryName": "認知症予防",
+    "description": "脳の酸化ストレス・炎症・血管障害を予防する栄養管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸(DHA)",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "DHAは脳の主要構成脂質。魚食パターンと認知機能低下リスク低減の関連。",
+        "evidenceBase": "Zhang Y, et al. J Neurol Neurosurg Psychiatry 2016",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminE",
+        "nutrientName": "ビタミンE",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 6.0,
+          "targetMax": 750,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "脂質過酸化抑制。食品からのVE摂取とADリスク低減の関連。",
+        "evidenceBase": "Morris MC, et al. JAMA 2002",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "folicAcid",
+        "nutrientName": "葉酸・ビタミンB群",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 240,
+          "targetMax": 1000,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "ホモシステイン低下を介した血管性認知症予防。B6/B12/葉酸の複合摂取。",
+        "evidenceBase": "Smith AD, et al. PLoS One 2010",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "8_Mental_Neurological",
+    "subCategoryName": "てんかん（ケトン食療法）",
+    "description": "薬剤抵抗性てんかんに対するケトン食療法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "fat",
+        "nutrientName": "脂質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": null,
+          "per": "day"
+        },
+        "reason": "脂質:非脂質=4:1～2:1(重量比)の古典的ケトン食。医師・管理栄養士の厳密な管理下で実施。",
+        "evidenceBase": "日本てんかん学会/国際ケトン食コンセンサス(2018)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "carbohydrate",
+        "nutrientName": "炭水化物",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 20,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "厳格な糖質制限によりケトーシスを維持し発作抑制。",
+        "evidenceBase": "国際ケトン食コンセンサス(2018)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "micronutrients",
+        "nutrientName": "マルチビタミン・ミネラル",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": null,
+          "per": "day"
+        },
+        "reason": "極端な食事制限のため微量栄養素欠乏リスク。Ca, VD, Se, Mg等のサプリ補給必須。",
+        "evidenceBase": "国際ケトン食コンセンサス(2018)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "8_Mental_Neurological",
+    "subCategoryName": "パーキンソン病",
+    "description": "ドーパミン系機能サポートと便秘・体重減少対策",
+    "focusNutrients": [
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質(摂取タイミング)",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "L-dopaとたんぱく質(大型中性アミノ酸)が吸収で競合。たんぱく質を夕食に集中させるprotein redistributionが有効。総量は推奨量確保。",
+        "evidenceBase": "各種パーキンソン病栄養管理指針",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 20,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "PD患者の約80%が便秘。食物繊維と水分の十分な摂取が重要。",
+        "evidenceBase": "各種PD管理指針",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 15,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "PD患者はVD低値が多い。骨折予防・神経保護の可能性。",
+        "evidenceBase": "Knekt P, et al. Arch Neurol 2010",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "8_Mental_Neurological",
+    "subCategoryName": "ADHD（注意欠如多動症）",
+    "description": "注意力・衝動性に関連する栄養因子の管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸(EPA/DHA)",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "ADHDの不注意症状に対し小〜中程度の効果。EPA主体が有効との報告。",
+        "evidenceBase": "Chang JPC, et al. Neuropsychopharmacology 2018",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 7.5,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "低フェリチンとADHD症状重症度の相関報告。ドーパミン合成に鉄が必要。",
+        "evidenceBase": "Konofal E, et al. Arch Pediatr Adolesc Med 2004",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "zinc",
+        "nutrientName": "亜鉛",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 8,
+          "targetMax": 35,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "ドーパミン代謝・メラトニン合成に関与。亜鉛補充で一部症状改善の報告。",
+        "evidenceBase": "Bilici M, et al. Prog Neuropsychopharmacol Biol Psychiatry 2004",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "9_Ophthalmological",
+    "subCategoryName": "加齢黄斑変性（AMD）",
+    "description": "黄斑部の変性進行抑制",
+    "focusNutrients": [
+      {
+        "nutrientKey": "luteinZeaxanthin",
+        "nutrientName": "ルテイン/ゼアキサンチン",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 10,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "AREDS2でルテイン10mg+ゼアキサンチン2mg/日が中等度AMD進行を25%抑制。",
+        "evidenceBase": "AREDS2 (Age-Related Eye Disease Study 2), JAMA 2013",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "zinc",
+        "nutrientName": "亜鉛",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 25,
+          "targetMax": 40,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "AREDS2で亜鉛25-80mg/日。網膜の抗酸化防御に関与。",
+        "evidenceBase": "AREDS2",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminC",
+        "nutrientName": "ビタミンC",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 500,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "AREDS2処方:VC500mg/日。抗酸化作用。",
+        "evidenceBase": "AREDS2",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminE",
+        "nutrientName": "ビタミンE",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 400,
+          "targetMax": null,
+          "unit": "IU",
+          "per": "day"
+        },
+        "reason": "AREDS2処方:VE400IU/日。脂質過酸化抑制。",
+        "evidenceBase": "AREDS2",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸(DHA/EPA)",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "DHAは網膜に高濃度。疫学的にDHA摂取とAMDリスク低減の関連。",
+        "evidenceBase": "SanGiovanni JP, et al. Prog Retin Eye Res 2005",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "9_Ophthalmological",
+    "subCategoryName": "白内障予防",
+    "description": "水晶体の酸化防止",
+    "focusNutrients": [
+      {
+        "nutrientKey": "vitaminC",
+        "nutrientName": "ビタミンC",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 100,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "水晶体の抗酸化防御。VC摂取と白内障リスク低減の疫学的関連。",
+        "evidenceBase": "各種眼科学疫学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminE",
+        "nutrientName": "ビタミンE",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 6.0,
+          "targetMax": 750,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "脂質過酸化抑制。",
+        "evidenceBase": "各種眼科学疫学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "luteinZeaxanthin",
+        "nutrientName": "ルテイン/ゼアキサンチン",
+        "action": "increase",
+        "priority": "Low",
+        "quantitativeCriteria": {
+          "targetMin": 6,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "水晶体の光フィルター・抗酸化作用。",
+        "evidenceBase": "各種眼科学研究",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "9_Ophthalmological",
+    "subCategoryName": "ドライアイ・VDT症候群",
+    "description": "涙液の質・量の維持",
+    "focusNutrients": [
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "涙液のマイボーム腺分泌改善。ドライアイ症状軽減のRCTあり。",
+        "evidenceBase": "各種眼科学研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "vitaminA",
+        "nutrientName": "ビタミンA",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 650,
+          "targetMax": 2700,
+          "unit": "μgRAE",
+          "per": "day"
+        },
+        "reason": "結膜・角膜上皮の正常維持に不可欠。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "9_Ophthalmological",
+    "subCategoryName": "緑内障",
+    "description": "眼圧管理と視神経保護に関連する栄養因子",
+    "focusNutrients": [
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸",
+        "action": "increase",
+        "priority": "Low",
+        "quantitativeCriteria": {
+          "targetMin": 1.7,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "抗炎症・神経保護作用の可能性。エビデンスは限定的。",
+        "evidenceBase": "各種眼科学研究(エビデンス限定的)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "caffeine",
+        "nutrientName": "カフェイン",
+        "action": "limit",
+        "priority": "Low",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "一過性の眼圧上昇の可能性。大量摂取を避ける。",
+        "evidenceBase": "各種眼科学研究",
+        "evidenceUrl": null
+      }
+    ]
+  }
+]

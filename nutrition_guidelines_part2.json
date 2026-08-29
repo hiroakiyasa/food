@@ -1,0 +1,537 @@
+[
+  {
+    "categoryId": "3_Lifestyle",
+    "subCategoryName": "ヴィーガン (完全菜食)",
+    "description": "動物性食品を一切摂取しない食事法における栄養不足リスク管理",
+    "focusNutrients": [
+      {
+        "nutrientKey": "vitaminB12",
+        "nutrientName": "ビタミンB12",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 2.4,
+          "targetMax": null,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "植物性食品にはほぼ含まれない。サプリメント等での補給が必須。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄(非ヘム鉄)",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 10,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "非ヘム鉄の吸収率が低い。ビタミンCとの同時摂取推奨。推奨量の1.8倍が目安。",
+        "evidenceBase": "Academy of Nutrition and Dietetics (2016)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 650,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "乳製品非摂取。豆腐・緑黄色野菜・強化植物ミルクで補給。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "vitaminD",
+        "nutrientName": "ビタミンD",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 9.0,
+          "targetMax": 100,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "D3は動物性。日光浴またはD2サプリメントで補給。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": "https://www.mhlw.go.jp/content/10904750/001396865.pdf"
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸(DHA/EPA)",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1.7,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "魚非摂取。αリノレン酸からの変換率は低い。藻類由来DHAサプリ検討。",
+        "evidenceBase": "Academy of Nutrition and Dietetics",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "zinc",
+        "nutrientName": "亜鉛",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 8,
+          "targetMax": 35,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "フィチン酸が亜鉛吸収を阻害。推奨量の1.5倍が目安。",
+        "evidenceBase": "Academy of Nutrition and Dietetics",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 0.9,
+          "targetMax": null,
+          "unit": "g/kg体重",
+          "per": "day"
+        },
+        "reason": "植物性たんぱく質は消化吸収率がやや低い。多様な植物性たんぱく源の組み合わせが重要。",
+        "evidenceBase": "Academy of Nutrition and Dietetics (2016)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "3_Lifestyle",
+    "subCategoryName": "ベジタリアン (卵乳菜食)",
+    "description": "肉・魚を摂取しないが卵・乳製品は摂る食事法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "vitaminB12",
+        "nutrientName": "ビタミンB12",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 2.4,
+          "targetMax": null,
+          "unit": "μg",
+          "per": "day"
+        },
+        "reason": "卵・乳製品から一部摂取可能だが不足リスクあり。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 10,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "ヘム鉄源がないため非ヘム鉄の吸収効率考慮し多めに。",
+        "evidenceBase": "Academy of Nutrition and Dietetics",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 1.7,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "魚からのDHA/EPAなし。αリノレン酸源や藻類由来サプリで補給。",
+        "evidenceBase": "各種栄養学ガイドライン",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "3_Lifestyle",
+    "subCategoryName": "ペスカタリアン (魚菜食)",
+    "description": "肉類を避け魚介類・卵・乳製品・植物性食品を摂る食事法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 2.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "魚からDHA/EPA確保可能。週2-3回以上の魚食推奨。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 7.5,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "赤身肉からのヘム鉄がないため注意。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "3_Lifestyle",
+    "subCategoryName": "ケトジェニック",
+    "description": "極端な糖質制限と高脂質摂取によりケトーシス状態を誘導する食事法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "carbohydrate",
+        "nutrientName": "炭水化物",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 50,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "糖質を20-50g/日に制限しケトーシス維持。",
+        "evidenceBase": "各種ケトジェニックダイエット研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "fat",
+        "nutrientName": "脂質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 65,
+          "targetMax": 80,
+          "unit": "%E",
+          "per": "day"
+        },
+        "reason": "主要エネルギー源を脂質(65-80%E)とする。",
+        "evidenceBase": "各種ケトジェニックダイエット研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "electrolytes",
+        "nutrientName": "電解質(Na/K/Mg)",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "ケトーシス初期のketo flu予防。Na3000-5000mg、K3500-4700mg、Mg300-400mg。",
+        "evidenceBase": "各種ケトジェニックプロトコル",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 15,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "糖質制限下で不足しやすい。低糖質野菜から確保。",
+        "evidenceBase": "一般栄養学的推奨",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "3_Lifestyle",
+    "subCategoryName": "パレオダイエット",
+    "description": "加工食品・穀類・乳製品を排除する食事法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 650,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "乳製品排除により不足リスク。骨付き小魚・ケールから確保。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 20,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "穀類・豆類排除により不足リスク。野菜・果物・ナッツから。",
+        "evidenceBase": "一般栄養学的推奨",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "3_Lifestyle",
+    "subCategoryName": "地中海食 (Mediterranean Diet)",
+    "description": "オリーブオイル・魚・野菜・全粒穀物中心の循環器疾患予防食",
+    "focusNutrients": [
+      {
+        "nutrientKey": "oliveOil",
+        "nutrientName": "オリーブオイル(MUFA)",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 30,
+          "targetMax": null,
+          "unit": "mL",
+          "per": "day"
+        },
+        "reason": "EVOO 30-50mL/日。PREDIMED試験で心血管イベント30%減少。",
+        "evidenceBase": "PREDIMED trial, N Engl J Med 2018",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "n3FattyAcid",
+        "nutrientName": "n-3系脂肪酸",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 2.0,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "魚介類を週3-4回以上。EPA/DHAの心血管保護効果。",
+        "evidenceBase": "地中海食ピラミッド/PREDIMED",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 25,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "全粒穀物・野菜・果物・豆類から25g以上。",
+        "evidenceBase": "地中海食パターン研究",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "3_Lifestyle",
+    "subCategoryName": "DASH食",
+    "description": "高血圧の予防・改善を目的とした食事パターン",
+    "focusNutrients": [
+      {
+        "nutrientKey": "saltEquivalent",
+        "nutrientName": "食塩相当量",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": null,
+          "targetMax": 6.0,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "6g/日未満。DASH-Sodium試験では3.8g以下で更に降圧。",
+        "evidenceBase": "DASH Diet研究/日本高血圧学会GL",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "potassium",
+        "nutrientName": "カリウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 4700,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "DASH食標準プラン4700mg/日。",
+        "evidenceBase": "DASH Diet原著研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "calcium",
+        "nutrientName": "カルシウム",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1250,
+          "targetMax": 2500,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "低脂肪乳製品2-3サービング/日。",
+        "evidenceBase": "DASH Diet原著研究",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "magnesium",
+        "nutrientName": "マグネシウム",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 500,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "全粒穀物・ナッツ・豆類から。血管弛緩・降圧。",
+        "evidenceBase": "DASH Diet原著研究",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "3_Lifestyle",
+    "subCategoryName": "間欠的断食 (Intermittent Fasting)",
+    "description": "食事を特定の時間帯に制限する食事法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "protein",
+        "nutrientName": "たんぱく質",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 1.0,
+          "targetMax": null,
+          "unit": "g/kg体重",
+          "per": "day"
+        },
+        "reason": "摂取量が不足しやすい。筋肉量維持のため意識的に確保。",
+        "evidenceBase": "ISSN Position Stand",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "water",
+        "nutrientName": "水分",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 2000,
+          "targetMax": null,
+          "unit": "mL",
+          "per": "day"
+        },
+        "reason": "断食時間中も水分補給必要。脱水予防。",
+        "evidenceBase": "一般栄養管理指針",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "3_Lifestyle",
+    "subCategoryName": "低糖質ダイエット",
+    "description": "糖質摂取量を中程度に制限する食事法(50-130g/日)",
+    "focusNutrients": [
+      {
+        "nutrientKey": "carbohydrate",
+        "nutrientName": "炭水化物",
+        "action": "limit",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 50,
+          "targetMax": 130,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "20-40%E程度に制限。",
+        "evidenceBase": "ADA Consensus Report",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 18,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "糖質制限時に不足しやすい。低糖質野菜・海藻から確保。",
+        "evidenceBase": "日本人の食事摂取基準(2025年版)",
+        "evidenceUrl": null
+      }
+    ]
+  },
+  {
+    "categoryId": "3_Lifestyle",
+    "subCategoryName": "グルテンフリー食",
+    "description": "グルテンを除去する食事法",
+    "focusNutrients": [
+      {
+        "nutrientKey": "dietaryFiber",
+        "nutrientName": "食物繊維",
+        "action": "increase",
+        "priority": "High",
+        "quantitativeCriteria": {
+          "targetMin": 18,
+          "targetMax": null,
+          "unit": "g",
+          "per": "day"
+        },
+        "reason": "全粒小麦からの食物繊維が得られない。米・キヌア・そば・野菜で代替。",
+        "evidenceBase": "各種栄養学ガイドライン",
+        "evidenceUrl": null
+      },
+      {
+        "nutrientKey": "iron",
+        "nutrientName": "鉄",
+        "action": "increase",
+        "priority": "Medium",
+        "quantitativeCriteria": {
+          "targetMin": 7.5,
+          "targetMax": null,
+          "unit": "mg",
+          "per": "day"
+        },
+        "reason": "小麦粉製品(鉄強化)からの摂取がなくなる。",
+        "evidenceBase": "一般栄養学的推奨",
+        "evidenceUrl": null
+      }
+    ]
+  }
+]

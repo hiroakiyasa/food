@@ -8,6 +8,8 @@ node_modules/
 dist/
 web-build/
 expo-env.d.ts
+.playwright-cli/
+/output/
 
 # Native
 .kotlin/
@@ -31,7 +33,19 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
+/supabase/functions/.env
+.claude/settings.local.json
+
+# large generated datasets and local scratch files
+/data/
+/test.txt
+/test.txt.bak
+/test1.txt
+
+# superseded UI drafts; the Joyful handoff is committed explicitly
+/design/ui-concepts/
 
 # typescript
 *.tsbuildinfo
@@ -39,3 +53,4 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+.playwright-mcp/
